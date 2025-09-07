@@ -1,0 +1,21 @@
+{
+"name": "BudgetWise",
+"short_name": "BudgetWise",
+"description": "La tua app per la gestione del budget personale.",
+"start_url": "/index.html",
+"display": "standalone",
+"background_color": "#a777e3",
+"theme_color": "#4426b3",
+"icons": [
+{
+"src": "/android-chrome-192x192.png",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "/android-chrome-512x512.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
+} 

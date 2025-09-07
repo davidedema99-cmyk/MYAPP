@@ -1,8 +1,10 @@
-const CACHE_NAME = 'budgetwise-cache-v1';
+const CACHE_NAME = 'budgetwise-cache-v2';
 const urlsToCache = [
     '/',
     '/index.html',
-    '/manifest.json'
+    '/style.css',
+    '/manifest.json',
+    '/script.js'
 ];
 
 self.addEventListener('install', event => {
@@ -19,12 +21,24 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                // Ritorna la risorsa dalla cache se trovata
                 if (response) {
                     return response;
                 }
-                // Altrimenti, recuperala dalla rete
                 return fetch(event.request);
             })
     );
-}); 
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.filter(cacheName => {
+                    return cacheName.startsWith('budgetwise-') && cacheName !== CACHE_NAME;
+                }).map(cacheName => {
+                    return caches.delete(cacheName);
+                })
+            );
+        })
+    );
+});

@@ -1,7 +1,7 @@
 {
   "name": "La mia app per il risparmio",
   "short_name": "MyAPP",
-  "start_url": "/MYAPP/",
+  "start_url": "/MYAPP/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
@@ -13,3 +13,4 @@
     }
   ]
 }
+

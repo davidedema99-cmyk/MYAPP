@@ -10,13 +10,18 @@ window.onload = function () {
                 '30': { 'tubo': 14.40, 'curva': 43.64 }, '40': { 'tubo': 15.00, 'curva': 44.12 },
                 '50': { 'tubo': 15.60, 'curva': 44.57 }, '60': { 'tubo': 16.20, 'curva': 45.00 }
             },
-            'PVC normale': {
+            'PVC': {
                 '20': { 'tubo': 16.20, 'curva': 49.09 }, '25': { 'tubo': 16.50, 'curva': 50.00 },
                 '30': { 'tubo': 17.10, 'curva': 51.82 }, '40': { 'tubo': 17.70, 'curva': 52.06 },
                 '50': { 'tubo': 18.30, 'curva': 52.29 }, '60': { 'tubo': 19.50, 'curva': 54.17 }
             },
             'PVC ALU': {
                 '20': { 'tubo': 18.90, 'curva': 54.00 }
+            },
+            'Acciaio': {
+                 '20': { 'tubo': 34.20, 'curva': 103.64 }, '25': { 'tubo': 35.40, 'curva': 107.27 },
+                '30': { 'tubo': 36.00, 'curva': 109.09 }, '40': { 'tubo': 37.80, 'curva': 111.18 },
+                '50': { 'tubo': 39.00, 'curva': 114.71 }, '60': { 'tubo': 41.70, 'curva': 115.83 }
             },
             'Alluminio': {
                 '20': { 'tubo': 34.20, 'curva': 103.64 }, '25': { 'tubo': 35.40, 'curva': 107.27 },
@@ -35,13 +40,18 @@ window.onload = function () {
                 '30': { 'tubo': 14.40, 'curva': 43.64 }, '40': { 'tubo': 15.00, 'curva': 44.12 },
                 '50': { 'tubo': 15.60, 'curva': 44.57 }, '60': { 'tubo': 16.20, 'curva': 45.00 }
             },
-            'PVC normale': {
+            'PVC': {
                 '20': { 'tubo': 16.20, 'curva': 49.09 }, '25': { 'tubo': 16.50, 'curva': 50.00 },
                 '30': { 'tubo': 17.10, 'curva': 51.82 }, '40': { 'tubo': 17.70, 'curva': 52.06 },
                 '50': { 'tubo': 18.30, 'curva': 52.29 }, '60': { 'tubo': 19.50, 'curva': 54.17 }
             },
             'PVC ALU': {
                 '20': { 'tubo': 18.90, 'curva': 54.00 }
+            },
+            'Acciaio': {
+                 '20': { 'tubo': 34.20, 'curva': 103.64 }, '25': { 'tubo': 35.40, 'curva': 107.27 },
+                '30': { 'tubo': 36.00, 'curva': 109.09 }, '40': { 'tubo': 37.80, 'curva': 111.18 },
+                '50': { 'tubo': 39.00, 'curva': 114.71 }, '60': { 'tubo': 41.70, 'curva': 115.83 }
             },
             'Alluminio': {
                 '20': { 'tubo': 34.20, 'curva': 103.64 }, '25': { 'tubo': 35.40, 'curva': 107.27 },
@@ -65,7 +75,7 @@ window.onload = function () {
                 '114': { 'tubo': 39.00, 'curva': 76.47 }, '140': { 'tubo': 46.20, 'curva': 63.29 },
                 '168': { 'tubo': 53.40, 'curva': 65.12 }, '168/25': { 'tubo': 54.60, 'curva': 66.59 }
             },
-            'PVC normale': {
+            'PVC': {
                 '18': { 'tubo': 21.00, 'curva': 63.64 }, '19': { 'tubo': 21.00, 'curva': 63.64 },
                 '22': { 'tubo': 24.60, 'curva': 74.55 }, '25': { 'tubo': 28.80, 'curva': 87.27 },
                 '28': { 'tubo': 22.80, 'curva': 67.06 }, '32': { 'tubo': 25.80, 'curva': 75.88 },
@@ -74,6 +84,16 @@ window.onload = function () {
                 '76': { 'tubo': 34.80, 'curva': 96.67 }, '89': { 'tubo': 39.00, 'curva': 79.59 },
                 '114': { 'tubo': 46.40, 'curva': 98.82 }, '140': { 'tubo': 54.00, 'curva': 73.97 },
                 '168': { 'tubo': 63.00, 'curva': 76.83 }, '168/25': { 'tubo': 66.00, 'curva': 80.49 }
+            },
+            'Acciaio': {
+                 '18': { 'tubo': 37.20, 'curva': 112.73 }, '19': { 'tubo': 37.20, 'curva': 112.73 },
+                '22': { 'tubo': 40.20, 'curva': 121.82 }, '25': { 'tubo': 45.60, 'curva': 138.18 },
+                '28': { 'tubo': 37.80, 'curva': 111.18 }, '32': { 'tubo': 41.40, 'curva': 121.76 },
+                '34': { 'tubo': 46.20, 'curva': 135.88 }, '42': { 'tubo': 44.40, 'curva': 126.86 },
+                '48': { 'tubo': 40.80, 'curva': 113.33 }, '60': { 'tubo': 44.40, 'curva': 123.33 },
+                '76': { 'tubo': 51.60, 'curva': 105.31 }, '89': { 'tubo': 58.80, 'curva': 120.00 },
+                '114': { 'tubo': 69.60, 'curva': 142.35 }, '140': { 'tubo': 81.60, 'curva': 111.52 },
+                '168': { 'tubo': 93.00, 'curva': 113.41 }, '168/25': { 'tubo': 96.00, 'curva': 123.66 }
             },
             'Alluminio': {
                 '18': { 'tubo': 37.20, 'curva': 112.73 }, '19': { 'tubo': 37.20, 'curva': 112.73 },
@@ -99,17 +119,83 @@ window.onload = function () {
     };
 
     // Diametri e spessori in base al materiale
-    const diameters = {
-        'Lana di roccia': [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
-        'Polinor': [18, 22, 28, 34, 42, 48, 60, 76, 89],
-        'Gomma': [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25']
+    const materialOptions = {
+        'Lana di roccia': {
+            'Senza Rivestimento': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'PVC': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'PVC ALU': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'Acciaio': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'Alluminio': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'Inox': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            }
+        },
+        'Polinor': {
+            'Senza Rivestimento': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'PVC': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'PVC ALU': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'Acciaio': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'Alluminio': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            },
+            'Inox': {
+                diameters: [18, 22, 28, 34, 42, 48, 60, 76, 89],
+                thicknesses: [20, 25, 30, 40, 50, 60]
+            }
+        },
+        'Gomma': {
+            'Senza Rivestimento': {
+                diameters: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25'],
+                thicknesses: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
+            },
+            'PVC': {
+                diameters: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25'],
+                thicknesses: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
+            },
+            'Acciaio': {
+                diameters: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25'],
+                thicknesses: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
+            },
+            'Alluminio': {
+                diameters: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25'],
+                thicknesses: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
+            },
+            'Inox': {
+                diameters: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25'],
+                thicknesses: [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
+            }
+        }
     };
 
-    const thicknesses = {
-        'Lana di roccia': [20, 25, 30, 40, 50, 60],
-        'Polinor': [20, 25, 30, 40, 50, 60],
-        'Gomma': [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
-    };
 
     // Riferimenti agli elementi DOM
     const materialSelect = document.getElementById('material-type');
@@ -153,26 +239,23 @@ window.onload = function () {
 
         // Aggiorna opzioni di diametro
         diameterSelect.innerHTML = '';
-        if (diameters[selectedMaterial]) {
-            diameters[selectedMaterial].forEach(d => {
-                const option = document.createElement('option');
-                option.value = d;
-                option.textContent = d;
-                diameterSelect.appendChild(option);
-            });
-        }
+        const diameters = materialOptions[selectedMaterial]?.[selectedCoating]?.diameters || [];
+        diameters.forEach(d => {
+            const option = document.createElement('option');
+            option.value = d;
+            option.textContent = d;
+            diameterSelect.appendChild(option);
+        });
        
         // Aggiorna opzioni di spessore
         thicknessSelect.innerHTML = '';
-        const relevantThicknesses = Object.keys(prices[selectedMaterial]?.[selectedCoating] || {});
-        if (relevantThicknesses.length > 0) {
-            relevantThicknesses.forEach(t => {
-                const option = document.createElement('option');
-                option.value = t;
-                option.textContent = t;
-                thicknessSelect.appendChild(option);
-            });
-        }
+        const thicknesses = materialOptions[selectedMaterial]?.[selectedCoating]?.thicknesses || [];
+        thicknesses.forEach(t => {
+            const option = document.createElement('option');
+            option.value = t;
+            option.textContent = t;
+            thicknessSelect.appendChild(option);
+        });
     }
 
     // Funzione per renderizzare il riepilogo del preventivo

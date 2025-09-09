@@ -108,7 +108,8 @@ window.onload = function () {
     const imageUpload = document.getElementById('image-upload');
     const imagePreviewContainer = document.getElementById('image-preview-container');
 
-    let logoBase64 = logoImg.src;
+    let logoBase64 = logoImg.src.split(',')[1];
+    let uploadedBase64Image = null;
 
     // Funzione per mostrare le notifiche
     function showNotification(message, isError = false) {
@@ -177,7 +178,7 @@ window.onload = function () {
                 const itemHtml = `
                     <div class="flex justify-between items-center py-1" data-index="${quoteItems.indexOf(item)}">
                         <div>
-                            <p class="font-medium">${item.diameter}/${item.thickness} ML ${item.length.toFixed(2)} + Curve PZ ${item.curves}</p>
+                            <p class="font-medium">Diametro ${item.diameter}/${item.thickness}mm | Tubi: ${item.length.toFixed(2)} ML | Curve: ${item.curves} PZ</p>
                             <p class="text-sm text-gray-500">Tubo: €${item.pricePerMeter.toFixed(2)}/m, Curva: €${item.pricePerCurve.toFixed(2)}/pz</p>
                         </div>
                         <div class="flex items-center">
@@ -273,7 +274,7 @@ window.onload = function () {
     // Logica per l'invio del messaggio e la gestione della risposta
     sendBtn.addEventListener('click', async () => {
         const userMessage = chatInput.value.trim();
-        if (userMessage === '' && !uploadedImage) return;
+        if (userMessage === '' && !uploadedBase64Image) return;
 
         showChatMessage(userMessage, 'user');
         chatInput.value = '';
@@ -297,14 +298,14 @@ window.onload = function () {
             },
         };
 
-        if (uploadedImage) {
+        if (uploadedBase64Image) {
             payload.contents[0].parts.push({
                 inlineData: {
                     mimeType: "image/jpeg",
-                    data: uploadedImage
+                    data: uploadedBase64Image
                 }
             });
-            uploadedImage = null;
+            uploadedBase64Image = null;
         }
         
         const loadingMessageEl = document.createElement('div');
@@ -353,7 +354,7 @@ window.onload = function () {
         const reader = new FileReader();
         reader.onload = (e) => {
             const base64Image = e.target.result.split(',')[1];
-            uploadedImage = base64Image;
+            uploadedBase64Image = base64Image;
             
             const imgPreview = document.createElement('img');
             imgPreview.src = e.target.result;
@@ -379,7 +380,7 @@ window.onload = function () {
             let y = 20;
 
             if (logoBase64) {
-                doc.addImage(logoBase64, 'PNG', 14, 15, 20, 20);
+                doc.addImage(logoBase64, 'PNG', 14, 15, 20, 20, 'ISOLDEM Logo');
             }
             doc.setFontSize(22);
             doc.setFont("helvetica", "bold");
@@ -452,3 +453,4 @@ window.onload = function () {
     // Inizializza i menu a tendina con i valori corretti
     updateOptions();
 };
+

@@ -1,97 +1,468 @@
-import java.util.HashMap;
-import java.util.Map;
+window.onload = function () {
+    const quoteItems = [];
+    let uploadedImage = null;
+    
+    // Oggetto prices aggiornato con i nuovi dati del listino
+    const prices = {
+        'Lana di roccia': {
+            'Acciaio': {
+                '20': { 'tubo': 10.50, 'curva': 15.00 }, '25': { 'tubo': 11.00, 'curva': 16.00 },
+                '30': { 'tubo': 12.00, 'curva': 17.50 }, '40': { 'tubo': 14.00, 'curva': 20.00 },
+                '50': { 'tubo': 16.50, 'curva': 23.00 }, '60': { 'tubo': 18.00, 'curva': 25.00 }
+            },
+            'Alluminio': {
+                '20': { 'tubo': 9.50, 'curva': 13.00 }, '25': { 'tubo': 10.00, 'curva': 14.00 },
+                '30': { 'tubo': 11.00, 'curva': 15.50 }, '40': { 'tubo': 13.00, 'curva': 18.00 },
+                '50': { 'tubo': 15.50, 'curva': 21.00 }, '60': { 'tubo': 17.00, 'curva': 23.00 }
+            },
+            'PVC ALU': {
+                '20': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
+                '30': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
+                '50': { 'tubo': 14.50, 'curva': 20.00 }, '60': { 'tubo': 16.00, 'curva': 22.00 }
+            },
+            'PVC normale': {
+                '20': { 'tubo': 7.50, 'curva': 11.00 }, '25': { 'tubo': 8.00, 'curva': 12.00 },
+                '30': { 'tubo': 9.00, 'curva': 13.50 }, '40': { 'tubo': 11.00, 'curva': 16.00 },
+                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+            },
+            'Senza Rivestimento': {
+                '20': { 'tubo': 8.80, 'curva': 12.00 }, '25': { 'tubo': 9.20, 'curva': 12.50 },
+                '30': { 'tubo': 10.00, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
+                '50': { 'tubo': 13.50, 'curva': 18.50 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+            }
+        },
+        'Polinor': {
+            'Acciaio': {
+                '20': { 'tubo': 9.00, 'curva': 13.00 }, '25': { 'tubo': 9.50, 'curva': 14.00 },
+                '30': { 'tubo': 10.50, 'curva': 15.50 }, '40': { 'tubo': 12.50, 'curva': 18.00 },
+                '50': { 'tubo': 14.50, 'curva': 21.00 }, '60': { 'tubo': 16.00, 'curva': 23.00 }
+            },
+            'Alluminio': {
+                '20': { 'tubo': 8.00, 'curva': 11.00 }, '25': { 'tubo': 8.50, 'curva': 12.00 },
+                '30': { 'tubo': 9.50, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
+                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+            },
+            'PVC ALU': {
+                '20': { 'tubo': 7.00, 'curva': 10.00 }, '25': { 'tubo': 7.50, 'curva': 11.00 },
+                '30': { 'tubo': 8.50, 'curva': 12.50 }, '40': { 'tubo': 10.50, 'curva': 15.00 },
+                '50': { 'tubo': 12.50, 'curva': 18.00 }, '60': { 'tubo': 14.00, 'curva': 20.00 }
+            },
+            'PVC normale': {
+                '20': { 'tubo': 6.00, 'curva': 9.00 }, '25': { 'tubo': 6.50, 'curva': 10.00 },
+                '30': { 'tubo': 7.50, 'curva': 11.50 }, '40': { 'tubo': 9.50, 'curva': 14.00 },
+                '50': { 'tubo': 11.50, 'curva': 17.00 }, '60': { 'tubo': 13.00, 'curva': 19.00 }
+            },
+            'Senza Rivestimento': {
+                '20': { 'tubo': 8.80, 'curva': 12.00 }, '25': { 'tubo': 9.20, 'curva': 12.50 },
+                '30': { 'tubo': 10.00, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
+                '50': { 'tubo': 13.50, 'curva': 18.50 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+            }
+        },
+        'Gomma': {
+            'Acciaio': {
+                '19': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
+                '32': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
+                '50': { 'tubo': 14.00, 'curva': 20.00 }
+            },
+            'Alluminio': {
+                '19': { 'tubo': 7.50, 'curva': 10.00 }, '25': { 'tubo': 8.00, 'curva': 11.00 },
+                '32': { 'tubo': 9.00, 'curva': 12.50 }, '40': { 'tubo': 11.00, 'curva': 15.00 },
+                '50': { 'tubo': 13.00, 'curva': 18.00 }
+            },
+            'PVC ALU': {
+                '19': { 'tubo': 6.50, 'curva': 9.00 }, '25': { 'tubo': 7.00, 'curva': 10.00 },
+                '32': { 'tubo': 8.00, 'curva': 11.50 }, '40': { 'tubo': 10.00, 'curva': 14.00 },
+                '50': { 'tubo': 12.00, 'curva': 17.00 }
+            },
+            'PVC normale': {
+                '19': { 'tubo': 5.50, 'curva': 8.00 }, '25': { 'tubo': 6.00, 'curva': 9.00 },
+                '32': { 'tubo': 7.00, 'curva': 10.50 }, '40': { 'tubo': 9.00, 'curva': 13.00 },
+                '50': { 'tubo': 11.00, 'curva': 16.00 }
+            },
+            'Senza Rivestimento': {
+                '19': { 'tubo': 7.00, 'curva': 11.00 }, '25': { 'tubo': 7.50, 'curva': 12.00 },
+                '32': { 'tubo': 8.50, 'curva': 13.50 }, '40': { 'tubo': 10.50, 'curva': 16.00 },
+                '50': { 'tubo': 12.50, 'curva': 19.00 }
+            }
+        }
+    };
 
-public class PriceList {
+    const diameters = {
+        'Lana di roccia': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89, 108, 114, 133, 140, 168, 219],
+        'Polinor': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89],
+        'Gomma': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89]
+    };
 
-    private static final Map<String, Map<String, Map<Integer, Map<Integer, Double>>>> prices = new HashMap<>();
-    private static final Map<String, Map<Integer, Map<Integer, Double>>> curvePrices = new HashMap<>();
+    const thicknesses = {
+        'Lana di roccia': [20, 25, 30, 40, 50, 60],
+        'Polinor': [20, 25, 30, 40, 50, 60],
+        'Gomma': [19, 25, 32, 40, 50]
+    };
+    
+    // Riferimenti agli elementi DOM
+    const materialSelect = document.getElementById('material-type');
+    const coatingSelect = document.getElementById('coating-type');
+    const diameterSelect = document.getElementById('diameter');
+    const thicknessSelect = document.getElementById('thickness');
+    const addItemBtn = document.getElementById('add-item-btn');
+    const quoteSummary = document.getElementById('quote-summary');
+    const totalCostEl = document.getElementById('total-cost');
+    const discountInput = document.getElementById('discount');
+    const tabPreventivo = document.getElementById('tab-preventivo');
+    const tabChat = document.getElementById('tab-chat');
+    const preventivoSection = document.getElementById('preventivo-section');
+    const chatSection = document.getElementById('chat-section');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatHistory = document.getElementById('chat-history');
+    const notificationBox = document.getElementById('notification-box');
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    const cantiereInput = document.getElementById('cantiere');
+    const uploadBtn = document.getElementById('upload-btn');
+    const imageUpload = document.getElementById('image-upload');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
 
-    static {
-        // Mappa dei prezzi completa per i tubi
-        Map<String, Map<Integer, Map<Integer, Double>>> lanaPolinorData = new HashMap<>();
-        Map<String, Map<Integer, Map<Integer, Double>>> gommaData = new HashMap<>();
+    let uploadedBase64Image = null;
 
-        // Prezzi per Lana di roccia e Polinor (prezzi identici)
-        Map<Integer, Map<Integer, Double>> nudoPrices = new HashMap<>();
-        nudoPrices.put(10, Map.of(18, 11.20, 22, 12.00, 28, 12.80, 34, 13.50, 40, 14.20, 48, 15.00, 60, 15.80, 76, 28.50, 89, 34.00, 114, 38.50, 140, 42.00, 150, 46.00));
-        nudoPrices.put(20, Map.of(18, 15.00, 22, 15.60, 28, 16.00, 34, 16.50, 40, 17.50, 48, 18.20, 60, 19.50, 76, 32.00, 89, 38.00, 114, 42.50, 140, 46.00, 150, 50.00));
-        nudoPrices.put(30, Map.of(18, 19.00, 22, 19.80, 28, 20.50, 34, 21.00, 40, 22.00, 48, 23.50, 60, 25.00, 76, 35.00, 89, 41.00, 114, 48.00, 140, 51.50, 150, 55.00));
-        nudoPrices.put(40, Map.of(18, 20.00, 22, 21.00, 28, 22.00, 34, 23.00, 40, 24.50, 48, 26.00, 60, 29.00, 76, 38.00, 89, 44.00, 114, 51.00, 140, 58.00, 150, 61.50));
-        nudoPrices.put(50, Map.of(18, 22.00, 22, 23.00, 28, 24.50, 34, 26.00, 40, 27.50, 48, 29.00, 60, 32.00, 76, 42.00, 89, 48.50, 114, 55.00, 140, 62.00, 150, 67.00));
-        lanaPolinorData.put("Nudo", nudoPrices);
-        lanaPolinorData.put("senza_rivestimento", nudoPrices);
-
-        Map<Integer, Map<Integer, Double>> pvcPrices = new HashMap<>();
-        pvcPrices.put(10, Map.of(18, 14.50, 22, 16.80, 28, 17.50, 34, 18.50, 40, 19.50, 48, 21.50, 60, 25.00, 76, 35.50, 89, 42.00, 114, 49.00, 140, 56.50, 150, 59.00));
-        pvcPrices.put(20, Map.of(18, 19.50, 22, 21.00, 28, 22.50, 34, 23.50, 40, 25.50, 48, 27.00, 60, 30.50, 76, 39.00, 89, 44.50, 114, 52.00, 140, 59.00, 150, 62.00));
-        pvcPrices.put(30, Map.of(18, 22.00, 22, 23.00, 28, 24.50, 34, 25.50, 40, 26.50, 48, 28.50, 60, 33.00, 76, 42.50, 89, 49.00, 114, 57.00, 140, 64.50, 150, 67.00));
-        pvcPrices.put(40, Map.of(18, 26.00, 22, 27.00, 28, 29.00, 34, 30.00, 40, 33.00, 48, 35.00, 60, 38.00, 76, 47.00, 89, 53.00, 114, 61.00, 140, 71.00, 150, 74.00));
-        pvcPrices.put(50, Map.of(18, 26.50, 22, 27.50, 28, 31.00, 34, 33.00, 40, 36.00, 48, 38.50, 60, 39.50, 76, 49.50, 89, 56.50, 114, 64.00, 140, 73.00, 150, 76.00));
-        lanaPolinorData.put("PVC", pvcPrices);
-
-        Map<Integer, Map<Integer, Double>> alluminioPrices = new HashMap<>();
-        alluminioPrices.put(10, Map.of(18, 32.00, 22, 33.00, 28, 34.00, 34, 35.00, 40, 36.00, 48, 38.00, 60, 41.00, 76, 62.00, 89, 69.00, 114, 78.00, 140, 84.00, 150, 88.00));
-        alluminioPrices.put(20, Map.of(18, 32.00, 22, 33.00, 28, 34.00, 34, 35.00, 40, 36.00, 48, 38.00, 60, 41.00, 76, 62.00, 89, 69.00, 114, 78.00, 140, 84.00, 150, 88.00));
-        alluminioPrices.put(30, Map.of(18, 36.00, 22, 37.00, 28, 39.00, 34, 41.00, 40, 43.00, 48, 45.00, 60, 48.00, 76, 68.00, 89, 75.00, 114, 87.00, 140, 93.00, 150, 97.00));
-        alluminioPrices.put(40, Map.of(18, 41.00, 22, 43.00, 28, 45.50, 34, 47.50, 40, 50.00, 48, 52.00, 60, 57.00, 76, 76.00, 89, 85.00, 114, 98.00, 140, 106.00, 150, 109.00));
-        alluminioPrices.put(50, Map.of(18, 45.00, 22, 47.00, 28, 50.00, 34, 52.00, 40, 55.00, 48, 57.00, 60, 62.00, 76, 83.00, 89, 92.00, 114, 106.00, 140, 115.00, 150, 120.00));
-        lanaPolinorData.put("Alluminio", alluminioPrices);
-
-        Map<Integer, Map<Integer, Double>> inoxPrices = new HashMap<>();
-        inoxPrices.put(10, Map.of(18, 42.00, 22, 43.00, 28, 44.00, 34, 45.00, 40, 47.00, 48, 50.00, 60, 53.00, 76, 78.00, 89, 86.00, 114, 98.00, 140, 108.00, 150, 112.00));
-        inoxPrices.put(20, Map.of(18, 42.00, 22, 43.00, 28, 44.00, 34, 45.00, 40, 47.00, 48, 50.00, 60, 53.00, 76, 78.00, 89, 86.00, 114, 98.00, 140, 108.00, 150, 112.00));
-        inoxPrices.put(30, Map.of(18, 49.00, 22, 51.00, 28, 54.00, 34, 56.00, 40, 59.00, 48, 61.00, 60, 66.00, 76, 92.00, 89, 101.00, 114, 114.00, 140, 124.00, 150, 130.00));
-        inoxPrices.put(40, Map.of(18, 54.00, 22, 56.00, 28, 59.00, 34, 62.00, 40, 67.00, 48, 70.00, 60, 76.00, 76, 107.00, 89, 116.00, 114, 130.00, 140, 142.00, 150, 149.00));
-        inoxPrices.put(50, Map.of(18, 59.00, 22, 62.00, 28, 65.00, 34, 69.00, 40, 73.00, 48, 76.00, 60, 83.00, 76, 117.00, 89, 128.00, 114, 145.00, 140, 159.00, 150, 167.00));
-        lanaPolinorData.put("Inox", inoxPrices);
+    // Funzione per mostrare le notifiche
+    function showNotification(message, isError = false) {
+        notificationBox.textContent = message;
+        notificationBox.className = 'show fixed top-5 right-5 p-4 rounded-lg shadow-lg text-white';
+        notificationBox.classList.add(isError ? 'bg-red-500' : 'bg-blue-500');
+        setTimeout(() => {
+            notificationBox.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Funzione per aggiornare le opzioni dei menu a tendina
+    function updateOptions() {
+        const selectedMaterial = materialSelect.value;
+        const selectedCoating = coatingSelect.value;
         
-        prices.put("Lana di roccia", lanaPolinorData);
-        prices.put("Polinor", lanaPolinorData);
-
-        // Prezzi per Gomma
-        Map<Integer, Map<Integer, Double>> gommaNudoPrices = new HashMap<>();
-        gommaNudoPrices.put(6, Map.of(18, 11.20, 22, 12.00, 28, 12.80, 34, 13.50, 40, 14.20, 48, 15.00, 60, 15.80, 76, 28.50, 89, 34.00, 114, 38.50, 140, 42.00, 150, 46.00));
-        gommaNudoPrices.put(9, Map.of(18, 14.50, 22, 16.80, 28, 17.50, 34, 18.50, 40, 19.50, 48, 21.50, 60, 25.00, 76, 35.50, 89, 42.00, 114, 49.00, 140, 56.50, 150, 59.00));
-        gommaData.put("Nudo", gommaNudoPrices);
-        gommaData.put("senza_rivestimento", gommaNudoPrices);
+        diameterSelect.innerHTML = '';
+        if (diameters[selectedMaterial]) {
+            diameters[selectedMaterial].forEach(d => {
+                const option = document.createElement('option');
+                option.value = d;
+                option.textContent = d;
+                diameterSelect.appendChild(option);
+            });
+        }
         
-        prices.put("Gomma", gommaData);
-
-        // Prezzi per le curve
-        Map<Integer, Map<Integer, Double>> lanaPolinorCurve = new HashMap<>();
-        lanaPolinorCurve.put(10, Map.of(18, 18.00, 22, 19.50, 28, 20.00, 34, 21.50, 40, 23.00, 48, 24.50, 60, 25.50, 76, 40.00, 89, 46.00, 114, 55.00, 140, 62.00, 150, 68.00));
-        lanaPolinorCurve.put(20, Map.of(18, 20.00, 22, 22.00, 28, 23.50, 34, 25.00, 40, 27.00, 48, 29.00, 60, 32.00, 76, 45.00, 89, 52.00, 114, 60.00, 140, 68.00, 150, 74.00));
-        lanaPolinorCurve.put(30, Map.of(18, 24.00, 22, 25.50, 28, 27.00, 34, 28.50, 40, 30.00, 48, 32.00, 60, 36.00, 76, 49.00, 89, 56.00, 114, 65.00, 140, 72.00, 150, 78.00));
-        lanaPolinorCurve.put(40, Map.of(18, 26.00, 22, 27.50, 28, 29.00, 34, 30.50, 40, 33.00, 48, 35.00, 60, 39.00, 76, 52.00, 89, 59.00, 114, 68.00, 140, 77.00, 150, 82.00));
-        lanaPolinorCurve.put(50, Map.of(18, 28.00, 22, 29.50, 28, 31.00, 34, 33.00, 40, 35.00, 48, 37.00, 60, 41.00, 76, 55.00, 89, 63.00, 114, 72.00, 140, 80.00, 150, 86.00));
-        
-        curvePrices.put("Lana di roccia", lanaPolinorCurve);
-        curvePrices.put("Polinor", lanaPolinorCurve);
-        
-        Map<Integer, Map<Integer, Double>> gommaCurve = new HashMap<>();
-        gommaCurve.put(6, Map.of(18, 16.00, 22, 17.50, 28, 18.00, 34, 19.50, 40, 21.00, 48, 22.00, 60, 23.00, 76, 35.00, 89, 41.00, 114, 48.00, 140, 54.00, 150, 60.00));
-        gommaCurve.put(9, Map.of(18, 19.00, 22, 21.00, 28, 22.00, 34, 23.50, 40, 25.00, 48, 27.00, 60, 30.00, 76, 41.00, 89, 48.00, 114, 55.00, 140, 63.00, 150, 67.00));
-        
-        curvePrices.put("Gomma", gommaCurve);
+        thicknessSelect.innerHTML = '';
+        if (thicknesses[selectedMaterial]) {
+            thicknesses[selectedMaterial].forEach(t => {
+                const option = document.createElement('option');
+                option.value = t;
+                option.textContent = t;
+                thicknessSelect.appendChild(option);
+            });
+        }
     }
 
-    public static double getPrice(String material, String type, int thickness, int diameter) {
-        if (prices.containsKey(material) && prices.get(material).containsKey(type) &&
-            prices.get(material).get(type).containsKey(thickness) &&
-            prices.get(material).get(type).get(thickness).containsKey(diameter)) {
+    // Funzione per renderizzare il riepilogo del preventivo
+    function renderQuote() {
+        quoteSummary.innerHTML = '';
+        let total = 0;
+        const groupedItems = {};
+
+        quoteItems.forEach(item => {
+            const key = `${item.material} + ${item.coating}`;
+            if (!groupedItems[key]) {
+                groupedItems[key] = [];
+            }
+            groupedItems[key].push(item);
+        });
+
+        for (const group in groupedItems) {
+            const groupContainer = document.createElement('div');
+            groupContainer.className = 'line-item p-4 mb-4 border rounded-lg';
             
-            return prices.get(material).get(type).get(thickness).get(diameter);
+            let groupTotal = 0;
+            let groupHtml = `<div class="flex justify-between items-center font-bold mb-2">
+                                <span>${group}</span>
+                                <span class="group-total"></span>
+                             </div>`;
+            
+            groupedItems[group].forEach((item, index) => {
+                const itemTotal = (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve);
+                groupTotal += itemTotal;
+                
+                const itemHtml = `
+                    <div class="flex justify-between items-center py-1" data-index="${quoteItems.indexOf(item)}">
+                        <div>
+                            <p class="font-medium">Diametro ${item.diameter}/${item.thickness}mm | Tubi: ${item.length.toFixed(2)} ML | Curve: ${item.curves} PZ</p>
+                            <p class="text-sm text-gray-500">Tubo: €${item.pricePerMeter.toFixed(2)}/m, Curva: €${item.pricePerCurve.toFixed(2)}/pz</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-4 font-semibold text-gray-800">€${itemTotal.toFixed(2)}</span>
+                            <button class="btn-remove text-red-500 hover:text-red-700" data-index="${quoteItems.indexOf(item)}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                groupHtml += itemHtml;
+            });
+
+            groupContainer.innerHTML = groupHtml;
+            groupContainer.querySelector('.group-total').textContent = `Totale: €${groupTotal.toFixed(2)}`;
+            quoteSummary.appendChild(groupContainer);
+
+            total += groupTotal;
         }
-        return 0.0;
+        
+        const discount = parseFloat(discountInput.value) || 0;
+        const discountedTotal = total * (1 - discount / 100);
+        totalCostEl.textContent = `€${discountedTotal.toFixed(2)}`;
+
+        document.querySelectorAll('.btn-remove').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const index = parseInt(event.currentTarget.dataset.index);
+                quoteItems.splice(index, 1);
+                renderQuote();
+            });
+        });
     }
 
-    public static double getCurvePrice(String material, int thickness, int diameter) {
-        if (curvePrices.containsKey(material) && curvePrices.get(material).containsKey(thickness) &&
-            curvePrices.get(material).get(thickness).containsKey(diameter)) {
+    // Gestione degli eventi
+    materialSelect.addEventListener('change', updateOptions);
+    discountInput.addEventListener('input', renderQuote);
+    
+    addItemBtn.addEventListener('click', () => {
+        const material = materialSelect.value;
+        const coating = coatingSelect.value;
+        const diameter = diameterSelect.value;
+        const thickness = thicknessSelect.value;
+        const length = parseFloat(document.getElementById('length').value) || 0;
+        const curves = parseInt(document.getElementById('curves').value) || 0;
 
-            return curvePrices.get(material).get(thickness).get(diameter);
+        if (length === 0 && curves === 0) {
+            showNotification("Inserire una lunghezza o un numero di curve.", true);
+            return;
         }
-        return 0.0;
+
+        const priceData = prices[material]?.[coating]?.[thickness];
+        if (!priceData) {
+            showNotification(`Prezzo non disponibile per ${material} con spessore ${thickness} e rivestimento ${coating}.`, true);
+            return;
+        }
+        
+        const pricePerMeter = priceData.tubo || 0;
+        const pricePerCurve = priceData.curva || 0;
+
+        quoteItems.push({ material, coating, diameter, thickness, length, curves, pricePerMeter, pricePerCurve });
+        renderQuote();
+
+        document.getElementById('length').value = '';
+        document.getElementById('curves').value = '';
+    });
+
+    tabPreventivo.addEventListener('click', () => {
+        preventivoSection.style.display = 'block';
+        chatSection.style.display = 'none';
+        tabPreventivo.classList.add('active');
+        tabChat.classList.remove('active');
+    });
+
+    tabChat.addEventListener('click', () => {
+        preventivoSection.style.display = 'none';
+        chatSection.style.display = 'block';
+        tabChat.classList.add('active');
+        tabPreventivo.classList.remove('active');
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    });
+
+    // Funzione per mostrare un messaggio di chat
+    function showChatMessage(message, sender) {
+        const messageEl = document.createElement('div');
+        messageEl.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+        messageEl.innerHTML = `<div class="chat-message p-3 rounded-xl shadow-md ${sender === 'user' ? 'user-message' : 'bot-message'}">${message}</div>`;
+        chatHistory.appendChild(messageEl);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
     }
-}
+
+    // Logica per l'invio del messaggio e la gestione della risposta
+    sendBtn.addEventListener('click', async () => {
+        const userMessage = chatInput.value.trim();
+        if (userMessage === '' && !uploadedBase64Image) return;
+
+        showChatMessage(userMessage, 'user');
+        chatInput.value = '';
+        imagePreviewContainer.innerHTML = '';
+        
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        { text: userMessage }
+                    ]
+                }
+            ],
+            tools: [{ "google_search": {} }],
+            systemInstruction: {
+                parts: [{ text: "Act as a specialized AI for ISOLDEM SRLS, a company in the thermohydraulic insulation sector. Provide helpful and concise answers related to insulation, materials, and project timelines. Respond in Italian. Keep the tone professional but friendly and helpful." }]
+            },
+        };
+
+        if (uploadedBase64Image) {
+            payload.contents[0].parts.push({
+                inlineData: {
+                    mimeType: "image/jpeg",
+                    data: uploadedBase64Image
+                }
+            });
+            uploadedBase64Image = null;
+        }
+        
+        const loadingMessageEl = document.createElement('div');
+        loadingMessageEl.className = 'flex justify-start';
+        loadingMessageEl.innerHTML = `<div class="chat-message bot p-3 rounded-xl shadow-md bot-message">...</div>`;
+        chatHistory.appendChild(loadingMessageEl);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            const botResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            loadingMessageEl.remove();
+            if (botResponseText) {
+                showChatMessage(botResponseText, 'bot');
+            } else {
+                showChatMessage("Mi dispiace, non sono riuscito a generare una risposta. Riprova più tardi.", 'bot');
+            }
+
+        } catch (error) {
+            console.error('API Error:', error);
+            loadingMessageEl.remove();
+            showChatMessage("Si è verificato un errore di comunicazione. Riprova più tardi.", 'bot');
+        }
+    });
+
+    chatInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+
+    // Gestione dell'upload immagine
+    uploadBtn.addEventListener('click', () => imageUpload.click());
+    
+    imageUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64Image = e.target.result.split(',')[1];
+            uploadedBase64Image = base64Image;
+            
+            const imgPreview = document.createElement('img');
+            imgPreview.src = e.target.result;
+            imgPreview.className = 'w-24 h-24 rounded-lg object-cover mr-2';
+            imagePreviewContainer.innerHTML = '';
+            imagePreviewContainer.appendChild(imgPreview);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    downloadPdfBtn.addEventListener('click', () => {
+        if (quoteItems.length === 0) {
+            showNotification("Aggiungi almeno un articolo al preventivo prima di scaricare.", true);
+            return;
+        }
+
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const cantiere = cantiereInput.value || 'N/A';
+            const date = new Date().toLocaleDateString('it-IT');
+            let y = 20;
+
+            doc.setFontSize(22);
+            doc.setFont("helvetica", "bold");
+            doc.text("ISOLDEM SRLS", 14, y);
+            
+            y += 10;
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Preventivo per: ${cantiere}`, 14, y);
+            y += 7;
+            doc.text(`Data: ${date}`, 14, y);
+
+            y += 10;
+            
+            const groupedItems = {};
+            quoteItems.forEach(item => {
+                const key = `${item.material} + ${item.coating}`;
+                if (!groupedItems[key]) groupedItems[key] = [];
+                groupedItems[key].push(item);
+            });
+
+            const tableData = [];
+            for (const group in groupedItems) {
+                tableData.push([{ content: group, colSpan: 4, styles: { fontStyle: 'bold', fillColor: [220, 220, 220] } }]);
+                groupedItems[group].forEach(item => {
+                    const itemTotal = (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve);
+                    tableData.push([
+                        `Diam. ${item.diameter}/${item.thickness}mm`,
+                        `Tubi: ${item.length} ML`,
+                        `Curve: ${item.curves} PZ`,
+                        `€${itemTotal.toFixed(2)}`
+                    ]);
+                });
+            }
+            
+            doc.autoTable({
+                startY: y,
+                head: [['Descrizione', 'Lunghezza', 'Curve', 'Subtotale']],
+                body: tableData,
+                theme: 'striped',
+                headStyles: { fillColor: [79, 70, 229] }
+            });
+
+            y = doc.autoTable.previous.finalY + 10;
+            
+            const total = quoteItems.reduce((sum, item) => sum + (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve), 0);
+            const discount = parseFloat(discountInput.value) || 0;
+            const discountedTotal = total * (1 - discount / 100);
+
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text(`Subtotale:`, 140, y, { align: 'right' });
+            doc.text(`€${total.toFixed(2)}`, 200, y, { align: 'right' });
+            
+            y += 7;
+            doc.text(`Sconto (${discount}%):`, 140, y, { align: 'right' });
+            doc.text(`-€${(total - discountedTotal).toFixed(2)}`, 200, y, { align: 'right' });
+            
+            y += 10;
+            doc.setFontSize(14);
+            doc.text(`TOTALE:`, 140, y, { align: 'right' });
+            doc.text(`€${discountedTotal.toFixed(2)}`, 200, y, { align: 'right' });
+            
+            doc.save(`Preventivo_${cantiere.replace(/\s/g, '_')}.pdf`);
+
+        } catch (error) {
+            console.error("Errore durante la generazione del PDF:", error);
+            showNotification("Si è verificato un errore critico durante la generazione del PDF. Controlla la console per i dettagli.", true);
+        }
+    });
+
+    // Inizializza i menu a tendina con i valori corretti
+    updateOptions();
+};
 

@@ -3,184 +3,95 @@ import java.util.Map;
 
 public class PriceList {
 
-    public static double getPrice(String material, String type, int thickness, int diameter) {
-        // Mappa dei prezzi completa
-        Map<String, Map<String, Map<Integer, Map<Integer, Double>>>> prices = new HashMap<>();
+    private static final Map<String, Map<String, Map<Integer, Map<Integer, Double>>>> prices = new HashMap<>();
+    private static final Map<String, Map<Integer, Map<Integer, Double>>> curvePrices = new HashMap<>();
 
-        // Dati per Lana di roccia e Polinor (prezzi identici)
+    static {
+        // Mappa dei prezzi completa per i tubi
         Map<String, Map<Integer, Map<Integer, Double>>> lanaPolinorData = new HashMap<>();
+        Map<String, Map<Integer, Map<Integer, Double>>> gommaData = new HashMap<>();
 
-        // Nudo
+        // Prezzi per Lana di roccia e Polinor (prezzi identici)
         Map<Integer, Map<Integer, Double>> nudoPrices = new HashMap<>();
-        Map<Integer, Double> nudoPrices10 = new HashMap<>();
-        nudoPrices10.put(18, 12.60); nudoPrices10.put(22, 13.80); nudoPrices10.put(28, 14.40); nudoPrices10.put(34, 15.60);
-        nudoPrices10.put(40, 15.60); nudoPrices10.put(48, 16.80); nudoPrices10.put(60, 18.00); nudoPrices10.put(76, 32.40);
-        nudoPrices10.put(89, 39.00); nudoPrices10.put(114, 45.60); nudoPrices10.put(140, 49.20); nudoPrices10.put(150, 53.40);
-        nudoPrices.put(10, nudoPrices10);
-
-        Map<Integer, Double> nudoPrices20 = new HashMap<>();
-        nudoPrices20.put(18, 16.50); nudoPrices20.put(22, 16.90); nudoPrices20.put(28, 17.10); nudoPrices20.put(34, 17.70);
-        nudoPrices20.put(40, 18.90); nudoPrices20.put(48, 19.50); nudoPrices20.put(60, 20.70); nudoPrices20.put(76, 35.40);
-        nudoPrices20.put(89, 41.40); nudoPrices20.put(114, 46.80); nudoPrices20.put(140, 50.40); nudoPrices20.put(150, 57.20);
-        nudoPrices.put(20, nudoPrices20);
-
-        Map<Integer, Double> nudoPrices30 = new HashMap<>();
-        nudoPrices30.put(18, 20.40); nudoPrices30.put(22, 21.60); nudoPrices30.put(28, 22.20); nudoPrices30.put(34, 23.40);
-        nudoPrices30.put(40, 24.00); nudoPrices30.put(48, 25.80); nudoPrices30.put(60, 28.20); nudoPrices30.put(76, 39.00);
-        nudoPrices30.put(89, 45.00); nudoPrices30.put(114, 52.20); nudoPrices30.put(140, 55.80); nudoPrices30.put(150, 59.40);
-        nudoPrices.put(30, nudoPrices30);
-
-        Map<Integer, Double> nudoPrices40 = new HashMap<>();
-        nudoPrices40.put(18, 21.60); nudoPrices40.put(22, 22.80); nudoPrices40.put(28, 24.00); nudoPrices40.put(34, 25.20);
-        nudoPrices40.put(40, 27.00); nudoPrices40.put(48, 28.80); nudoPrices40.put(60, 31.80); nudoPrices40.put(76, 42.00);
-        nudoPrices40.put(89, 48.00); nudoPrices40.put(114, 55.80); nudoPrices40.put(140, 62.40); nudoPrices40.put(150, 66.00);
-        nudoPrices.put(40, nudoPrices40);
-
-        Map<Integer, Double> nudoPrices50 = new HashMap<>();
-        nudoPrices50.put(18, 23.40); nudoPrices50.put(22, 25.20); nudoPrices50.put(28, 27.00); nudoPrices50.put(34, 28.80);
-        nudoPrices50.put(40, 30.00); nudoPrices50.put(48, 32.40); nudoPrices50.put(60, 35.40); nudoPrices50.put(76, 45.60);
-        nudoPrices50.put(89, 52.80); nudoPrices50.put(114, 60.00); nudoPrices50.put(140, 67.20); nudoPrices50.put(150, 72.00);
-        nudoPrices.put(50, nudoPrices50);
-        
+        nudoPrices.put(10, Map.of(18, 11.20, 22, 12.00, 28, 12.80, 34, 13.50, 40, 14.20, 48, 15.00, 60, 15.80, 76, 28.50, 89, 34.00, 114, 38.50, 140, 42.00, 150, 46.00));
+        nudoPrices.put(20, Map.of(18, 15.00, 22, 15.60, 28, 16.00, 34, 16.50, 40, 17.50, 48, 18.20, 60, 19.50, 76, 32.00, 89, 38.00, 114, 42.50, 140, 46.00, 150, 50.00));
+        nudoPrices.put(30, Map.of(18, 19.00, 22, 19.80, 28, 20.50, 34, 21.00, 40, 22.00, 48, 23.50, 60, 25.00, 76, 35.00, 89, 41.00, 114, 48.00, 140, 51.50, 150, 55.00));
+        nudoPrices.put(40, Map.of(18, 20.00, 22, 21.00, 28, 22.00, 34, 23.00, 40, 24.50, 48, 26.00, 60, 29.00, 76, 38.00, 89, 44.00, 114, 51.00, 140, 58.00, 150, 61.50));
+        nudoPrices.put(50, Map.of(18, 22.00, 22, 23.00, 28, 24.50, 34, 26.00, 40, 27.50, 48, 29.00, 60, 32.00, 76, 42.00, 89, 48.50, 114, 55.00, 140, 62.00, 150, 67.00));
         lanaPolinorData.put("Nudo", nudoPrices);
+        lanaPolinorData.put("senza_rivestimento", nudoPrices);
 
-        // PVC
         Map<Integer, Map<Integer, Double>> pvcPrices = new HashMap<>();
-        Map<Integer, Double> pvcPrices10 = new HashMap<>();
-        pvcPrices10.put(18, 16.20); pvcPrices10.put(22, 18.50); pvcPrices10.put(28, 19.20); pvcPrices10.put(34, 20.40);
-        pvcPrices10.put(40, 21.60); pvcPrices10.put(48, 24.00); pvcPrices10.put(60, 27.60); pvcPrices10.put(76, 39.00);
-        pvcPrices10.put(89, 46.20); pvcPrices10.put(114, 53.40); pvcPrices10.put(140, 62.20); pvcPrices10.put(150, 63.00);
-        pvcPrices.put(10, pvcPrices10);
-
-        Map<Integer, Double> pvcPrices20 = new HashMap<>();
-        pvcPrices20.put(18, 21.50); pvcPrices20.put(22, 23.40); pvcPrices20.put(28, 24.60); pvcPrices20.put(34, 25.80);
-        pvcPrices20.put(40, 28.20); pvcPrices20.put(48, 30.00); pvcPrices20.put(60, 33.60); pvcPrices20.put(76, 42.60);
-        pvcPrices20.put(89, 48.60); pvcPrices20.put(114, 57.60); pvcPrices20.put(140, 66.00); pvcPrices20.put(150, 66.00);
-        pvcPrices.put(20, pvcPrices20);
-
-        Map<Integer, Double> pvcPrices30 = new HashMap<>();
-        pvcPrices30.put(18, 24.60); pvcPrices30.put(22, 25.80); pvcPrices30.put(28, 27.00); pvcPrices30.put(34, 28.80);
-        pvcPrices30.put(40, 29.40); pvcPrices30.put(48, 31.80); pvcPrices30.put(60, 36.60); pvcPrices30.put(76, 45.60);
-        pvcPrices30.put(89, 52.80); pvcPrices30.put(114, 61.20); pvcPrices30.put(140, 68.40); pvcPrices30.put(150, 70.00);
-        pvcPrices.put(30, pvcPrices30);
-
-        Map<Integer, Double> pvcPrices40 = new HashMap<>();
-        pvcPrices40.put(18, 28.60); pvcPrices40.put(22, 29.40); pvcPrices40.put(28, 31.20); pvcPrices40.put(34, 32.40);
-        pvcPrices40.put(40, 36.00); pvcPrices40.put(48, 37.80); pvcPrices40.put(60, 40.80); pvcPrices40.put(76, 50.40);
-        pvcPrices40.put(89, 57.00); pvcPrices40.put(114, 66.00); pvcPrices40.put(140, 76.20); pvcPrices40.put(150, 77.00);
-        pvcPrices.put(40, pvcPrices40);
-        
-        Map<Integer, Double> pvcPrices50 = new HashMap<>();
-        pvcPrices50.put(18, 28.80); pvcPrices50.put(22, 30.00); pvcPrices50.put(28, 33.60); pvcPrices50.put(34, 35.40);
-        pvcPrices50.put(40, 39.00); pvcPrices50.put(48, 41.40); pvcPrices50.put(60, 42.60); pvcPrices50.put(76, 53.40);
-        pvcPrices50.put(89, 61.20); pvcPrices50.put(114, 69.00); pvcPrices50.put(140, 78.60); pvcPrices50.put(150, 80.00);
-        pvcPrices.put(50, pvcPrices50);
-
+        pvcPrices.put(10, Map.of(18, 14.50, 22, 16.80, 28, 17.50, 34, 18.50, 40, 19.50, 48, 21.50, 60, 25.00, 76, 35.50, 89, 42.00, 114, 49.00, 140, 56.50, 150, 59.00));
+        pvcPrices.put(20, Map.of(18, 19.50, 22, 21.00, 28, 22.50, 34, 23.50, 40, 25.50, 48, 27.00, 60, 30.50, 76, 39.00, 89, 44.50, 114, 52.00, 140, 59.00, 150, 62.00));
+        pvcPrices.put(30, Map.of(18, 22.00, 22, 23.00, 28, 24.50, 34, 25.50, 40, 26.50, 48, 28.50, 60, 33.00, 76, 42.50, 89, 49.00, 114, 57.00, 140, 64.50, 150, 67.00));
+        pvcPrices.put(40, Map.of(18, 26.00, 22, 27.00, 28, 29.00, 34, 30.00, 40, 33.00, 48, 35.00, 60, 38.00, 76, 47.00, 89, 53.00, 114, 61.00, 140, 71.00, 150, 74.00));
+        pvcPrices.put(50, Map.of(18, 26.50, 22, 27.50, 28, 31.00, 34, 33.00, 40, 36.00, 48, 38.50, 60, 39.50, 76, 49.50, 89, 56.50, 114, 64.00, 140, 73.00, 150, 76.00));
         lanaPolinorData.put("PVC", pvcPrices);
 
-        // Alluminio
         Map<Integer, Map<Integer, Double>> alluminioPrices = new HashMap<>();
-        Map<Integer, Double> alluminioPrices10 = new HashMap<>();
-        alluminioPrices10.put(18, 35.40); alluminioPrices10.put(22, 36.60); alluminioPrices10.put(28, 37.20); alluminioPrices10.put(34, 38.40);
-        alluminioPrices10.put(40, 39.00); alluminioPrices10.put(48, 41.40); alluminioPrices10.put(60, 44.40); alluminioPrices10.put(76, 68.40);
-        alluminioPrices10.put(89, 76.80); alluminioPrices10.put(114, 86.40); alluminioPrices10.put(140, 92.60); alluminioPrices10.put(150, 93.00);
-        alluminioPrices.put(10, alluminioPrices10);
-
-        Map<Integer, Double> alluminioPrices20 = new HashMap<>();
-        alluminioPrices20.put(18, 35.40); alluminioPrices20.put(22, 36.60); alluminioPrices20.put(28, 37.20); alluminioPrices20.put(34, 38.40);
-        alluminioPrices20.put(40, 39.00); alluminioPrices20.put(48, 41.40); alluminioPrices20.put(60, 44.40); alluminioPrices20.put(76, 68.40);
-        alluminioPrices20.put(89, 76.80); alluminioPrices20.put(114, 86.40); alluminioPrices20.put(140, 92.60); alluminioPrices20.put(150, 93.00);
-        alluminioPrices.put(20, alluminioPrices20);
-
-        Map<Integer, Double> alluminioPrices30 = new HashMap<>();
-        alluminioPrices30.put(18, 40.00); alluminioPrices30.put(22, 41.00); alluminioPrices30.put(28, 43.20); alluminioPrices30.put(34, 45.60);
-        alluminioPrices30.put(40, 48.00); alluminioPrices30.put(48, 50.40); alluminioPrices30.put(60, 52.80); alluminioPrices30.put(76, 75.00);
-        alluminioPrices30.put(89, 84.00); alluminioPrices30.put(114, 96.00); alluminioPrices30.put(140, 102.00); alluminioPrices30.put(150, 106.00);
-        alluminioPrices.put(30, alluminioPrices30);
-
-        Map<Integer, Double> alluminioPrices40 = new HashMap<>();
-        alluminioPrices40.put(18, 45.60); alluminioPrices40.put(22, 47.40); alluminioPrices40.put(28, 50.40); alluminioPrices40.put(34, 52.80);
-        alluminioPrices40.put(40, 55.20); alluminioPrices40.put(48, 57.60); alluminioPrices40.put(60, 63.60); alluminioPrices40.put(76, 84.00);
-        alluminioPrices40.put(89, 93.60); alluminioPrices40.put(114, 108.00); alluminioPrices40.put(140, 117.00); alluminioPrices40.put(150, 120.00);
-        alluminioPrices.put(40, alluminioPrices40);
-
-        Map<Integer, Double> alluminioPrices50 = new HashMap<>();
-        alluminioPrices50.put(18, 50.40); alluminioPrices50.put(22, 52.20); alluminioPrices50.put(28, 55.20); alluminioPrices50.put(34, 57.60);
-        alluminioPrices50.put(40, 60.00); alluminioPrices50.put(48, 62.40); alluminioPrices50.put(60, 68.40); alluminioPrices50.put(76, 92.40);
-        alluminioPrices50.put(89, 102.00); alluminioPrices50.put(114, 117.00); alluminioPrices50.put(140, 128.00); alluminioPrices50.put(150, 133.00);
-        alluminioPrices.put(50, alluminioPrices50);
-
+        alluminioPrices.put(10, Map.of(18, 32.00, 22, 33.00, 28, 34.00, 34, 35.00, 40, 36.00, 48, 38.00, 60, 41.00, 76, 62.00, 89, 69.00, 114, 78.00, 140, 84.00, 150, 88.00));
+        alluminioPrices.put(20, Map.of(18, 32.00, 22, 33.00, 28, 34.00, 34, 35.00, 40, 36.00, 48, 38.00, 60, 41.00, 76, 62.00, 89, 69.00, 114, 78.00, 140, 84.00, 150, 88.00));
+        alluminioPrices.put(30, Map.of(18, 36.00, 22, 37.00, 28, 39.00, 34, 41.00, 40, 43.00, 48, 45.00, 60, 48.00, 76, 68.00, 89, 75.00, 114, 87.00, 140, 93.00, 150, 97.00));
+        alluminioPrices.put(40, Map.of(18, 41.00, 22, 43.00, 28, 45.50, 34, 47.50, 40, 50.00, 48, 52.00, 60, 57.00, 76, 76.00, 89, 85.00, 114, 98.00, 140, 106.00, 150, 109.00));
+        alluminioPrices.put(50, Map.of(18, 45.00, 22, 47.00, 28, 50.00, 34, 52.00, 40, 55.00, 48, 57.00, 60, 62.00, 76, 83.00, 89, 92.00, 114, 106.00, 140, 115.00, 150, 120.00));
         lanaPolinorData.put("Alluminio", alluminioPrices);
-        
-        // Inox
+
         Map<Integer, Map<Integer, Double>> inoxPrices = new HashMap<>();
-        Map<Integer, Double> inoxPrices10 = new HashMap<>();
-        inoxPrices10.put(18, 47.20); inoxPrices10.put(22, 47.60); inoxPrices10.put(28, 48.00); inoxPrices10.put(34, 49.60);
-        inoxPrices10.put(40, 52.00); inoxPrices10.put(48, 55.20); inoxPrices10.put(60, 58.40); inoxPrices10.put(76, 86.40);
-        inoxPrices10.put(89, 96.00); inoxPrices10.put(114, 108.00); inoxPrices10.put(140, 118.40); inoxPrices10.put(150, 123.00);
-        inoxPrices.put(10, inoxPrices10);
-
-        Map<Integer, Double> inoxPrices20 = new HashMap<>();
-        inoxPrices20.put(18, 47.20); inoxPrices20.put(22, 47.60); inoxPrices20.put(28, 48.00); inoxPrices20.put(34, 49.60);
-        inoxPrices20.put(40, 52.00); inoxPrices20.put(48, 55.20); inoxPrices20.put(60, 58.40); inoxPrices20.put(76, 86.40);
-        inoxPrices20.put(89, 96.00); inoxPrices20.put(114, 108.00); inoxPrices20.put(140, 118.40); inoxPrices20.put(150, 123.00);
-        inoxPrices.put(20, inoxPrices20);
-
-        Map<Integer, Double> inoxPrices30 = new HashMap<>();
-        inoxPrices30.put(18, 55.00); inoxPrices30.put(22, 57.00); inoxPrices30.put(28, 60.00); inoxPrices30.put(34, 62.00);
-        inoxPrices30.put(40, 65.00); inoxPrices30.put(48, 67.00); inoxPrices30.put(60, 73.00); inoxPrices30.put(76, 102.00);
-        inoxPrices30.put(89, 112.00); inoxPrices30.put(114, 126.00); inoxPrices30.put(140, 136.00); inoxPrices30.put(150, 142.00);
-        inoxPrices.put(30, inoxPrices30);
-        
-        Map<Integer, Double> inoxPrices40 = new HashMap<>();
-        inoxPrices40.put(18, 60.00); inoxPrices40.put(22, 62.00); inoxPrices40.put(28, 65.00); inoxPrices40.put(34, 69.00);
-        inoxPrices40.put(40, 74.00); inoxPrices40.put(48, 77.00); inoxPrices40.put(60, 84.00); inoxPrices40.put(76, 118.00);
-        inoxPrices40.put(89, 128.00); inoxPrices40.put(114, 144.00); inoxPrices40.put(140, 156.00); inoxPrices40.put(150, 164.00);
-        inoxPrices.put(40, inoxPrices40);
-        
-        Map<Integer, Double> inoxPrices50 = new HashMap<>();
-        inoxPrices50.put(18, 65.00); inoxPrices50.put(22, 68.00); inoxPrices50.put(28, 71.00); inoxPrices50.put(34, 76.00);
-        inoxPrices50.put(40, 80.00); inoxPrices50.put(48, 83.00); inoxPrices50.put(60, 92.00); inoxPrices50.put(76, 128.00);
-        inoxPrices50.put(89, 140.00); inoxPrices50.put(114, 158.00); inoxPrices50.put(140, 172.00); inoxPrices50.put(150, 180.00);
-        inoxPrices.put(50, inoxPrices50);
-
+        inoxPrices.put(10, Map.of(18, 42.00, 22, 43.00, 28, 44.00, 34, 45.00, 40, 47.00, 48, 50.00, 60, 53.00, 76, 78.00, 89, 86.00, 114, 98.00, 140, 108.00, 150, 112.00));
+        inoxPrices.put(20, Map.of(18, 42.00, 22, 43.00, 28, 44.00, 34, 45.00, 40, 47.00, 48, 50.00, 60, 53.00, 76, 78.00, 89, 86.00, 114, 98.00, 140, 108.00, 150, 112.00));
+        inoxPrices.put(30, Map.of(18, 49.00, 22, 51.00, 28, 54.00, 34, 56.00, 40, 59.00, 48, 61.00, 60, 66.00, 76, 92.00, 89, 101.00, 114, 114.00, 140, 124.00, 150, 130.00));
+        inoxPrices.put(40, Map.of(18, 54.00, 22, 56.00, 28, 59.00, 34, 62.00, 40, 67.00, 48, 70.00, 60, 76.00, 76, 107.00, 89, 116.00, 114, 130.00, 140, 142.00, 150, 149.00));
+        inoxPrices.put(50, Map.of(18, 59.00, 22, 62.00, 28, 65.00, 34, 69.00, 40, 73.00, 48, 76.00, 60, 83.00, 76, 117.00, 89, 128.00, 114, 145.00, 140, 159.00, 150, 167.00));
         lanaPolinorData.put("Inox", inoxPrices);
-
-
+        
         prices.put("Lana di roccia", lanaPolinorData);
         prices.put("Polinor", lanaPolinorData);
 
-
-        // Prezzi per la gomma
-        Map<String, Map<Integer, Map<Integer, Double>>> gommaPrices = new HashMap<>();
-
-        // Nudo
+        // Prezzi per Gomma
         Map<Integer, Map<Integer, Double>> gommaNudoPrices = new HashMap<>();
-        Map<Integer, Double> gommaNudoPrices6 = new HashMap<>();
-        gommaNudoPrices6.put(18, 12.60); gommaNudoPrices6.put(22, 13.80); gommaNudoPrices6.put(28, 14.40); gommaNudoPrices6.put(34, 15.60);
-        gommaNudoPrices6.put(40, 15.60); gommaNudoPrices6.put(48, 16.80); gommaNudoPrices6.put(60, 18.00); gommaNudoPrices6.put(76, 32.40);
-        gommaNudoPrices6.put(89, 39.00); gommaNudoPrices6.put(114, 45.60); gommaNudoPrices6.put(140, 49.20); gommaNudoPrices6.put(150, 53.40);
-        gommaNudoPrices.put(6, gommaNudoPrices6);
-
-        Map<Integer, Double> gommaNudoPrices9 = new HashMap<>();
-        gommaNudoPrices9.put(18, 16.20); gommaNudoPrices9.put(22, 18.50); gommaNudoPrices9.put(28, 19.20); gommaNudoPrices9.put(34, 20.40);
-        gommaNudoPrices9.put(40, 21.60); gommaNudoPrices9.put(48, 24.00); gommaNudoPrices9.put(60, 27.60); gommaNudoPrices9.put(76, 39.00);
-        gommaNudoPrices9.put(89, 46.20); gommaNudoPrices9.put(114, 53.40); gommaNudoPrices9.put(140, 62.20); gommaNudoPrices9.put(150, 63.00);
-        gommaNudoPrices.put(9, gommaNudoPrices9);
-
-        gommaPrices.put("Nudo", gommaNudoPrices);
+        gommaNudoPrices.put(6, Map.of(18, 11.20, 22, 12.00, 28, 12.80, 34, 13.50, 40, 14.20, 48, 15.00, 60, 15.80, 76, 28.50, 89, 34.00, 114, 38.50, 140, 42.00, 150, 46.00));
+        gommaNudoPrices.put(9, Map.of(18, 14.50, 22, 16.80, 28, 17.50, 34, 18.50, 40, 19.50, 48, 21.50, 60, 25.00, 76, 35.50, 89, 42.00, 114, 49.00, 140, 56.50, 150, 59.00));
+        gommaData.put("Nudo", gommaNudoPrices);
+        gommaData.put("senza_rivestimento", gommaNudoPrices);
         
-        prices.put("Gomma", gommaPrices);
+        prices.put("Gomma", gommaData);
+
+        // Prezzi per le curve
+        Map<Integer, Map<Integer, Double>> lanaPolinorCurve = new HashMap<>();
+        lanaPolinorCurve.put(10, Map.of(18, 18.00, 22, 19.50, 28, 20.00, 34, 21.50, 40, 23.00, 48, 24.50, 60, 25.50, 76, 40.00, 89, 46.00, 114, 55.00, 140, 62.00, 150, 68.00));
+        lanaPolinorCurve.put(20, Map.of(18, 20.00, 22, 22.00, 28, 23.50, 34, 25.00, 40, 27.00, 48, 29.00, 60, 32.00, 76, 45.00, 89, 52.00, 114, 60.00, 140, 68.00, 150, 74.00));
+        lanaPolinorCurve.put(30, Map.of(18, 24.00, 22, 25.50, 28, 27.00, 34, 28.50, 40, 30.00, 48, 32.00, 60, 36.00, 76, 49.00, 89, 56.00, 114, 65.00, 140, 72.00, 150, 78.00));
+        lanaPolinorCurve.put(40, Map.of(18, 26.00, 22, 27.50, 28, 29.00, 34, 30.50, 40, 33.00, 48, 35.00, 60, 39.00, 76, 52.00, 89, 59.00, 114, 68.00, 140, 77.00, 150, 82.00));
+        lanaPolinorCurve.put(50, Map.of(18, 28.00, 22, 29.50, 28, 31.00, 34, 33.00, 40, 35.00, 48, 37.00, 60, 41.00, 76, 55.00, 89, 63.00, 114, 72.00, 140, 80.00, 150, 86.00));
         
-        // Verifica se le chiavi esistono
+        curvePrices.put("Lana di roccia", lanaPolinorCurve);
+        curvePrices.put("Polinor", lanaPolinorCurve);
+        
+        Map<Integer, Map<Integer, Double>> gommaCurve = new HashMap<>();
+        gommaCurve.put(6, Map.of(18, 16.00, 22, 17.50, 28, 18.00, 34, 19.50, 40, 21.00, 48, 22.00, 60, 23.00, 76, 35.00, 89, 41.00, 114, 48.00, 140, 54.00, 150, 60.00));
+        gommaCurve.put(9, Map.of(18, 19.00, 22, 21.00, 28, 22.00, 34, 23.50, 40, 25.00, 48, 27.00, 60, 30.00, 76, 41.00, 89, 48.00, 114, 55.00, 140, 63.00, 150, 67.00));
+        
+        curvePrices.put("Gomma", gommaCurve);
+    }
+
+    public static double getPrice(String material, String type, int thickness, int diameter) {
         if (prices.containsKey(material) && prices.get(material).containsKey(type) &&
             prices.get(material).get(type).containsKey(thickness) &&
             prices.get(material).get(type).get(thickness).containsKey(diameter)) {
             
             return prices.get(material).get(type).get(thickness).get(diameter);
         }
+        return 0.0;
+    }
 
-        return 0.0; // Restituisce 0.0 se il prezzo non viene trovato
+    public static double getCurvePrice(String material, int thickness, int diameter) {
+        if (curvePrices.containsKey(material) && curvePrices.get(material).containsKey(thickness) &&
+            curvePrices.get(material).get(thickness).containsKey(diameter)) {
+
+            return curvePrices.get(material).get(thickness).get(diameter);
+        }
+        return 0.0;
     }
 }
 

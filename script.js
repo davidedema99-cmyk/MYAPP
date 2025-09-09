@@ -5,100 +5,134 @@ window.onload = function () {
     // Oggetto prices aggiornato con i nuovi dati del listino
     const prices = {
         'Lana di roccia': {
-            'Acciaio': {
-                '20': { 'tubo': 10.50, 'curva': 15.00 }, '25': { 'tubo': 11.00, 'curva': 16.00 },
-                '30': { 'tubo': 12.00, 'curva': 17.50 }, '40': { 'tubo': 14.00, 'curva': 20.00 },
-                '50': { 'tubo': 16.50, 'curva': 23.00 }, '60': { 'tubo': 18.00, 'curva': 25.00 }
-            },
-            'Alluminio': {
-                '20': { 'tubo': 9.50, 'curva': 13.00 }, '25': { 'tubo': 10.00, 'curva': 14.00 },
-                '30': { 'tubo': 11.00, 'curva': 15.50 }, '40': { 'tubo': 13.00, 'curva': 18.00 },
-                '50': { 'tubo': 15.50, 'curva': 21.00 }, '60': { 'tubo': 17.00, 'curva': 23.00 }
-            },
-            'PVC ALU': {
-                '20': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
-                '30': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
-                '50': { 'tubo': 14.50, 'curva': 20.00 }, '60': { 'tubo': 16.00, 'curva': 22.00 }
+            'Senza Rivestimento': {
+                '18': { 'tubo': 12.60, 'curva': 38.18 }, '22': { 'tubo': 13.20, 'curva': 40.00 },
+                '28': { 'tubo': 14.40, 'curva': 43.64 }, '34': { 'tubo': 15.60, 'curva': 44.57 },
+                '42': { 'tubo': 16.20, 'curva': 45.00 }, '48': { 'tubo': 16.80, 'curva': 42.16 },
+                '60': { 'tubo': 19.80, 'curva': 47.14 }, '76': { 'tubo': 27.36, 'curva': 55.84 },
+                '89': { 'tubo': 29.52, 'curva': 57.88 }, '114': { 'tubo': 37.73, 'curva': 63.95 },
+                '140': { 'tubo': 39.17, 'curva': 60.26 }, '168': { 'tubo': 43.92, 'curva': 53.56 },
+                '219': { 'tubo': 45.00, 'curva': 45.45 }, '273': { 'tubo': 49.56, 'curva': 42.72 },
+                '324': { 'tubo': 57.12, 'curva': 43.27 }
             },
             'PVC normale': {
-                '20': { 'tubo': 7.50, 'curva': 11.00 }, '25': { 'tubo': 8.00, 'curva': 12.00 },
-                '30': { 'tubo': 9.00, 'curva': 13.50 }, '40': { 'tubo': 11.00, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+                '18': { 'tubo': 16.20, 'curva': 49.09 }, '22': { 'tubo': 16.50, 'curva': 50.00 },
+                '28': { 'tubo': 17.10, 'curva': 51.82 }, '34': { 'tubo': 18.30, 'curva': 52.29 },
+                '42': { 'tubo': 19.50, 'curva': 54.17 }, '48': { 'tubo': 19.98, 'curva': 55.50 },
+                '60': { 'tubo': 25.80, 'curva': 61.43 }, '76': { 'tubo': 29.40, 'curva': 64.00 },
+                '89': { 'tubo': 32.64, 'curva': 64.00 }, '114': { 'tubo': 41.16, 'curva': 69.76 },
+                '140': { 'tubo': 42.24, 'curva': 64.98 }, '168': { 'tubo': 47.52, 'curva': 65.10 },
+                '219': { 'tubo': 53.76, 'curva': 65.56 }, '273': { 'tubo': 56.28, 'curva': 56.85 },
+                '324': { 'tubo': 63.00, 'curva': 53.45 }
             },
-            'Senza Rivestimento': {
-                '20': { 'tubo': 8.80, 'curva': 12.00 }, '25': { 'tubo': 9.20, 'curva': 12.50 },
-                '30': { 'tubo': 10.00, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 18.50 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+            'Alluminio': {
+                '18': { 'tubo': 34.20, 'curva': 103.64 }, '22': { 'tubo': 35.40, 'curva': 107.27 },
+                '28': { 'tubo': 36.00, 'curva': 109.09 }, '34': { 'tubo': 39.00, 'curva': 114.71 },
+                '42': { 'tubo': 41.70, 'curva': 115.83 }, '48': { 'tubo': 43.80, 'curva': 121.67 },
+                '60': { 'tubo': 55.20, 'curva': 131.43 }, '76': { 'tubo': 63.00, 'curva': 128.57 },
+                '89': { 'tubo': 68.16, 'curva': 133.65 }, '114': { 'tubo': 82.56, 'curva': 139.93 },
+                '140': { 'tubo': 84.96, 'curva': 130.71 }, '168': { 'tubo': 96.60, 'curva': 132.33 },
+                '219': { 'tubo': 109.80, 'curva': 133.90 }, '273': { 'tubo': 117.36, 'curva': 118.55 },
+                '324': { 'tubo': 144.96, 'curva': 109.82 }
+            },
+            'Inox': {
+                '18': { 'tubo': 45.60, 'curva': 138.18 }, '22': { 'tubo': 47.20, 'curva': 143.03 },
+                '28': { 'tubo': 48.00, 'curva': 145.45 }, '34': { 'tubo': 52.00, 'curva': 152.94 },
+                '42': { 'tubo': 55.60, 'curva': 154.44 }, '48': { 'tubo': 58.40, 'curva': 162.22 },
+                '60': { 'tubo': 73.60, 'curva': 175.24 }, '76': { 'tubo': 84.00, 'curva': 171.43 },
+                '89': { 'tubo': 90.88, 'curva': 178.20 }, '114': { 'tubo': 110.08, 'curva': 186.58 },
+                '140': { 'tubo': 113.28, 'curva': 174.28 }, '168': { 'tubo': 128.80, 'curva': 176.44 },
+                '219': { 'tubo': 146.40, 'curva': 178.54 }, '273': { 'tubo': 156.48, 'curva': 158.06 },
+                '324': { 'tubo': 193.28, 'curva': 146.42 }
             }
         },
         'Polinor': {
-            'Acciaio': {
-                '20': { 'tubo': 9.00, 'curva': 13.00 }, '25': { 'tubo': 9.50, 'curva': 14.00 },
-                '30': { 'tubo': 10.50, 'curva': 15.50 }, '40': { 'tubo': 12.50, 'curva': 18.00 },
-                '50': { 'tubo': 14.50, 'curva': 21.00 }, '60': { 'tubo': 16.00, 'curva': 23.00 }
-            },
-            'Alluminio': {
-                '20': { 'tubo': 8.00, 'curva': 11.00 }, '25': { 'tubo': 8.50, 'curva': 12.00 },
-                '30': { 'tubo': 9.50, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
-            },
-            'PVC ALU': {
-                '20': { 'tubo': 7.00, 'curva': 10.00 }, '25': { 'tubo': 7.50, 'curva': 11.00 },
-                '30': { 'tubo': 8.50, 'curva': 12.50 }, '40': { 'tubo': 10.50, 'curva': 15.00 },
-                '50': { 'tubo': 12.50, 'curva': 18.00 }, '60': { 'tubo': 14.00, 'curva': 20.00 }
+             'Senza Rivestimento': {
+                '18': { 'tubo': 12.60, 'curva': 38.18 }, '22': { 'tubo': 13.20, 'curva': 40.00 },
+                '28': { 'tubo': 14.40, 'curva': 43.64 }, '34': { 'tubo': 15.60, 'curva': 44.57 },
+                '42': { 'tubo': 16.20, 'curva': 45.00 }, '48': { 'tubo': 16.80, 'curva': 42.16 },
+                '60': { 'tubo': 19.80, 'curva': 47.14 }, '76': { 'tubo': 27.36, 'curva': 55.84 },
+                '89': { 'tubo': 29.52, 'curva': 57.88 }
             },
             'PVC normale': {
-                '20': { 'tubo': 6.00, 'curva': 9.00 }, '25': { 'tubo': 6.50, 'curva': 10.00 },
-                '30': { 'tubo': 7.50, 'curva': 11.50 }, '40': { 'tubo': 9.50, 'curva': 14.00 },
-                '50': { 'tubo': 11.50, 'curva': 17.00 }, '60': { 'tubo': 13.00, 'curva': 19.00 }
+                '18': { 'tubo': 16.20, 'curva': 49.09 }, '22': { 'tubo': 16.50, 'curva': 50.00 },
+                '28': { 'tubo': 17.10, 'curva': 51.82 }, '34': { 'tubo': 18.30, 'curva': 52.29 },
+                '42': { 'tubo': 19.50, 'curva': 54.17 }, '48': { 'tubo': 19.98, 'curva': 55.50 },
+                '60': { 'tubo': 25.80, 'curva': 61.43 }, '76': { 'tubo': 29.40, 'curva': 64.00 },
+                '89': { 'tubo': 32.64, 'curva': 64.00 }
             },
-            'Senza Rivestimento': {
-                '20': { 'tubo': 8.80, 'curva': 12.00 }, '25': { 'tubo': 9.20, 'curva': 12.50 },
-                '30': { 'tubo': 10.00, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 18.50 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
+            'Alluminio': {
+                '18': { 'tubo': 34.20, 'curva': 103.64 }, '22': { 'tubo': 35.40, 'curva': 107.27 },
+                '28': { 'tubo': 36.00, 'curva': 109.09 }, '34': { 'tubo': 39.00, 'curva': 114.71 },
+                '42': { 'tubo': 41.70, 'curva': 115.83 }, '48': { 'tubo': 43.80, 'curva': 121.67 },
+                '60': { 'tubo': 55.20, 'curva': 131.43 }, '76': { 'tubo': 63.00, 'curva': 128.57 },
+                '89': { 'tubo': 68.16, 'curva': 133.65 }
+            },
+            'Inox': {
+                '18': { 'tubo': 45.60, 'curva': 138.18 }, '22': { 'tubo': 47.20, 'curva': 143.03 },
+                '28': { 'tubo': 48.00, 'curva': 145.45 }, '34': { 'tubo': 52.00, 'curva': 152.94 },
+                '42': { 'tubo': 55.60, 'curva': 154.44 }, '48': { 'tubo': 58.40, 'curva': 162.22 },
+                '60': { 'tubo': 73.60, 'curva': 175.24 }, '76': { 'tubo': 84.00, 'curva': 171.43 },
+                '89': { 'tubo': 90.88, 'curva': 178.20 }
             }
         },
         'Gomma': {
-            'Acciaio': {
-                '19': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
-                '32': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
-                '50': { 'tubo': 14.00, 'curva': 20.00 }
-            },
-            'Alluminio': {
-                '19': { 'tubo': 7.50, 'curva': 10.00 }, '25': { 'tubo': 8.00, 'curva': 11.00 },
-                '32': { 'tubo': 9.00, 'curva': 12.50 }, '40': { 'tubo': 11.00, 'curva': 15.00 },
-                '50': { 'tubo': 13.00, 'curva': 18.00 }
-            },
-            'PVC ALU': {
-                '19': { 'tubo': 6.50, 'curva': 9.00 }, '25': { 'tubo': 7.00, 'curva': 10.00 },
-                '32': { 'tubo': 8.00, 'curva': 11.50 }, '40': { 'tubo': 10.00, 'curva': 14.00 },
-                '50': { 'tubo': 12.00, 'curva': 17.00 }
+             'Senza Rivestimento': {
+                '18': { 'tubo': 16.80, 'curva': 50.91 }, '19': { 'tubo': 16.80, 'curva': 50.91 },
+                '22': { 'tubo': 20.40, 'curva': 61.82 }, '25': { 'tubo': 21.60, 'curva': 65.45 },
+                '28': { 'tubo': 19.20, 'curva': 56.47 }, '32': { 'tubo': 21.60, 'curva': 63.53 },
+                '34': { 'tubo': 24.60, 'curva': 70.29 }, '42': { 'tubo': 28.20, 'curva': 80.57 },
+                '48': { 'tubo': 23.40, 'curva': 67.40 }, '60': { 'tubo': 30.00, 'curva': 81.08 },
+                '76': { 'tubo': 31.80, 'curva': 75.71 }, '89': { 'tubo': 35.40, 'curva': 72.24 },
+                '114': { 'tubo': 39.00, 'curva': 76.47 }, '140': { 'tubo': 46.20, 'curva': 63.29 },
+                '168': { 'tubo': 53.40, 'curva': 65.12 }, '168/25': { 'tubo': 54.60, 'curva': 66.59 }
             },
             'PVC normale': {
-                '19': { 'tubo': 5.50, 'curva': 8.00 }, '25': { 'tubo': 6.00, 'curva': 9.00 },
-                '32': { 'tubo': 7.00, 'curva': 10.50 }, '40': { 'tubo': 9.00, 'curva': 13.00 },
-                '50': { 'tubo': 11.00, 'curva': 16.00 }
+                '18': { 'tubo': 21.00, 'curva': 63.64 }, '19': { 'tubo': 21.00, 'curva': 63.64 },
+                '22': { 'tubo': 24.60, 'curva': 74.55 }, '25': { 'tubo': 28.80, 'curva': 87.27 },
+                '28': { 'tubo': 22.80, 'curva': 67.06 }, '32': { 'tubo': 25.80, 'curva': 75.88 },
+                '34': { 'tubo': 31.20, 'curva': 91.76 }, '42': { 'tubo': 29.40, 'curva': 84.00 },
+                '48': { 'tubo': 27.60, 'curva': 74.59 }, '60': { 'tubo': 31.80, 'curva': 85.95 },
+                '76': { 'tubo': 34.80, 'curva': 96.67 }, '89': { 'tubo': 39.00, 'curva': 79.59 },
+                '114': { 'tubo': 46.40, 'curva': 98.82 }, '140': { 'tubo': 54.00, 'curva': 73.97 },
+                '168': { 'tubo': 63.00, 'curva': 76.83 }, '168/25': { 'tubo': 66.00, 'curva': 80.49 }
             },
-            'Senza Rivestimento': {
-                '19': { 'tubo': 7.00, 'curva': 11.00 }, '25': { 'tubo': 7.50, 'curva': 12.00 },
-                '32': { 'tubo': 8.50, 'curva': 13.50 }, '40': { 'tubo': 10.50, 'curva': 16.00 },
-                '50': { 'tubo': 12.50, 'curva': 19.00 }
+            'Alluminio': {
+                '18': { 'tubo': 37.20, 'curva': 112.73 }, '19': { 'tubo': 37.20, 'curva': 112.73 },
+                '22': { 'tubo': 40.20, 'curva': 121.82 }, '25': { 'tubo': 45.60, 'curva': 138.18 },
+                '28': { 'tubo': 37.80, 'curva': 111.18 }, '32': { 'tubo': 41.40, 'curva': 121.76 },
+                '34': { 'tubo': 46.20, 'curva': 135.88 }, '42': { 'tubo': 44.40, 'curva': 126.86 },
+                '48': { 'tubo': 40.80, 'curva': 113.33 }, '60': { 'tubo': 44.40, 'curva': 123.33 },
+                '76': { 'tubo': 51.60, 'curva': 105.31 }, '89': { 'tubo': 58.80, 'curva': 120.00 },
+                '114': { 'tubo': 69.60, 'curva': 142.35 }, '140': { 'tubo': 81.60, 'curva': 111.52 },
+                '168': { 'tubo': 93.00, 'curva': 113.41 }, '168/25': { 'tubo': 96.00, 'curva': 123.66 }
+            },
+            'Inox': {
+                '18': { 'tubo': 49.60, 'curva': 150.30 }, '19': { 'tubo': 49.60, 'curva': 150.30 },
+                '22': { 'tubo': 53.60, 'curva': 162.42 }, '25': { 'tubo': 60.80, 'curva': 184.24 },
+                '28': { 'tubo': 50.40, 'curva': 148.24 }, '32': { 'tubo': 55.20, 'curva': 162.35 },
+                '34': { 'tubo': 61.60, 'curva': 181.18 }, '42': { 'tubo': 57.60, 'curva': 164.57 },
+                '48': { 'tubo': 69.60, 'curva': 198.86 }, '60': { 'tubo': 74.40, 'curva': 214.35 },
+                '76': { 'tubo': 72.00, 'curva': 200.00 }, '89': { 'tubo': 78.40, 'curva': 160.00 },
+                '114': { 'tubo': 92.80, 'curva': 189.80 }, '140': { 'tubo': 108.80, 'curva': 213.33 },
+                '168': { 'tubo': 124.00, 'curva': 151.22 }, '168/25': { 'tubo': 128.00, 'curva': 156.10 }
             }
         }
     };
 
+    // Diametri e spessori in base al materiale
     const diameters = {
-        'Lana di roccia': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89, 108, 114, 133, 140, 168, 219],
-        'Polinor': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89],
-        'Gomma': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89]
+        'Lana di roccia': [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168, 219, 273, 324],
+        'Polinor': [18, 22, 28, 34, 42, 48, 60, 76, 89],
+        'Gomma': [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76, 89, 114, 140, 168, '168/25']
     };
 
     const thicknesses = {
         'Lana di roccia': [20, 25, 30, 40, 50, 60],
         'Polinor': [20, 25, 30, 40, 50, 60],
-        'Gomma': [19, 25, 32, 40, 50]
+        'Gomma': [18, 19, 22, 25, 28, 32, 34, 42, 48, 60, 76]
     };
-    
+
     // Riferimenti agli elementi DOM
     const materialSelect = document.getElementById('material-type');
     const coatingSelect = document.getElementById('coating-type');
@@ -137,7 +171,6 @@ window.onload = function () {
     // Funzione per aggiornare le opzioni dei menu a tendina
     function updateOptions() {
         const selectedMaterial = materialSelect.value;
-        const selectedCoating = coatingSelect.value;
         
         diameterSelect.innerHTML = '';
         if (diameters[selectedMaterial]) {

@@ -1,103 +1,72 @@
-document.addEventListener('DOMContentLoaded', function () {
+window.onload = function () {
     const quoteItems = [];
     let uploadedImage = null;
-
+    
+    // I prezzi e i dati sono stati spostati all'interno della funzione per garantire il corretto scope
     const prices = {
         'Lana di roccia': {
             'Acciaio': {
-                '20': { 'tubo': 10.50, 'curva': 15.00 },
-                '25': { 'tubo': 11.00, 'curva': 16.00 },
-                '30': { 'tubo': 12.00, 'curva': 17.50 },
-                '40': { 'tubo': 14.00, 'curva': 20.00 },
-                '50': { 'tubo': 16.50, 'curva': 23.00 },
-                '60': { 'tubo': 18.00, 'curva': 25.00 }
+                '20': { 'tubo': 10.50, 'curva': 15.00 }, '25': { 'tubo': 11.00, 'curva': 16.00 },
+                '30': { 'tubo': 12.00, 'curva': 17.50 }, '40': { 'tubo': 14.00, 'curva': 20.00 },
+                '50': { 'tubo': 16.50, 'curva': 23.00 }, '60': { 'tubo': 18.00, 'curva': 25.00 }
             },
             'Alluminio': {
-                '20': { 'tubo': 9.50, 'curva': 13.00 },
-                '25': { 'tubo': 10.00, 'curva': 14.00 },
-                '30': { 'tubo': 11.00, 'curva': 15.50 },
-                '40': { 'tubo': 13.00, 'curva': 18.00 },
-                '50': { 'tubo': 15.50, 'curva': 21.00 },
-                '60': { 'tubo': 17.00, 'curva': 23.00 }
+                '20': { 'tubo': 9.50, 'curva': 13.00 }, '25': { 'tubo': 10.00, 'curva': 14.00 },
+                '30': { 'tubo': 11.00, 'curva': 15.50 }, '40': { 'tubo': 13.00, 'curva': 18.00 },
+                '50': { 'tubo': 15.50, 'curva': 21.00 }, '60': { 'tubo': 17.00, 'curva': 23.00 }
             },
             'PVC ALU': {
-                '20': { 'tubo': 8.50, 'curva': 12.00 },
-                '25': { 'tubo': 9.00, 'curva': 13.00 },
-                '30': { 'tubo': 10.00, 'curva': 14.50 },
-                '40': { 'tubo': 12.00, 'curva': 17.00 },
-                '50': { 'tubo': 14.50, 'curva': 20.00 },
-                '60': { 'tubo': 16.00, 'curva': 22.00 }
+                '20': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
+                '30': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
+                '50': { 'tubo': 14.50, 'curva': 20.00 }, '60': { 'tubo': 16.00, 'curva': 22.00 }
             },
             'PVC normale': {
-                '20': { 'tubo': 7.50, 'curva': 11.00 },
-                '25': { 'tubo': 8.00, 'curva': 12.00 },
-                '30': { 'tubo': 9.00, 'curva': 13.50 },
-                '40': { 'tubo': 11.00, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 19.00 },
-                '60': { 'tubo': 15.00, 'curva': 21.00 }
+                '20': { 'tubo': 7.50, 'curva': 11.00 }, '25': { 'tubo': 8.00, 'curva': 12.00 },
+                '30': { 'tubo': 9.00, 'curva': 13.50 }, '40': { 'tubo': 11.00, 'curva': 16.00 },
+                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
             }
         },
         'Polinor': {
             'Acciaio': {
-                '20': { 'tubo': 9.00, 'curva': 13.00 },
-                '25': { 'tubo': 9.50, 'curva': 14.00 },
-                '30': { 'tubo': 10.50, 'curva': 15.50 },
-                '40': { 'tubo': 12.50, 'curva': 18.00 },
-                '50': { 'tubo': 14.50, 'curva': 21.00 },
-                '60': { 'tubo': 16.00, 'curva': 23.00 }
+                '20': { 'tubo': 9.00, 'curva': 13.00 }, '25': { 'tubo': 9.50, 'curva': 14.00 },
+                '30': { 'tubo': 10.50, 'curva': 15.50 }, '40': { 'tubo': 12.50, 'curva': 18.00 },
+                '50': { 'tubo': 14.50, 'curva': 21.00 }, '60': { 'tubo': 16.00, 'curva': 23.00 }
             },
             'Alluminio': {
-                '20': { 'tubo': 8.00, 'curva': 11.00 },
-                '25': { 'tubo': 8.50, 'curva': 12.00 },
-                '30': { 'tubo': 9.50, 'curva': 13.50 },
-                '40': { 'tubo': 11.50, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 19.00 },
-                '60': { 'tubo': 15.00, 'curva': 21.00 }
+                '20': { 'tubo': 8.00, 'curva': 11.00 }, '25': { 'tubo': 8.50, 'curva': 12.00 },
+                '30': { 'tubo': 9.50, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
+                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
             },
             'PVC ALU': {
-                '20': { 'tubo': 7.00, 'curva': 10.00 },
-                '25': { 'tubo': 7.50, 'curva': 11.00 },
-                '30': { 'tubo': 8.50, 'curva': 12.50 },
-                '40': { 'tubo': 10.50, 'curva': 15.00 },
-                '50': { 'tubo': 12.50, 'curva': 18.00 },
-                '60': { 'tubo': 14.00, 'curva': 20.00 }
+                '20': { 'tubo': 7.00, 'curva': 10.00 }, '25': { 'tubo': 7.50, 'curva': 11.00 },
+                '30': { 'tubo': 8.50, 'curva': 12.50 }, '40': { 'tubo': 10.50, 'curva': 15.00 },
+                '50': { 'tubo': 12.50, 'curva': 18.00 }, '60': { 'tubo': 14.00, 'curva': 20.00 }
             },
             'PVC normale': {
-                '20': { 'tubo': 6.00, 'curva': 9.00 },
-                '25': { 'tubo': 6.50, 'curva': 10.00 },
-                '30': { 'tubo': 7.50, 'curva': 11.50 },
-                '40': { 'tubo': 9.50, 'curva': 14.00 },
-                '50': { 'tubo': 11.50, 'curva': 17.00 },
-                '60': { 'tubo': 13.00, 'curva': 19.00 }
+                '20': { 'tubo': 6.00, 'curva': 9.00 }, '25': { 'tubo': 6.50, 'curva': 10.00 },
+                '30': { 'tubo': 7.50, 'curva': 11.50 }, '40': { 'tubo': 9.50, 'curva': 14.00 },
+                '50': { 'tubo': 11.50, 'curva': 17.00 }, '60': { 'tubo': 13.00, 'curva': 19.00 }
             }
         },
         'Gomma': {
             'Acciaio': {
-                '19': { 'tubo': 8.50, 'curva': 12.00 },
-                '25': { 'tubo': 9.00, 'curva': 13.00 },
-                '32': { 'tubo': 10.00, 'curva': 14.50 },
-                '40': { 'tubo': 12.00, 'curva': 17.00 },
+                '19': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
+                '32': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
                 '50': { 'tubo': 14.00, 'curva': 20.00 }
             },
             'Alluminio': {
-                '19': { 'tubo': 7.50, 'curva': 10.00 },
-                '25': { 'tubo': 8.00, 'curva': 11.00 },
-                '32': { 'tubo': 9.00, 'curva': 12.50 },
-                '40': { 'tubo': 11.00, 'curva': 15.00 },
+                '19': { 'tubo': 7.50, 'curva': 10.00 }, '25': { 'tubo': 8.00, 'curva': 11.00 },
+                '32': { 'tubo': 9.00, 'curva': 12.50 }, '40': { 'tubo': 11.00, 'curva': 15.00 },
                 '50': { 'tubo': 13.00, 'curva': 18.00 }
             },
-             'PVC ALU': {
-                '19': { 'tubo': 6.50, 'curva': 9.00 },
-                '25': { 'tubo': 7.00, 'curva': 10.00 },
-                '32': { 'tubo': 8.00, 'curva': 11.50 },
-                '40': { 'tubo': 10.00, 'curva': 14.00 },
+            'PVC ALU': {
+                '19': { 'tubo': 6.50, 'curva': 9.00 }, '25': { 'tubo': 7.00, 'curva': 10.00 },
+                '32': { 'tubo': 8.00, 'curva': 11.50 }, '40': { 'tubo': 10.00, 'curva': 14.00 },
                 '50': { 'tubo': 12.00, 'curva': 17.00 }
             },
             'PVC normale': {
-                '19': { 'tubo': 5.50, 'curva': 8.00 },
-                '25': { 'tubo': 6.00, 'curva': 9.00 },
-                '32': { 'tubo': 7.00, 'curva': 10.50 },
-                '40': { 'tubo': 9.00, 'curva': 13.00 },
+                '19': { 'tubo': 5.50, 'curva': 8.00 }, '25': { 'tubo': 6.00, 'curva': 9.00 },
+                '32': { 'tubo': 7.00, 'curva': 10.50 }, '40': { 'tubo': 9.00, 'curva': 13.00 },
                 '50': { 'tubo': 11.00, 'curva': 16.00 }
             }
         }
@@ -114,8 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
         'Polinor': [20, 25, 30, 40, 50, 60],
         'Gomma': [19, 25, 32, 40, 50]
     };
-
+    
+    // Riferimenti agli elementi DOM
     const materialSelect = document.getElementById('material-type');
+    const coatingSelect = document.getElementById('coating-type');
     const diameterSelect = document.getElementById('diameter');
     const thicknessSelect = document.getElementById('thickness');
     const addItemBtn = document.getElementById('add-item-btn');
@@ -133,29 +104,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     const cantiereInput = document.getElementById('cantiere');
     const logoImg = document.getElementById('logo-img');
-    
+    const uploadBtn = document.getElementById('upload-btn');
+    const imageUpload = document.getElementById('image-upload');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+
     let logoBase64 = logoImg.src;
 
-    function updateOptions() {
-        const selectedMaterial = materialSelect.value;
-        
-        diameterSelect.innerHTML = '';
-        diameters[selectedMaterial].forEach(d => {
-            const option = document.createElement('option');
-            option.value = d;
-            option.textContent = d;
-            diameterSelect.appendChild(option);
-        });
-
-        thicknessSelect.innerHTML = '';
-        thicknesses[selectedMaterial].forEach(t => {
-            const option = document.createElement('option');
-            option.value = t;
-            option.textContent = t;
-            thicknessSelect.appendChild(option);
-        });
-    }
-
+    // Funzione per mostrare le notifiche
     function showNotification(message, isError = false) {
         notificationBox.textContent = message;
         notificationBox.className = 'show fixed top-5 right-5 p-4 rounded-lg shadow-lg text-white';
@@ -165,6 +120,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 3000);
     }
     
+    // Funzione per aggiornare le opzioni dei menu a tendina
+    function updateOptions() {
+        const selectedMaterial = materialSelect.value;
+        const selectedCoating = coatingSelect.value;
+        
+        diameterSelect.innerHTML = '';
+        if (diameters[selectedMaterial]) {
+            diameters[selectedMaterial].forEach(d => {
+                const option = document.createElement('option');
+                option.value = d;
+                option.textContent = d;
+                diameterSelect.appendChild(option);
+            });
+        }
+        
+        thicknessSelect.innerHTML = '';
+        if (thicknesses[selectedMaterial]) {
+            thicknesses[selectedMaterial].forEach(t => {
+                const option = document.createElement('option');
+                option.value = t;
+                option.textContent = t;
+                thicknessSelect.appendChild(option);
+            });
+        }
+    }
+
+    // Funzione per renderizzare il riepilogo del preventivo
     function renderQuote() {
         quoteSummary.innerHTML = '';
         let total = 0;
@@ -231,12 +213,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Gestione degli eventi
     materialSelect.addEventListener('change', updateOptions);
     discountInput.addEventListener('input', renderQuote);
-
+    
     addItemBtn.addEventListener('click', () => {
         const material = materialSelect.value;
-        const coating = document.getElementById('coating-type').value;
+        const coating = coatingSelect.value;
         const diameter = diameterSelect.value;
         const thickness = thicknessSelect.value;
         const length = parseFloat(document.getElementById('length').value) || 0;
@@ -277,7 +260,110 @@ document.addEventListener('DOMContentLoaded', function () {
         tabPreventivo.classList.remove('active');
         chatHistory.scrollTop = chatHistory.scrollHeight;
     });
+
+    // Funzione per mostrare un messaggio di chat
+    function showChatMessage(message, sender) {
+        const messageEl = document.createElement('div');
+        messageEl.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+        messageEl.innerHTML = `<div class="chat-message p-3 rounded-xl shadow-md ${sender === 'user' ? 'user-message' : 'bot-message'}">${message}</div>`;
+        chatHistory.appendChild(messageEl);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // Logica per l'invio del messaggio e la gestione della risposta
+    sendBtn.addEventListener('click', async () => {
+        const userMessage = chatInput.value.trim();
+        if (userMessage === '' && !uploadedImage) return;
+
+        showChatMessage(userMessage, 'user');
+        chatInput.value = '';
+        imagePreviewContainer.innerHTML = '';
+        
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        { text: userMessage }
+                    ]
+                }
+            ],
+            tools: [{ "google_search": {} }],
+            systemInstruction: {
+                parts: [{ text: "Act as a specialized AI for ISOLDEM SRLS, a company in the thermohydraulic insulation sector. Provide helpful and concise answers related to insulation, materials, and project timelines. Respond in Italian. Keep the tone professional but friendly and helpful." }]
+            },
+        };
+
+        if (uploadedImage) {
+            payload.contents[0].parts.push({
+                inlineData: {
+                    mimeType: "image/jpeg",
+                    data: uploadedImage
+                }
+            });
+            uploadedImage = null;
+        }
+        
+        const loadingMessageEl = document.createElement('div');
+        loadingMessageEl.className = 'flex justify-start';
+        loadingMessageEl.innerHTML = `<div class="chat-message bot p-3 rounded-xl shadow-md bot-message">...</div>`;
+        chatHistory.appendChild(loadingMessageEl);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            const botResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            loadingMessageEl.remove();
+            if (botResponseText) {
+                showChatMessage(botResponseText, 'bot');
+            } else {
+                showChatMessage("Mi dispiace, non sono riuscito a generare una risposta. Riprova più tardi.", 'bot');
+            }
+
+        } catch (error) {
+            console.error('API Error:', error);
+            loadingMessageEl.remove();
+            showChatMessage("Si è verificato un errore di comunicazione. Riprova più tardi.", 'bot');
+        }
+    });
+
+    chatInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+
+    // Gestione dell'upload immagine
+    uploadBtn.addEventListener('click', () => imageUpload.click());
     
+    imageUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64Image = e.target.result.split(',')[1];
+            uploadedImage = base64Image;
+            
+            const imgPreview = document.createElement('img');
+            imgPreview.src = e.target.result;
+            imgPreview.className = 'w-24 h-24 rounded-lg object-cover mr-2';
+            imagePreviewContainer.innerHTML = '';
+            imagePreviewContainer.appendChild(imgPreview);
+        };
+        reader.readAsDataURL(file);
+    });
+
     downloadPdfBtn.addEventListener('click', () => {
         if (quoteItems.length === 0) {
             showNotification("Aggiungi almeno un articolo al preventivo prima di scaricare.", true);
@@ -363,6 +449,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Inizializza i menu a tendina con i valori corretti
     updateOptions();
-});
-
+};

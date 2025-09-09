@@ -3,470 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolo Preventivo Isolamento</title>
+    <title>Preventivi ISOLDEM SRLS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
+            color: #1f2937;
         }
-        .container {
-            max-width: 800px;
+        .container { max-width: 800px; margin: 2rem auto; }
+        .form-input, .form-select {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem;
+            border: 1px solid #d1d5db; background-color: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
         }
-        .form-section {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 24px;
+        .form-input:focus, .form-select:focus {
+            border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
-        .result-section {
-            background-color: #d1fae5;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 24px;
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        .btn-primary { background-color: #4f46e5; color: white; }
+        .btn-primary:hover { background-color: #4338ca; }
+        .btn-secondary { background-color: #10b981; color: white; }
+        .btn-secondary:hover { background-color: #059669; }
+        .btn-danger { background-color: #ef4444; color: white; padding: 0.5rem; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .nav-btn { background-color: #e5e7eb; color: #4b5563; }
+        .nav-btn.active { background-color: #4f46e5; color: white; }
+        #notification-box {
+            position: fixed; top: 20px; right: 20px; background-color: #dc2626; color: white;
+            padding: 1rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000; opacity: 0; transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
         }
-        .input-group select, .input-group input {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 10px;
-            width: 100%;
-        }
-        .button {
-            transition: background-color 0.3s, transform 0.1s;
-        }
-        .button:hover {
-            transform: translateY(-2px);
-        }
-        .button:active {
-            transform: translateY(0);
-        }
+        #notification-box.show { opacity: 1; }
+        .chat-container { height: calc(100vh - 220px); }
+        .chat-message { max-width: 80%; width: fit-content; }
+        .user-message { background-color: #dbeafe; color: #1e40af; align-self: flex-end; }
+        .bot-message { background-color: #e5e7eb; color: #374151; align-self: flex-start; }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100">
 
-    <div class="container mx-auto space-y-8">
-        <div class="form-section">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Calcolo Preventivo Isolamento</h1>
+    <div id="notification-box"></div>
 
-            <div class="space-y-4">
-                <div class="input-group">
-                    <label for="materiale" class="block text-gray-700 font-medium mb-1">Materiale:</label>
-                    <select id="materiale" class="focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="updateOptions()">
-                        <option value="lana_di_roccia">Lana di roccia</option>
-                        <option value="polinor">Polinor</option>
-                        <option value="gomma">Gomma</option>
-                    </select>
-                </div>
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-2xl shadow-lg">
 
-                <div class="input-group">
-                    <label for="tipo" class="block text-gray-700 font-medium mb-1">Tipo:</label>
-                    <select id="tipo" class="focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="updateSpessoreAndDiametro()">
-                         <!-- Opzioni generate da JavaScript -->
-                    </select>
-                </div>
+        <!-- Header -->
+        <div class="flex items-center justify-center mb-6 pb-4 border-b border-gray-200">
+            <h1 class="text-3xl font-bold ml-4">ISOLDEM SRLS</h1>
+        </div>
 
-                <div class="input-group">
-                    <label for="spessore" class="block text-gray-700 font-medium mb-1">Spessore (mm):</label>
-                    <select id="spessore" class="focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="updateDiametro()">
-                        <!-- Opzioni generate da JavaScript -->
-                    </select>
-                </div>
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <button id="tab-preventivo" class="nav-btn active flex-1 text-center py-3 px-4 text-sm font-medium">Preventivatore</button>
+            <button id="tab-chat" class="nav-btn flex-1 text-center py-3 px-4 text-sm font-medium">Chat IA</button>
+        </div>
 
-                <div class="input-group">
-                    <label for="diametro" class="block text-gray-700 font-medium mb-1">Diametro (mm):</label>
-                    <select id="diametro" class="focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <!-- Opzioni generate da JavaScript -->
-                    </select>
-                </div>
+        <div id="content">
+            <!-- Preventivo Section (Visible by default) -->
+            <div id="preventivo-section">
+                <div class="space-y-6">
+                    <div>
+                        <label for="cantiere" class="block text-sm font-medium text-gray-700 mb-1">Nome del cantiere</label>
+                        <input type="text" id="cantiere" class="form-input" placeholder="Es. Cantiere Via Roma">
+                    </div>
+                    <!-- Sezione per l'aggiunta di articoli -->
+                    <div class="p-6 border border-gray-200 rounded-lg">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-800">Aggiungi Articolo</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="material-type" class="block text-sm font-medium text-gray-700 mb-1">Tipo di materiale</label>
+                                <select id="material-type" class="form-select">
+                                    <option>Lana di roccia</option>
+                                    <option>Polinor</option>
+                                    <option>Gomma</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="coating-type" class="block text-sm font-medium text-gray-700 mb-1">Tipo di rivestimento</label>
+                                <select id="coating-type" class="form-select">
+                                    <option>Acciaio</option>
+                                    <option>Alluminio</option>
+                                    <option>PVC ALU</option>
+                                    <option>PVC normale</option>
+                                    <option>Senza Rivestimento</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="diameter" class="block text-sm font-medium text-gray-700 mb-1">Diametro (mm)</label>
+                                <select id="diameter" class="form-select"></select>
+                            </div>
+                            <div>
+                                <label for="thickness" class="block text-sm font-medium text-gray-700 mb-1">Spessore (mm)</label>
+                                <select id="thickness" class="form-select"></select>
+                            </div>
+                            <div>
+                                <label for="length" class="block text-sm font-medium text-gray-700 mb-1">Lunghezza Tubi (ML)</label>
+                                <input type="number" id="length" class="form-input" placeholder="0" min="0">
+                            </div>
+                            <div>
+                                <label for="curves" class="block text-sm font-medium text-gray-700 mb-1">Numero Curve (PZ)</label>
+                                <input type="number" id="curves" class="form-input" placeholder="0" min="0">
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <button id="add-item-btn" class="btn btn-secondary w-full">Aggiungi al Preventivo</button>
+                        </div>
+                    </div>
 
-                <div class="input-group">
-                    <label for="quantitaTubi" class="block text-gray-700 font-medium mb-1">Quantità tubi (metri):</label>
-                    <input type="number" id="quantitaTubi" class="focus:outline-none focus:ring-2 focus:ring-blue-500" value="1" min="0">
-                </div>
-
-                <div class="input-group">
-                    <label for="quantitaCurve" class="block text-gray-700 font-medium mb-1">Quantità curve:</label>
-                    <input type="number" id="quantitaCurve" class="focus:outline-none focus:ring-2 focus:ring-blue-500" value="0" min="0">
+                    <!-- Riepilogo Preventivo -->
+                    <div>
+                        <h2 class="text-xl font-semibold mb-4 text-gray-800">Riepilogo Preventivo</h2>
+                        <div id="quote-summary" class="space-y-4">
+                            <!-- Items will be added here -->
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <div class="flex justify-end items-center space-x-4 mb-4">
+                                <label for="discount" class="text-gray-600 font-medium">Sconto (%):</label>
+                                <input type="number" id="discount" class="form-input w-24 text-right" placeholder="0" min="0" max="100">
+                            </div>
+                            <div class="flex justify-end items-center text-2xl font-bold">
+                                <span>Totale:</span>
+                                <span id="total-cost" class="ml-4">€0.00</span>
+                            </div>
+                             <div class="mt-6 text-right">
+                                <button id="download-pdf-btn" class="btn btn-primary">Scarica PDF</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <button onclick="calculatePrice()" class="button mt-6 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700">
-                Calcola Prezzo
-            </button>
+            <!-- Chat IA Section (Initially hidden) -->
+            <div id="chat-section" class="hidden">
+                 <div class="flex flex-col h-full bg-white rounded-lg shadow-lg">
+                    <div id="chat-history" class="flex-1 p-4 space-y-4 overflow-y-auto">
+                        <!-- Chat messages will be appended here -->
+                        <div class="flex justify-start">
+                            <div class="chat-message bot p-3 rounded-xl shadow-md">Ciao! Sono un'IA esperta in isolazioni termoidrauliche. Scrivi qui la tua domanda o descrivi un lavoro per una stima dei tempi.</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container p-4 border-t border-gray-200">
+                        <div class="flex items-center w-full">
+                            <input type="file" id="image-upload" accept="image/*" class="hidden">
+                            <button id="upload-btn" class="mr-2 p-2 rounded-full hover:bg-gray-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                            </button>
+                            <input type="text" id="chat-input" class="flex-1 form-input" placeholder="Scrivi il tuo messaggio...">
+                            <button id="send-btn" class="ml-2 btn btn-primary">Invia</button>
+                        </div>
+                        <div id="image-preview-container" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="result-section hidden" id="result-container">
-            <h2 class="text-xl font-bold text-green-700 mb-4">Risultato</h2>
-            <p id="prezzoUnitarioTubo" class="text-green-800 text-lg mb-2">Prezzo unitario tubo: €0.00</p>
-            <p id="prezzoUnitarioCurva" class="text-green-800 text-lg mb-2">Prezzo unitario curva: €0.00</p>
-            <hr class="my-4 border-green-500">
-            <p id="prezzoTotale" class="text-green-800 font-bold text-xl">Prezzo totale: €0.00</p>
-        </div>
-
-        <!-- Messaggio di errore -->
-        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Errore!</strong>
-            <span class="block sm:inline" id="error-text"></span>
-        </div>
-
     </div>
 
-    <script>
-        const materials = {
-            lana_di_roccia: {
-                types: ["senza_rivestimento", "nudo", "pvc", "alluminio", "inox"],
-                data: {
-                    nudo: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 11.20, 22: 12.00, 28: 12.80, 34: 13.50, 40: 14.20, 48: 15.00, 60: 15.80, 76: 28.50, 89: 34.00, 114: 38.50, 140: 42.00, 150: 46.00 },
-                            20: { 18: 15.00, 22: 15.60, 28: 16.00, 34: 16.50, 40: 17.50, 48: 18.20, 60: 19.50, 76: 32.00, 89: 38.00, 114: 42.50, 140: 46.00, 150: 50.00 },
-                            30: { 18: 19.00, 22: 19.80, 28: 20.50, 34: 21.00, 40: 22.00, 48: 23.50, 60: 25.00, 76: 35.00, 89: 41.00, 114: 48.00, 140: 51.50, 150: 55.00 },
-                            40: { 18: 20.00, 22: 21.00, 28: 22.00, 34: 23.00, 40: 24.50, 48: 26.00, 60: 29.00, 76: 38.00, 89: 44.00, 114: 51.00, 140: 58.00, 150: 61.50 },
-                            50: { 18: 22.00, 22: 23.00, 28: 24.50, 34: 26.00, 40: 27.50, 48: 29.00, 60: 32.00, 76: 42.00, 89: 48.50, 114: 55.00, 140: 62.00, 150: 67.00 }
-                        }
-                    },
-                    pvc: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 14.50, 22: 16.80, 28: 17.50, 34: 18.50, 40: 19.50, 48: 21.50, 60: 25.00, 76: 35.50, 89: 42.00, 114: 49.00, 140: 56.50, 150: 59.00 },
-                            20: { 18: 19.50, 22: 21.00, 28: 22.50, 34: 23.50, 40: 25.50, 48: 27.00, 60: 30.50, 76: 39.00, 89: 44.50, 114: 52.00, 140: 59.00, 150: 62.00 },
-                            30: { 18: 22.00, 22: 23.00, 28: 24.50, 34: 25.50, 40: 26.50, 48: 28.50, 60: 33.00, 76: 42.50, 89: 49.00, 114: 57.00, 140: 64.50, 150: 67.00 },
-                            40: { 18: 26.00, 22: 27.00, 28: 29.00, 34: 30.00, 40: 33.00, 48: 35.00, 60: 38.00, 76: 47.00, 89: 53.00, 114: 61.00, 140: 71.00, 150: 74.00 },
-                            50: { 18: 26.50, 22: 27.50, 28: 31.00, 34: 33.00, 40: 36.00, 48: 38.50, 60: 39.50, 76: 49.50, 89: 56.50, 114: 64.00, 140: 73.00, 150: 76.00 }
-                        }
-                    },
-                    alluminio: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 32.00, 22: 33.00, 28: 34.00, 34: 35.00, 40: 36.00, 48: 38.00, 60: 41.00, 76: 62.00, 89: 69.00, 114: 78.00, 140: 84.00, 150: 88.00 },
-                            20: { 18: 32.00, 22: 33.00, 28: 34.00, 34: 35.00, 40: 36.00, 48: 38.00, 60: 41.00, 76: 62.00, 89: 69.00, 114: 78.00, 140: 84.00, 150: 88.00 },
-                            30: { 18: 36.00, 22: 37.00, 28: 39.00, 34: 41.00, 40: 43.00, 48: 45.00, 60: 48.00, 76: 68.00, 89: 75.00, 114: 87.00, 140: 93.00, 150: 97.00 },
-                            40: { 18: 41.00, 22: 43.00, 28: 45.50, 34: 47.50, 40: 50.00, 48: 52.00, 60: 57.00, 76: 76.00, 89: 85.00, 114: 98.00, 140: 106.00, 150: 109.00 },
-                            50: { 18: 45.00, 22: 47.00, 28: 50.00, 34: 52.00, 40: 55.00, 48: 57.00, 60: 62.00, 76: 83.00, 89: 92.00, 114: 106.00, 140: 115.00, 150: 120.00 }
-                        }
-                    },
-                    inox: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 42.00, 22: 43.00, 28: 44.00, 34: 45.00, 40: 47.00, 48: 50.00, 60: 53.00, 76: 78.00, 89: 86.00, 114: 98.00, 140: 108.00, 150: 112.00 },
-                            20: { 18: 42.00, 22: 43.00, 28: 44.00, 34: 45.00, 40: 47.00, 48: 50.00, 60: 53.00, 76: 78.00, 89: 86.00, 114: 98.00, 140: 108.00, 150: 112.00 },
-                            30: { 18: 49.00, 22: 51.00, 28: 54.00, 34: 56.00, 40: 59.00, 48: 61.00, 60: 66.00, 76: 92.00, 89: 101.00, 114: 114.00, 140: 124.00, 150: 130.00 },
-                            40: { 18: 54.00, 22: 56.00, 28: 59.00, 34: 62.00, 40: 67.00, 48: 70.00, 60: 76.00, 76: 107.00, 89: 116.00, 114: 130.00, 140: 142.00, 150: 149.00 },
-                            50: { 18: 59.00, 22: 62.00, 28: 65.00, 34: 69.00, 40: 73.00, 48: 76.00, 60: 83.00, 76: 117.00, 89: 128.00, 114: 145.00, 140: 159.00, 150: 167.00 }
-                        }
-                    },
-                    senza_rivestimento: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 11.20, 22: 12.00, 28: 12.80, 34: 13.50, 40: 14.20, 48: 15.00, 60: 15.80, 76: 28.50, 89: 34.00, 114: 38.50, 140: 42.00, 150: 46.00 },
-                            20: { 18: 15.00, 22: 15.60, 28: 16.00, 34: 16.50, 40: 17.50, 48: 18.20, 60: 19.50, 76: 32.00, 89: 38.00, 114: 42.50, 140: 46.00, 150: 50.00 },
-                            30: { 18: 19.00, 22: 19.80, 28: 20.50, 34: 21.00, 40: 22.00, 48: 23.50, 60: 25.00, 76: 35.00, 89: 41.00, 114: 48.00, 140: 51.50, 150: 55.00 },
-                            40: { 18: 20.00, 22: 21.00, 28: 22.00, 34: 23.00, 40: 24.50, 48: 26.00, 60: 29.00, 76: 38.00, 89: 44.00, 114: 51.00, 140: 58.00, 150: 61.50 },
-                            50: { 18: 22.00, 22: 23.00, 28: 24.50, 34: 26.00, 40: 27.50, 48: 29.00, 60: 32.00, 76: 42.00, 89: 48.50, 114: 55.00, 140: 62.00, 150: 67.00 }
-                        }
-                    }
-                }
-            },
-            polinor: {
-                types: ["senza_rivestimento", "nudo", "pvc", "alluminio", "inox"],
-                data: {
-                    nudo: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 11.20, 22: 12.00, 28: 12.80, 34: 13.50, 40: 14.20, 48: 15.00, 60: 15.80, 76: 28.50, 89: 34.00, 114: 38.50, 140: 42.00, 150: 46.00 },
-                            20: { 18: 15.00, 22: 15.60, 28: 16.00, 34: 16.50, 40: 17.50, 48: 18.20, 60: 19.50, 76: 32.00, 89: 38.00, 114: 42.50, 140: 46.00, 150: 50.00 },
-                            30: { 18: 19.00, 22: 19.80, 28: 20.50, 34: 21.00, 40: 22.00, 48: 23.50, 60: 25.00, 76: 35.00, 89: 41.00, 114: 48.00, 140: 51.50, 150: 55.00 },
-                            40: { 18: 20.00, 22: 21.00, 28: 22.00, 34: 23.00, 40: 24.50, 48: 26.00, 60: 29.00, 76: 38.00, 89: 44.00, 114: 51.00, 140: 58.00, 150: 61.50 },
-                            50: { 18: 22.00, 22: 23.00, 28: 24.50, 34: 26.00, 40: 27.50, 48: 29.00, 60: 32.00, 76: 42.00, 89: 48.50, 114: 55.00, 140: 62.00, 150: 67.00 }
-                        }
-                    },
-                    pvc: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 14.50, 22: 16.80, 28: 17.50, 34: 18.50, 40: 19.50, 48: 21.50, 60: 25.00, 76: 35.50, 89: 42.00, 114: 49.00, 140: 56.50, 150: 59.00 },
-                            20: { 18: 19.50, 22: 21.00, 28: 22.50, 34: 23.50, 40: 25.50, 48: 27.00, 60: 30.50, 76: 39.00, 89: 44.50, 114: 52.00, 140: 59.00, 150: 62.00 },
-                            30: { 18: 22.00, 22: 23.00, 28: 24.50, 34: 25.50, 40: 26.50, 48: 28.50, 60: 33.00, 76: 42.50, 89: 49.00, 114: 57.00, 140: 64.50, 150: 67.00 },
-                            40: { 18: 26.00, 22: 27.00, 28: 29.00, 34: 30.00, 40: 33.00, 48: 35.00, 60: 38.00, 76: 47.00, 89: 53.00, 114: 61.00, 140: 71.00, 150: 74.00 },
-                            50: { 18: 26.50, 22: 27.50, 28: 31.00, 34: 33.00, 40: 36.00, 48: 38.50, 60: 39.50, 76: 49.50, 89: 56.50, 114: 64.00, 140: 73.00, 150: 76.00 }
-                        }
-                    },
-                    alluminio: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 32.00, 22: 33.00, 28: 34.00, 34: 35.00, 40: 36.00, 48: 38.00, 60: 41.00, 76: 62.00, 89: 69.00, 114: 78.00, 140: 84.00, 150: 88.00 },
-                            20: { 18: 32.00, 22: 33.00, 28: 34.00, 34: 35.00, 40: 36.00, 48: 38.00, 60: 41.00, 76: 62.00, 89: 69.00, 114: 78.00, 140: 84.00, 150: 88.00 },
-                            30: { 18: 36.00, 22: 37.00, 28: 39.00, 34: 41.00, 40: 43.00, 48: 45.00, 60: 48.00, 76: 68.00, 89: 75.00, 114: 87.00, 140: 93.00, 150: 97.00 },
-                            40: { 18: 41.00, 22: 43.00, 28: 45.50, 34: 47.50, 40: 50.00, 48: 52.00, 60: 57.00, 76: 76.00, 89: 85.00, 114: 98.00, 140: 106.00, 150: 109.00 },
-                            50: { 18: 45.00, 22: 47.00, 28: 50.00, 34: 52.00, 40: 55.00, 48: 57.00, 60: 62.00, 76: 83.00, 89: 92.00, 114: 106.00, 140: 115.00, 150: 120.00 }
-                        }
-                    },
-                    inox: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 42.00, 22: 43.00, 28: 44.00, 34: 45.00, 40: 47.00, 48: 50.00, 60: 53.00, 76: 78.00, 89: 86.00, 114: 98.00, 140: 108.00, 150: 112.00 },
-                            20: { 18: 42.00, 22: 43.00, 28: 44.00, 34: 45.00, 40: 47.00, 48: 50.00, 60: 53.00, 76: 78.00, 89: 86.00, 114: 98.00, 140: 108.00, 150: 112.00 },
-                            30: { 18: 49.00, 22: 51.00, 28: 54.00, 34: 56.00, 40: 59.00, 48: 61.00, 60: 66.00, 76: 92.00, 89: 101.00, 114: 114.00, 140: 124.00, 150: 130.00 },
-                            40: { 18: 54.00, 22: 56.00, 28: 59.00, 34: 62.00, 40: 67.00, 48: 70.00, 60: 76.00, 76: 107.00, 89: 116.00, 114: 130.00, 140: 142.00, 150: 149.00 },
-                            50: { 18: 59.00, 22: 62.00, 28: 65.00, 34: 69.00, 40: 73.00, 48: 76.00, 60: 83.00, 76: 117.00, 89: 128.00, 114: 145.00, 140: 159.00, 150: 167.00 }
-                        }
-                    },
-                    senza_rivestimento: {
-                        spessori: [10, 20, 30, 40, 50],
-                        diametri: {
-                            10: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            20: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            30: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            40: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            50: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            10: { 18: 11.20, 22: 12.00, 28: 12.80, 34: 13.50, 40: 14.20, 48: 15.00, 60: 15.80, 76: 28.50, 89: 34.00, 114: 38.50, 140: 42.00, 150: 46.00 },
-                            20: { 18: 15.00, 22: 15.60, 28: 16.00, 34: 16.50, 40: 17.50, 48: 18.20, 60: 19.50, 76: 32.00, 89: 38.00, 114: 42.50, 140: 46.00, 150: 50.00 },
-                            30: { 18: 19.00, 22: 19.80, 28: 20.50, 34: 21.00, 40: 22.00, 48: 23.50, 60: 25.00, 76: 35.00, 89: 41.00, 114: 48.00, 140: 51.50, 150: 55.00 },
-                            40: { 18: 20.00, 22: 21.00, 28: 22.00, 34: 23.00, 40: 24.50, 48: 26.00, 60: 29.00, 76: 38.00, 89: 44.00, 114: 51.00, 140: 58.00, 150: 61.50 },
-                            50: { 18: 22.00, 22: 23.00, 28: 24.50, 34: 26.00, 40: 27.50, 48: 29.00, 60: 32.00, 76: 42.00, 89: 48.50, 114: 55.00, 140: 62.00, 150: 67.00 }
-                        }
-                    }
-                }
-            },
-            gomma: {
-                types: ["senza_rivestimento", "nudo"],
-                data: {
-                    nudo: {
-                        spessori: [6, 9],
-                        diametri: {
-                            6: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                            9: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                        },
-                        prezzi: {
-                            6: { 18: 11.20, 22: 12.00, 28: 12.80, 34: 13.50, 40: 14.20, 48: 15.00, 60: 15.80, 76: 28.50, 89: 34.00, 114: 38.50, 140: 42.00, 150: 46.00 },
-                            9: { 18: 14.50, 22: 16.80, 28: 17.50, 34: 18.50, 40: 19.50, 48: 21.50, 60: 25.00, 76: 35.50, 89: 42.00, 114: 49.00, 140: 56.50, 150: 59.00 }
-                        }
-                    },
-                    senza_rivestimento: {
-                         spessori: [6, 9],
-                         diametri: {
-                             6: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150],
-                             9: [18, 22, 28, 34, 40, 48, 60, 76, 89, 114, 140, 150]
-                         },
-                         prezzi: {
-                             6: { 18: 11.20, 22: 12.00, 28: 12.80, 34: 13.50, 40: 14.20, 48: 15.00, 60: 15.80, 76: 28.50, 89: 34.00, 114: 38.50, 140: 42.00, 150: 46.00 },
-                             9: { 18: 14.50, 22: 16.80, 28: 17.50, 34: 18.50, 40: 19.50, 48: 21.50, 60: 25.00, 76: 35.50, 89: 42.00, 114: 49.00, 140: 56.50, 150: 59.00 }
-                         }
-                     }
-                }
-            },
-        };
-
-        const curvePrices = {
-            lana_di_roccia: {
-                prezzi: {
-                    10: { 18: 18.00, 22: 19.50, 28: 20.00, 34: 21.50, 40: 23.00, 48: 24.50, 60: 25.50, 76: 40.00, 89: 46.00, 114: 55.00, 140: 62.00, 150: 68.00 },
-                    20: { 18: 20.00, 22: 22.00, 28: 23.50, 34: 25.00, 40: 27.00, 48: 29.00, 60: 32.00, 76: 45.00, 89: 52.00, 114: 60.00, 140: 68.00, 150: 74.00 },
-                    30: { 18: 24.00, 22: 25.50, 28: 27.00, 34: 28.50, 40: 30.00, 48: 32.00, 60: 36.00, 76: 49.00, 89: 56.00, 114: 65.00, 140: 72.00, 150: 78.00 },
-                    40: { 18: 26.00, 22: 27.50, 28: 29.00, 34: 30.50, 40: 33.00, 48: 35.00, 60: 39.00, 76: 52.00, 89: 59.00, 114: 68.00, 140: 77.00, 150: 82.00 },
-                    50: { 18: 28.00, 22: 29.50, 28: 31.00, 34: 33.00, 40: 35.00, 48: 37.00, 60: 41.00, 76: 55.00, 89: 63.00, 114: 72.00, 140: 80.00, 150: 86.00 }
-                }
-            },
-            polinor: {
-                 prezzi: {
-                     10: { 18: 18.00, 22: 19.50, 28: 20.00, 34: 21.50, 40: 23.00, 48: 24.50, 60: 25.50, 76: 40.00, 89: 46.00, 114: 55.00, 140: 62.00, 150: 68.00 },
-                     20: { 18: 20.00, 22: 22.00, 28: 23.50, 34: 25.00, 40: 27.00, 48: 29.00, 60: 32.00, 76: 45.00, 89: 52.00, 114: 60.00, 140: 68.00, 150: 74.00 },
-                     30: { 18: 24.00, 22: 25.50, 28: 27.00, 34: 28.50, 40: 30.00, 48: 32.00, 60: 36.00, 76: 49.00, 89: 56.00, 114: 65.00, 140: 72.00, 150: 78.00 },
-                     40: { 18: 26.00, 22: 27.50, 28: 29.00, 34: 30.50, 40: 33.00, 48: 35.00, 60: 39.00, 76: 52.00, 89: 59.00, 114: 68.00, 140: 77.00, 150: 82.00 },
-                     50: { 18: 28.00, 22: 29.50, 28: 31.00, 34: 33.00, 40: 35.00, 48: 37.00, 60: 41.00, 76: 55.00, 89: 63.00, 114: 72.00, 140: 80.00, 150: 86.00 }
-                 }
-            },
-            gomma: {
-                prezzi: {
-                    6: { 18: 16.00, 22: 17.50, 28: 18.00, 34: 19.50, 40: 21.00, 48: 22.00, 60: 23.00, 76: 35.00, 89: 41.00, 114: 48.00, 140: 54.00, 150: 60.00 },
-                    9: { 18: 19.00, 22: 21.00, 28: 22.00, 34: 23.50, 40: 25.00, 48: 27.00, 60: 30.00, 76: 41.00, 89: 48.00, 114: 55.00, 140: 63.00, 150: 67.00 }
-                }
-            }
-        };
-
-        function updateOptions() {
-            const materiale = document.getElementById('materiale').value;
-            const tipoSelect = document.getElementById('tipo');
-            
-            tipoSelect.innerHTML = '';
-
-            const types = materials[materiale].types;
-            types.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type;
-                option.text = type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                tipoSelect.appendChild(option);
-            });
-            
-            updateSpessoreAndDiametro();
-        }
-
-        function updateSpessoreAndDiametro() {
-             const materiale = document.getElementById('materiale').value;
-             const tipo = document.getElementById('tipo').value;
-             const spessoreSelect = document.getElementById('spessore');
-             
-             spessoreSelect.innerHTML = '';
-             document.getElementById('diametro').innerHTML = '';
-             
-             const selectedData = materials[materiale].data[tipo];
-             if (selectedData) {
-                 selectedData.spessori.forEach(spessore => {
-                     const option = document.createElement('option');
-                     option.value = spessore;
-                     option.text = spessore + " mm";
-                     spessoreSelect.appendChild(option);
-                 });
-             }
-             
-             updateDiametro();
-        }
-
-        function updateDiametro() {
-             const materiale = document.getElementById('materiale').value;
-             const tipo = document.getElementById('tipo').value;
-             const spessore = document.getElementById('spessore').value;
-             const diametroSelect = document.getElementById('diametro');
-
-             diametroSelect.innerHTML = '';
-             
-             const selectedData = materials[materiale].data[tipo];
-             if (selectedData && spessore) {
-                 const diametri = selectedData.diametri[parseInt(spessore)];
-                 if (diametri) {
-                     diametri.forEach(diametro => {
-                         const option = document.createElement('option');
-                         option.value = diametro;
-                         option.text = diametro + " mm";
-                         diametroSelect.appendChild(option);
-                     });
-                 }
-             }
-        }
-
-        function calculatePrice() {
-            const materiale = document.getElementById('materiale').value;
-            const tipo = document.getElementById('tipo').value;
-            const spessore = document.getElementById('spessore').value;
-            const diametro = document.getElementById('diametro').value;
-            const quantitaTubi = document.getElementById('quantitaTubi').value;
-            const quantitaCurve = document.getElementById('quantitaCurve').value;
-            const resultContainer = document.getElementById('result-container');
-            const errorElement = document.getElementById('error-message');
-            const errorTextElement = document.getElementById('error-text');
-
-            if (!materiale || !tipo || !spessore || !diametro || (quantitaTubi === '' && quantitaCurve === '')) {
-                errorTextElement.textContent = "Assicurati di aver selezionato tutte le opzioni e inserito una quantità di tubi o curve valida.";
-                errorElement.classList.remove('hidden');
-                resultContainer.classList.add('hidden');
-                return;
-            }
-
-            const spessoreInt = parseInt(spessore);
-            const diametroInt = parseInt(diametro);
-            const quantitaTubiFloat = parseFloat(quantitaTubi) || 0;
-            const quantitaCurveFloat = parseFloat(quantitaCurve) || 0;
-
-            const selectedData = materials[materiale].data[tipo];
-            const selectedCurveData = curvePrices[materiale];
-
-            let prezzoUnitarioTubo = 0.0;
-            if (selectedData && selectedData.prezzi[spessoreInt] && selectedData.prezzi[spessoreInt][diametroInt]) {
-                 prezzoUnitarioTubo = selectedData.prezzi[spessoreInt][diametroInt];
-            } else {
-                 errorTextElement.textContent = "Nessun prezzo del tubo trovato per le opzioni selezionate.";
-                 errorElement.classList.remove('hidden');
-                 resultContainer.classList.add('hidden');
-                 return;
-            }
-
-            let prezzoUnitarioCurva = 0.0;
-            if (selectedCurveData && selectedCurveData.prezzi[spessoreInt] && selectedCurveData.prezzi[spessoreInt][diametroInt]) {
-                prezzoUnitarioCurva = selectedCurveData.prezzi[spessoreInt][diametroInt];
-            }
-
-            const prezzoTotaleTubi = prezzoUnitarioTubo * quantitaTubiFloat;
-            const prezzoTotaleCurve = prezzoUnitarioCurva * quantitaCurveFloat;
-            const prezzoTotale = prezzoTotaleTubi + prezzoTotaleCurve;
-
-            document.getElementById('prezzoUnitarioTubo').textContent = `Prezzo unitario tubo: €${prezzoUnitarioTubo.toFixed(2)}`;
-            document.getElementById('prezzoUnitarioCurva').textContent = `Prezzo unitario curva: €${prezzoUnitarioCurva.toFixed(2)}`;
-            document.getElementById('prezzoTotale').textContent = `Prezzo totale: €${prezzoTotale.toFixed(2)}`;
-
-            resultContainer.classList.remove('hidden');
-            errorElement.classList.add('hidden');
-        }
-
-        window.onload = function() {
-            updateOptions();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
 

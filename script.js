@@ -1,453 +1,459 @@
-window.onload = function () {
-    const quoteItems = [];
-    let uploadedImage = null;
-    
-    // I prezzi e i dati sono stati spostati all'interno della funzione per garantire il corretto scope
-    const prices = {
-        'Lana di roccia': {
-            'Acciaio': {
-                '20': { 'tubo': 10.50, 'curva': 15.00 }, '25': { 'tubo': 11.00, 'curva': 16.00 },
-                '30': { 'tubo': 12.00, 'curva': 17.50 }, '40': { 'tubo': 14.00, 'curva': 20.00 },
-                '50': { 'tubo': 16.50, 'curva': 23.00 }, '60': { 'tubo': 18.00, 'curva': 25.00 }
-            },
-            'Alluminio': {
-                '20': { 'tubo': 9.50, 'curva': 13.00 }, '25': { 'tubo': 10.00, 'curva': 14.00 },
-                '30': { 'tubo': 11.00, 'curva': 15.50 }, '40': { 'tubo': 13.00, 'curva': 18.00 },
-                '50': { 'tubo': 15.50, 'curva': 21.00 }, '60': { 'tubo': 17.00, 'curva': 23.00 }
-            },
-            'PVC ALU': {
-                '20': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
-                '30': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
-                '50': { 'tubo': 14.50, 'curva': 20.00 }, '60': { 'tubo': 16.00, 'curva': 22.00 }
-            },
-            'PVC normale': {
-                '20': { 'tubo': 7.50, 'curva': 11.00 }, '25': { 'tubo': 8.00, 'curva': 12.00 },
-                '30': { 'tubo': 9.00, 'curva': 13.50 }, '40': { 'tubo': 11.00, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
-            }
-        },
-        'Polinor': {
-            'Acciaio': {
-                '20': { 'tubo': 9.00, 'curva': 13.00 }, '25': { 'tubo': 9.50, 'curva': 14.00 },
-                '30': { 'tubo': 10.50, 'curva': 15.50 }, '40': { 'tubo': 12.50, 'curva': 18.00 },
-                '50': { 'tubo': 14.50, 'curva': 21.00 }, '60': { 'tubo': 16.00, 'curva': 23.00 }
-            },
-            'Alluminio': {
-                '20': { 'tubo': 8.00, 'curva': 11.00 }, '25': { 'tubo': 8.50, 'curva': 12.00 },
-                '30': { 'tubo': 9.50, 'curva': 13.50 }, '40': { 'tubo': 11.50, 'curva': 16.00 },
-                '50': { 'tubo': 13.50, 'curva': 19.00 }, '60': { 'tubo': 15.00, 'curva': 21.00 }
-            },
-            'PVC ALU': {
-                '20': { 'tubo': 7.00, 'curva': 10.00 }, '25': { 'tubo': 7.50, 'curva': 11.00 },
-                '30': { 'tubo': 8.50, 'curva': 12.50 }, '40': { 'tubo': 10.50, 'curva': 15.00 },
-                '50': { 'tubo': 12.50, 'curva': 18.00 }, '60': { 'tubo': 14.00, 'curva': 20.00 }
-            },
-            'PVC normale': {
-                '20': { 'tubo': 6.00, 'curva': 9.00 }, '25': { 'tubo': 6.50, 'curva': 10.00 },
-                '30': { 'tubo': 7.50, 'curva': 11.50 }, '40': { 'tubo': 9.50, 'curva': 14.00 },
-                '50': { 'tubo': 11.50, 'curva': 17.00 }, '60': { 'tubo': 13.00, 'curva': 19.00 }
-            }
-        },
-        'Gomma': {
-            'Acciaio': {
-                '19': { 'tubo': 8.50, 'curva': 12.00 }, '25': { 'tubo': 9.00, 'curva': 13.00 },
-                '32': { 'tubo': 10.00, 'curva': 14.50 }, '40': { 'tubo': 12.00, 'curva': 17.00 },
-                '50': { 'tubo': 14.00, 'curva': 20.00 }
-            },
-            'Alluminio': {
-                '19': { 'tubo': 7.50, 'curva': 10.00 }, '25': { 'tubo': 8.00, 'curva': 11.00 },
-                '32': { 'tubo': 9.00, 'curva': 12.50 }, '40': { 'tubo': 11.00, 'curva': 15.00 },
-                '50': { 'tubo': 13.00, 'curva': 18.00 }
-            },
-            'PVC ALU': {
-                '19': { 'tubo': 6.50, 'curva': 9.00 }, '25': { 'tubo': 7.00, 'curva': 10.00 },
-                '32': { 'tubo': 8.00, 'curva': 11.50 }, '40': { 'tubo': 10.00, 'curva': 14.00 },
-                '50': { 'tubo': 12.00, 'curva': 17.00 }
-            },
-            'PVC normale': {
-                '19': { 'tubo': 5.50, 'curva': 8.00 }, '25': { 'tubo': 6.00, 'curva': 9.00 },
-                '32': { 'tubo': 7.00, 'curva': 10.50 }, '40': { 'tubo': 9.00, 'curva': 13.00 },
-                '50': { 'tubo': 11.00, 'curva': 16.00 }
-            }
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolo Preventivo Isolamento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
         }
-    };
-
-    const diameters = {
-        'Lana di roccia': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89, 108, 114, 133, 140, 168, 219],
-        'Polinor': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89],
-        'Gomma': [18, 22, 28, 35, 42, 48, 54, 60, 64, 76, 89]
-    };
-
-    const thicknesses = {
-        'Lana di roccia': [20, 25, 30, 40, 50, 60],
-        'Polinor': [20, 25, 30, 40, 50, 60],
-        'Gomma': [19, 25, 32, 40, 50]
-    };
-    
-    // Riferimenti agli elementi DOM
-    const materialSelect = document.getElementById('material-type');
-    const coatingSelect = document.getElementById('coating-type');
-    const diameterSelect = document.getElementById('diameter');
-    const thicknessSelect = document.getElementById('thickness');
-    const addItemBtn = document.getElementById('add-item-btn');
-    const quoteSummary = document.getElementById('quote-summary');
-    const totalCostEl = document.getElementById('total-cost');
-    const discountInput = document.getElementById('discount');
-    const tabPreventivo = document.getElementById('tab-preventivo');
-    const tabChat = document.getElementById('tab-chat');
-    const preventivoSection = document.getElementById('preventivo-section');
-    const chatSection = document.getElementById('chat-section');
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-btn');
-    const chatHistory = document.getElementById('chat-history');
-    const notificationBox = document.getElementById('notification-box');
-    const downloadPdfBtn = document.getElementById('download-pdf-btn');
-    const cantiereInput = document.getElementById('cantiere');
-    const uploadBtn = document.getElementById('upload-btn');
-    const imageUpload = document.getElementById('image-upload');
-    const imagePreviewContainer = document.getElementById('image-preview-container');
-
-    let uploadedBase64Image = null;
-
-    // Funzione per mostrare le notifiche
-    function showNotification(message, isError = false) {
-        notificationBox.textContent = message;
-        notificationBox.className = 'show fixed top-5 right-5 p-4 rounded-lg shadow-lg text-white';
-        notificationBox.classList.add(isError ? 'bg-red-500' : 'bg-blue-500');
-        setTimeout(() => {
-            notificationBox.classList.remove('show');
-        }, 3000);
-    }
-    
-    // Funzione per aggiornare le opzioni dei menu a tendina
-    function updateOptions() {
-        const selectedMaterial = materialSelect.value;
-        const selectedCoating = coatingSelect.value;
-        
-        diameterSelect.innerHTML = '';
-        if (diameters[selectedMaterial]) {
-            diameters[selectedMaterial].forEach(d => {
-                const option = document.createElement('option');
-                option.value = d;
-                option.textContent = d;
-                diameterSelect.appendChild(option);
-            });
+        .container {
+            max-width: 800px;
         }
-        
-        thicknessSelect.innerHTML = '';
-        if (thicknesses[selectedMaterial]) {
-            thicknesses[selectedMaterial].forEach(t => {
-                const option = document.createElement('option');
-                option.value = t;
-                option.textContent = t;
-                thicknessSelect.appendChild(option);
-            });
+        .form-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
         }
-    }
-
-    // Funzione per renderizzare il riepilogo del preventivo
-    function renderQuote() {
-        quoteSummary.innerHTML = '';
-        let total = 0;
-        const groupedItems = {};
-
-        quoteItems.forEach(item => {
-            const key = `${item.material} + ${item.coating}`;
-            if (!groupedItems[key]) {
-                groupedItems[key] = [];
-            }
-            groupedItems[key].push(item);
-        });
-
-        for (const group in groupedItems) {
-            const groupContainer = document.createElement('div');
-            groupContainer.className = 'line-item p-4 mb-4 border rounded-lg';
-            
-            let groupTotal = 0;
-            let groupHtml = `<div class="flex justify-between items-center font-bold mb-2">
-                                <span>${group}</span>
-                                <span class="group-total"></span>
-                             </div>`;
-            
-            groupedItems[group].forEach((item, index) => {
-                const itemTotal = (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve);
-                groupTotal += itemTotal;
-                
-                const itemHtml = `
-                    <div class="flex justify-between items-center py-1" data-index="${quoteItems.indexOf(item)}">
-                        <div>
-                            <p class="font-medium">Diametro ${item.diameter}/${item.thickness}mm | Tubi: ${item.length.toFixed(2)} ML | Curve: ${item.curves} PZ</p>
-                            <p class="text-sm text-gray-500">Tubo: €${item.pricePerMeter.toFixed(2)}/m, Curva: €${item.pricePerCurve.toFixed(2)}/pz</p>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="mr-4 font-semibold text-gray-800">€${itemTotal.toFixed(2)}</span>
-                            <button class="btn-remove text-red-500 hover:text-red-700" data-index="${quoteItems.indexOf(item)}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                groupHtml += itemHtml;
-            });
-
-            groupContainer.innerHTML = groupHtml;
-            groupContainer.querySelector('.group-total').textContent = `Totale: €${groupTotal.toFixed(2)}`;
-            quoteSummary.appendChild(groupContainer);
-
-            total += groupTotal;
+        .result-section {
+            background-color: #d1fae5;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
         }
-        
-        const discount = parseFloat(discountInput.value) || 0;
-        const discountedTotal = total * (1 - discount / 100);
-        totalCostEl.textContent = `€${discountedTotal.toFixed(2)}`;
-
-        document.querySelectorAll('.btn-remove').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const index = parseInt(event.currentTarget.dataset.index);
-                quoteItems.splice(index, 1);
-                renderQuote();
-            });
-        });
-    }
-
-    // Gestione degli eventi
-    materialSelect.addEventListener('change', updateOptions);
-    discountInput.addEventListener('input', renderQuote);
-    
-    addItemBtn.addEventListener('click', () => {
-        const material = materialSelect.value;
-        const coating = coatingSelect.value;
-        const diameter = diameterSelect.value;
-        const thickness = thicknessSelect.value;
-        const length = parseFloat(document.getElementById('length').value) || 0;
-        const curves = parseInt(document.getElementById('curves').value) || 0;
-
-        if (length === 0 && curves === 0) {
-            showNotification("Inserire una lunghezza o un numero di curve.", true);
-            return;
+        .input-group select, .input-group input {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
         }
-
-        const priceData = prices[material]?.[coating]?.[thickness];
-        if (!priceData) {
-            showNotification(`Prezzo non disponibile per ${material} con spessore ${thickness} e rivestimento ${coating}.`, true);
-            return;
+        .button {
+            transition: background-color 0.3s, transform 0.1s;
         }
-        
-        const pricePerMeter = priceData.tubo || 0;
-        const pricePerCurve = priceData.curva || 0;
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-        quoteItems.push({ material, coating, diameter, thickness, length, curves, pricePerMeter, pricePerCurve });
-        renderQuote();
+    <div class="container mx-auto space-y-8">
+        <div class="form-section">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Calcolo Preventivo Isolamento</h1>
 
-        document.getElementById('length').value = '';
-        document.getElementById('curves').value = '';
-    });
+            <div class="space-y-4">
+                <div class="input-group">
+                    <label for="materiale" class="block text-gray-700 font-medium mb-1">Materiale:</label>
+                    <select id="materiale" class="focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="updateOptions()">
+                        <option value="lana_di_roccia">Lana di roccia</option>
+                        <option value="polinor">Polinor</option>
+                        <option value="gomma">Gomma</option>
+                    </select>
+                </div>
 
-    tabPreventivo.addEventListener('click', () => {
-        preventivoSection.style.display = 'block';
-        chatSection.style.display = 'none';
-        tabPreventivo.classList.add('active');
-        tabChat.classList.remove('active');
-    });
+                <div class="input-group">
+                    <label for="tipo" class="block text-gray-700 font-medium mb-1">Tipo:</label>
+                    <select id="tipo" class="focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="curva">Curve</option>
+                        <option value="nudo">Nudo</option>
+                        <option value="pvc">PVC</option>
+                        <option value="alluminio">Alluminio</option>
+                        <option value="inox">Inox</option>
+                        <option value="senza_rivestimento">SENZA RIVESTIMENTO</option>
+                    </select>
+                </div>
 
-    tabChat.addEventListener('click', () => {
-        preventivoSection.style.display = 'none';
-        chatSection.style.display = 'block';
-        tabChat.classList.add('active');
-        tabPreventivo.classList.remove('active');
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    });
+                <div class="input-group">
+                    <label for="spessore" class="block text-gray-700 font-medium mb-1">Spessore (mm):</label>
+                    <select id="spessore" class="focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <!-- Opzioni generate da JavaScript -->
+                    </select>
+                </div>
 
-    // Funzione per mostrare un messaggio di chat
-    function showChatMessage(message, sender) {
-        const messageEl = document.createElement('div');
-        messageEl.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
-        messageEl.innerHTML = `<div class="chat-message p-3 rounded-xl shadow-md ${sender === 'user' ? 'user-message' : 'bot-message'}">${message}</div>`;
-        chatHistory.appendChild(messageEl);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
+                <div class="input-group">
+                    <label for="diametro" class="block text-gray-700 font-medium mb-1">Diametro (mm):</label>
+                    <select id="diametro" class="focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <!-- Opzioni generate da JavaScript -->
+                    </select>
+                </div>
 
-    // Logica per l'invio del messaggio e la gestione della risposta
-    sendBtn.addEventListener('click', async () => {
-        const userMessage = chatInput.value.trim();
-        if (userMessage === '' && !uploadedBase64Image) return;
+                <div class="input-group">
+                    <label for="quantita" class="block text-gray-700 font-medium mb-1">Quantità (metri):</label>
+                    <input type="number" id="quantita" class="focus:outline-none focus:ring-2 focus:ring-blue-500" value="1" min="1">
+                </div>
+            </div>
 
-        showChatMessage(userMessage, 'user');
-        chatInput.value = '';
-        imagePreviewContainer.innerHTML = '';
-        
-        const apiKey = "";
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            <button onclick="calculatePrice()" class="button mt-6 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700">
+                Calcola Prezzo
+            </button>
+        </div>
 
-        const payload = {
-            contents: [
-                {
-                    role: "user",
-                    parts: [
-                        { text: userMessage }
-                    ]
+        <div class="result-section hidden" id="result-container">
+            <h2 class="text-xl font-bold text-green-700 mb-4">Risultato</h2>
+            <p id="prezzoUnitario" class="text-green-800 text-lg mb-2">Prezzo unitario: €0.00</p>
+            <p id="prezzoTotale" class="text-green-800 text-lg">Prezzo totale: €0.00</p>
+        </div>
+
+        <!-- Messaggio di errore -->
+        <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Errore!</strong>
+            <span class="block sm:inline" id="error-text"></span>
+        </div>
+
+    </div>
+
+    <script>
+        const materials = {
+            lana_di_roccia: {
+                curva: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                },
+                nudo: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                },
+                pvc: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 16.20, 22: 18.50, 28: 19.20, 34: 20.40, 40: 21.60, 48: 24.00, 60: 27.60
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                },
+                alluminio: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 38.18, 22: 41.82, 28: 43.64, 34: 46.59, 40: 48.41, 48: 54.17, 60: 58.64
+                        },
+                        20: {
+                            18: 35.40, 22: 36.60, 28: 37.20, 34: 38.40, 40: 39.00, 48: 41.40, 60: 44.40
+                        }
+                    }
+                },
+                inox: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 62.40, 22: 63.90, 28: 64.90, 34: 67.50, 40: 71.60, 48: 74.40, 60: 76.80
+                        },
+                        20: {
+                            18: 47.20, 22: 47.60, 28: 48.00, 34: 49.60, 40: 52.00, 48: 55.20, 60: 58.40
+                        }
+                    }
+                },
+                 senza_rivestimento: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
                 }
-            ],
-            tools: [{ "google_search": {} }],
-            systemInstruction: {
-                parts: [{ text: "Act as a specialized AI for ISOLDEM SRLS, a company in the thermohydraulic insulation sector. Provide helpful and concise answers related to insulation, materials, and project timelines. Respond in Italian. Keep the tone professional but friendly and helpful." }]
             },
+            polinor: {
+                 curva: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                },
+                nudo: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                },
+                pvc: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 16.20, 22: 18.50, 28: 19.20, 34: 20.40, 40: 21.60, 48: 24.00, 60: 27.60
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                },
+                alluminio: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 38.18, 22: 41.82, 28: 43.64, 34: 46.59, 40: 48.41, 48: 54.17, 60: 58.64
+                        },
+                        20: {
+                            18: 35.40, 22: 36.60, 28: 37.20, 34: 38.40, 40: 39.00, 48: 41.40, 60: 44.40
+                        }
+                    }
+                },
+                inox: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 62.40, 22: 63.90, 28: 64.90, 34: 67.50, 40: 71.60, 48: 74.40, 60: 76.80
+                        },
+                        20: {
+                            18: 47.20, 22: 47.60, 28: 48.00, 34: 49.60, 40: 52.00, 48: 55.20, 60: 58.40
+                        }
+                    }
+                },
+                 senza_rivestimento: {
+                    spessori: [10, 20],
+                    diametri: {
+                        10: [18, 22, 28, 34, 40, 48, 60],
+                        20: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        10: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        20: {
+                            18: 16.50, 22: 16.90, 28: 17.10, 34: 17.70, 40: 18.90, 48: 19.50, 60: 20.70
+                        }
+                    }
+                }
+            },
+            gomma: {
+                nudo: {
+                    spessori: [6, 9],
+                    diametri: {
+                        6: [18, 22, 28, 34, 40, 48, 60],
+                        9: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        6: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        9: {
+                            18: 16.20, 22: 18.50, 28: 19.20, 34: 20.40, 40: 21.60, 48: 24.00, 60: 27.60
+                        }
+                    }
+                },
+                 senza_rivestimento: {
+                    spessori: [6, 9],
+                    diametri: {
+                        6: [18, 22, 28, 34, 40, 48, 60],
+                        9: [18, 22, 28, 34, 40, 48, 60]
+                    },
+                    prezzi: {
+                        6: {
+                            18: 12.60, 22: 13.80, 28: 14.40, 34: 15.60, 40: 15.60, 48: 16.80, 60: 18.00
+                        },
+                        9: {
+                            18: 16.20, 22: 18.50, 28: 19.20, 34: 20.40, 40: 21.60, 48: 24.00, 60: 27.60
+                        }
+                    }
+                }
+            }
         };
 
-        if (uploadedBase64Image) {
-            payload.contents[0].parts.push({
-                inlineData: {
-                    mimeType: "image/jpeg",
-                    data: uploadedBase64Image
+        function updateOptions() {
+            const materiale = document.getElementById('materiale').value;
+            const tipo = document.getElementById('tipo').value;
+            const spessoreSelect = document.getElementById('spessore');
+            const diametroSelect = document.getElementById('diametro');
+
+            spessoreSelect.innerHTML = '';
+            diametroSelect.innerHTML = '';
+            
+            // Gestisce le opzioni di rivestimento in base al materiale
+            const tipoSelect = document.getElementById('tipo');
+            const tipoOptions = tipoSelect.options;
+
+            // Rimuovi tutte le opzioni tranne "SENZA RIVESTIMENTO"
+            for (let i = tipoOptions.length - 1; i >= 0; i--) {
+                if (tipoOptions[i].value !== "senza_rivestimento" && tipoOptions[i].value !== "curva") {
+                    tipoSelect.remove(i);
                 }
-            });
-            uploadedBase64Image = null;
-        }
-        
-        const loadingMessageEl = document.createElement('div');
-        loadingMessageEl.className = 'flex justify-start';
-        loadingMessageEl.innerHTML = `<div class="chat-message bot p-3 rounded-xl shadow-md bot-message">...</div>`;
-        chatHistory.appendChild(loadingMessageEl);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            const result = await response.json();
-            const botResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-            
-            loadingMessageEl.remove();
-            if (botResponseText) {
-                showChatMessage(botResponseText, 'bot');
-            } else {
-                showChatMessage("Mi dispiace, non sono riuscito a generare una risposta. Riprova più tardi.", 'bot');
             }
-
-        } catch (error) {
-            console.error('API Error:', error);
-            loadingMessageEl.remove();
-            showChatMessage("Si è verificato un errore di comunicazione. Riprova più tardi.", 'bot');
-        }
-    });
-
-    chatInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            sendBtn.click();
-        }
-    });
-
-    // Gestione dell'upload immagine
-    uploadBtn.addEventListener('click', () => imageUpload.click());
-    
-    imageUpload.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const base64Image = e.target.result.split(',')[1];
-            uploadedBase64Image = base64Image;
             
-            const imgPreview = document.createElement('img');
-            imgPreview.src = e.target.result;
-            imgPreview.className = 'w-24 h-24 rounded-lg object-cover mr-2';
-            imagePreviewContainer.innerHTML = '';
-            imagePreviewContainer.appendChild(imgPreview);
-        };
-        reader.readAsDataURL(file);
-    });
-
-    downloadPdfBtn.addEventListener('click', () => {
-        if (quoteItems.length === 0) {
-            showNotification("Aggiungi almeno un articolo al preventivo prima di scaricare.", true);
-            return;
-        }
-
-        try {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            const cantiere = cantiereInput.value || 'N/A';
-            const date = new Date().toLocaleDateString('it-IT');
-            let y = 20;
-
-            doc.setFontSize(22);
-            doc.setFont("helvetica", "bold");
-            doc.text("ISOLDEM SRLS", 14, y);
-            
-            y += 10;
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Preventivo per: ${cantiere}`, 14, y);
-            y += 7;
-            doc.text(`Data: ${date}`, 14, y);
-
-            y += 10;
-            
-            const groupedItems = {};
-            quoteItems.forEach(item => {
-                const key = `${item.material} + ${item.coating}`;
-                if (!groupedItems[key]) groupedItems[key] = [];
-                groupedItems[key].push(item);
-            });
-
-            const tableData = [];
-            for (const group in groupedItems) {
-                tableData.push([{ content: group, colSpan: 4, styles: { fontStyle: 'bold', fillColor: [220, 220, 220] } }]);
-                groupedItems[group].forEach(item => {
-                    const itemTotal = (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve);
-                    tableData.push([
-                        `Diam. ${item.diameter}/${item.thickness}mm`,
-                        `Tubi: ${item.length} ML`,
-                        `Curve: ${item.curves} PZ`,
-                        `€${itemTotal.toFixed(2)}`
-                    ]);
+            // Aggiungi le opzioni di tipo in base al materiale
+            if (materiale === 'lana_di_roccia' || materiale === 'polinor') {
+                const types = ["nudo", "pvc", "alluminio", "inox"];
+                types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.text = type.charAt(0).toUpperCase() + type.slice(1);
+                    tipoSelect.appendChild(option);
+                });
+            } else if (materiale === 'gomma') {
+                 const types = ["nudo"];
+                 types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.text = type.charAt(0).toUpperCase() + type.slice(1);
+                    tipoSelect.appendChild(option);
                 });
             }
-            
-            doc.autoTable({
-                startY: y,
-                head: [['Descrizione', 'Lunghezza', 'Curve', 'Subtotale']],
-                body: tableData,
-                theme: 'striped',
-                headStyles: { fillColor: [79, 70, 229] }
-            });
 
-            y = doc.autoTable.previous.finalY + 10;
-            
-            const total = quoteItems.reduce((sum, item) => sum + (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve), 0);
-            const discount = parseFloat(discountInput.value) || 0;
-            const discountedTotal = total * (1 - discount / 100);
-
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.text(`Subtotale:`, 140, y, { align: 'right' });
-            doc.text(`€${total.toFixed(2)}`, 200, y, { align: 'right' });
-            
-            y += 7;
-            doc.text(`Sconto (${discount}%):`, 140, y, { align: 'right' });
-            doc.text(`-€${(total - discountedTotal).toFixed(2)}`, 200, y, { align: 'right' });
-            
-            y += 10;
-            doc.setFontSize(14);
-            doc.text(`TOTALE:`, 140, y, { align: 'right' });
-            doc.text(`€${discountedTotal.toFixed(2)}`, 200, y, { align: 'right' });
-            
-            doc.save(`Preventivo_${cantiere.replace(/\s/g, '_')}.pdf`);
-
-        } catch (error) {
-            console.error("Errore durante la generazione del PDF:", error);
-            showNotification("Si è verificato un errore critico durante la generazione del PDF. Controlla la console per i dettagli.", true);
+            // Imposta il tipo di default e aggiorna le opzioni di spessore e diametro
+            tipoSelect.value = tipo;
+            updateSpessoreAndDiametro();
         }
-    });
 
-    // Inizializza i menu a tendina con i valori corretti
-    updateOptions();
-};
+        function updateSpessoreAndDiametro() {
+             const materiale = document.getElementById('materiale').value;
+             const tipo = document.getElementById('tipo').value;
+             const spessoreSelect = document.getElementById('spessore');
+             const diametroSelect = document.getElementById('diametro');
+
+             spessoreSelect.innerHTML = '';
+             diametroSelect.innerHTML = '';
+             
+             // Ottieni le opzioni di spessore e diametro
+             const selectedMaterial = materials[materiale];
+             const selectedType = selectedMaterial[tipo];
+             if (selectedType) {
+                 selectedType.spessori.forEach(spessore => {
+                     const option = document.createElement('option');
+                     option.value = spessore;
+                     option.text = spessore + " mm";
+                     spessoreSelect.appendChild(option);
+                 });
+
+                 const selectedSpessore = spessoreSelect.value;
+                 const diametri = selectedType.diametri[selectedSpessore];
+                 if (diametri) {
+                     diametri.forEach(diametro => {
+                         const option = document.createElement('option');
+                         option.value = diametro;
+                         option.text = diametro + " mm";
+                         diametroSelect.appendChild(option);
+                     });
+                 }
+             }
+        }
+
+        function calculatePrice() {
+            const materiale = document.getElementById('materiale').value;
+            const tipo = document.getElementById('tipo').value;
+            const spessore = document.getElementById('spessore').value;
+            const diametro = document.getElementById('diametro').value;
+            const quantita = document.getElementById('quantita').value;
+            const resultContainer = document.getElementById('result-container');
+            const errorElement = document.getElementById('error-message');
+            const errorTextElement = document.getElementById('error-text');
+
+            if (!materiale || !tipo || !spessore || !diametro || !quantita || quantita <= 0) {
+                errorTextElement.textContent = "Assicurati di aver selezionato tutte le opzioni e inserito una quantità valida.";
+                errorElement.classList.remove('hidden');
+                resultContainer.classList.add('hidden');
+                return;
+            }
+
+            const spessoreInt = parseInt(spessore);
+            const diametroInt = parseInt(diametro);
+            const quantitaFloat = parseFloat(quantita);
+
+            const selectedMaterial = materials[materiale];
+            const selectedType = selectedMaterial[tipo];
+            
+            if (selectedType && selectedType.prezzi[spessoreInt] && selectedType.prezzi[spessoreInt][diametroInt]) {
+                const prezzoUnitario = selectedType.prezzi[spessoreInt][diametroInt];
+                const prezzoTotale = prezzoUnitario * quantitaFloat;
+
+                document.getElementById('prezzoUnitario').textContent = `Prezzo unitario: €${prezzoUnitario.toFixed(2)}`;
+                document.getElementById('prezzoTotale').textContent = `Prezzo totale: €${prezzoTotale.toFixed(2)}`;
+
+                resultContainer.classList.remove('hidden');
+                errorElement.classList.add('hidden');
+            } else {
+                errorTextElement.textContent = "Nessun prezzo trovato per le opzioni selezionate.";
+                errorElement.classList.remove('hidden');
+                resultContainer.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('spessore').addEventListener('change', updateSpessoreAndDiametro);
+
+        // Chiamata iniziale per popolare le opzioni
+        window.onload = function() {
+            updateOptions();
+        }
+    </script>
+</body>
+</html>
 

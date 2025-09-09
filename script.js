@@ -103,12 +103,10 @@ window.onload = function () {
     const notificationBox = document.getElementById('notification-box');
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     const cantiereInput = document.getElementById('cantiere');
-    const logoImg = document.getElementById('logo-img');
     const uploadBtn = document.getElementById('upload-btn');
     const imageUpload = document.getElementById('image-upload');
     const imagePreviewContainer = document.getElementById('image-preview-container');
 
-    let logoBase64 = logoImg.src.split(',')[1];
     let uploadedBase64Image = null;
 
     // Funzione per mostrare le notifiche
@@ -379,19 +377,18 @@ window.onload = function () {
             const date = new Date().toLocaleDateString('it-IT');
             let y = 20;
 
-            if (logoBase64) {
-                doc.addImage(logoBase64, 'PNG', 14, 15, 20, 20, 'ISOLDEM Logo');
-            }
             doc.setFontSize(22);
             doc.setFont("helvetica", "bold");
-            doc.text("ISOLDEM SRLS", 38, 25);
+            doc.text("ISOLDEM SRLS", 14, y);
             
+            y += 10;
             doc.setFontSize(12);
             doc.setFont("helvetica", "normal");
-            doc.text(`Preventivo per: ${cantiere}`, 14, 45);
-            doc.text(`Data: ${date}`, 14, 52);
+            doc.text(`Preventivo per: ${cantiere}`, 14, y);
+            y += 7;
+            doc.text(`Data: ${date}`, 14, y);
 
-            y = 65;
+            y += 10;
             
             const groupedItems = {};
             quoteItems.forEach(item => {

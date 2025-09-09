@@ -1,170 +1,178 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preventivi ISOLDEM SRLS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
+import java.util.HashMap;
+import java.util.Map;
+
+public class PriceList {
+
+    public static double getPrice(String material, String type, int thickness, int diameter) {
+        // Mappa dei prezzi
+        Map<String, Map<String, Map<Integer, Map<Integer, Double>>>> prices = new HashMap<>();
+
+        // Prezzi per la lana di roccia e polinor (stessi prezzi)
+        Map<String, Map<Integer, Map<Integer, Double>>> lanaPolinorPrices = new HashMap<>();
+
+        // Curve (Curva)
+        Map<Integer, Map<Integer, Double>> curvePrices = new HashMap<>();
+        Map<Integer, Double> curvePrices10 = new HashMap<>();
+        curvePrices10.put(18, 12.60);
+        curvePrices10.put(22, 13.80);
+        curvePrices10.put(28, 14.40);
+        curvePrices10.put(34, 15.60);
+        curvePrices10.put(40, 15.60);
+        curvePrices10.put(48, 16.80);
+        curvePrices10.put(60, 18.00);
+        curvePrices.put(10, curvePrices10);
+        
+        Map<Integer, Double> curvePrices20 = new HashMap<>();
+        curvePrices20.put(18, 16.50);
+        curvePrices20.put(22, 16.90);
+        curvePrices20.put(28, 17.10);
+        curvePrices20.put(34, 17.70);
+        curvePrices20.put(40, 18.90);
+        curvePrices20.put(48, 19.50);
+        curvePrices20.put(60, 20.70);
+        curvePrices.put(20, curvePrices20);
+
+        lanaPolinorPrices.put("Curva", curvePrices);
+
+        // Nudo
+        Map<Integer, Map<Integer, Double>> nudoPrices = new HashMap<>();
+        Map<Integer, Double> nudoPrices10 = new HashMap<>();
+        nudoPrices10.put(18, 12.60);
+        nudoPrices10.put(22, 13.80);
+        nudoPrices10.put(28, 14.40);
+        nudoPrices10.put(34, 15.60);
+        nudoPrices10.put(40, 15.60);
+        nudoPrices10.put(48, 16.80);
+        nudoPrices10.put(60, 18.00);
+        nudoPrices.put(10, nudoPrices10);
+
+        Map<Integer, Double> nudoPrices20 = new HashMap<>();
+        nudoPrices20.put(18, 16.50);
+        nudoPrices20.put(22, 16.90);
+        nudoPrices20.put(28, 17.10);
+        nudoPrices20.put(34, 17.70);
+        nudoPrices20.put(40, 18.90);
+        nudoPrices20.put(48, 19.50);
+        nudoPrices20.put(60, 20.70);
+        nudoPrices.put(20, nudoPrices20);
+        
+        lanaPolinorPrices.put("Nudo", nudoPrices);
+
+        // PVC
+        Map<Integer, Map<Integer, Double>> pvcPrices = new HashMap<>();
+        Map<Integer, Double> pvcPrices10 = new HashMap<>();
+        pvcPrices10.put(18, 16.20);
+        pvcPrices10.put(22, 18.50);
+        pvcPrices10.put(28, 19.20);
+        pvcPrices10.put(34, 20.40);
+        pvcPrices10.put(40, 21.60);
+        pvcPrices10.put(48, 24.00);
+        pvcPrices10.put(60, 27.60);
+        pvcPrices.put(10, pvcPrices10);
+
+        Map<Integer, Double> pvcPrices20 = new HashMap<>();
+        pvcPrices20.put(18, 16.50);
+        pvcPrices20.put(22, 16.90);
+        pvcPrices20.put(28, 17.10);
+        pvcPrices20.put(34, 17.70);
+        pvcPrices20.put(40, 18.90);
+        pvcPrices20.put(48, 19.50);
+        pvcPrices20.put(60, 20.70);
+        pvcPrices.put(20, pvcPrices20);
+
+        lanaPolinorPrices.put("PVC", pvcPrices);
+
+        // Alluminio
+        Map<Integer, Map<Integer, Double>> alluminioPrices = new HashMap<>();
+        Map<Integer, Double> alluminioPrices10 = new HashMap<>();
+        alluminioPrices10.put(18, 38.18);
+        alluminioPrices10.put(22, 41.82);
+        alluminioPrices10.put(28, 43.64);
+        alluminioPrices10.put(34, 46.59);
+        alluminioPrices10.put(40, 48.41);
+        alluminioPrices10.put(48, 54.17);
+        alluminioPrices10.put(60, 58.64);
+        alluminioPrices.put(10, alluminioPrices10);
+
+        Map<Integer, Double> alluminioPrices20 = new HashMap<>();
+        alluminioPrices20.put(18, 35.40);
+        alluminioPrices20.put(22, 36.60);
+        alluminioPrices20.put(28, 37.20);
+        alluminioPrices20.put(34, 38.40);
+        alluminioPrices20.put(40, 39.00);
+        alluminioPrices20.put(48, 41.40);
+        alluminioPrices20.put(60, 44.40);
+        alluminioPrices.put(20, alluminioPrices20);
+
+        lanaPolinorPrices.put("Alluminio", alluminioPrices);
+        
+        // Inox
+        Map<Integer, Map<Integer, Double>> inoxPrices = new HashMap<>();
+        Map<Integer, Double> inoxPrices10 = new HashMap<>();
+        inoxPrices10.put(18, 62.40);
+        inoxPrices10.put(22, 63.90);
+        inoxPrices10.put(28, 64.90);
+        inoxPrices10.put(34, 67.50);
+        inoxPrices10.put(40, 71.60);
+        inoxPrices10.put(48, 74.40);
+        inoxPrices10.put(60, 76.80);
+        inoxPrices.put(10, inoxPrices10);
+
+        Map<Integer, Double> inoxPrices20 = new HashMap<>();
+        inoxPrices20.put(18, 47.20);
+        inoxPrices20.put(22, 47.60);
+        inoxPrices20.put(28, 48.00);
+        inoxPrices20.put(34, 49.60);
+        inoxPrices20.put(40, 52.00);
+        inoxPrices20.put(48, 55.20);
+        inoxPrices20.put(60, 58.40);
+        inoxPrices.put(20, inoxPrices20);
+
+        lanaPolinorPrices.put("Inox", inoxPrices);
+
+
+        prices.put("Lana di roccia", lanaPolinorPrices);
+        prices.put("Polinor", lanaPolinorPrices);
+
+
+        // Prezzi per la gomma
+        Map<String, Map<Integer, Map<Integer, Double>>> gommaPrices = new HashMap<>();
+
+        // Nudo
+        Map<Integer, Map<Integer, Double>> gommaNudoPrices = new HashMap<>();
+        Map<Integer, Double> gommaNudoPrices6 = new HashMap<>();
+        gommaNudoPrices6.put(18, 12.60);
+        gommaNudoPrices6.put(22, 13.80);
+        gommaNudoPrices6.put(28, 14.40);
+        gommaNudoPrices6.put(34, 15.60);
+        gommaNudoPrices6.put(40, 15.60);
+        gommaNudoPrices6.put(48, 16.80);
+        gommaNudoPrices6.put(60, 18.00);
+        gommaNudoPrices.put(6, gommaNudoPrices6);
+
+        Map<Integer, Double> gommaNudoPrices9 = new HashMap<>();
+        gommaNudoPrices9.put(18, 16.20);
+        gommaNudoPrices9.put(22, 18.50);
+        gommaNudoPrices9.put(28, 19.20);
+        gommaNudoPrices9.put(34, 20.40);
+        gommaNudoPrices9.put(40, 21.60);
+        gommaNudoPrices9.put(48, 24.00);
+        gommaNudoPrices9.put(60, 27.60);
+        gommaNudoPrices.put(9, gommaNudoPrices9);
+
+        gommaPrices.put("Nudo", gommaNudoPrices);
+        
+        prices.put("Gomma", gommaPrices);
+        
+        // Verifica se le chiavi esistono
+        if (prices.containsKey(material) && prices.get(material).containsKey(type) &&
+            prices.get(material).get(type).containsKey(thickness) &&
+            prices.get(material).get(type).get(thickness).containsKey(diameter)) {
+            
+            return prices.get(material).get(type).get(thickness).get(diameter);
         }
-        .container { max-width: 800px; margin: 2rem auto; }
-        .form-input, .form-select {
-            width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem;
-            border: 1px solid #d1d5db; background-color: white;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            outline: none;
-        }
-        .form-input:focus, .form-select:focus {
-            border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-        .btn { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        .btn-primary { background-color: #4f46e5; color: white; }
-        .btn-primary:hover { background-color: #4338ca; }
-        .btn-secondary { background-color: #10b981; color: white; }
-        .btn-secondary:hover { background-color: #059669; }
-        .btn-danger { background-color: #ef4444; color: white; padding: 0.5rem; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
-        .btn-danger:hover { background-color: #dc2626; }
-        .nav-btn { background-color: #e5e7eb; color: #4b5563; }
-        .nav-btn.active { background-color: #4f46e5; color: white; }
-        #notification-box {
-            position: fixed; top: 20px; right: 20px; background-color: #dc2626; color: white;
-            padding: 1rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 1000; opacity: 0; transition: opacity 0.5s ease-in-out;
-            pointer-events: none;
-        }
-        #notification-box.show { opacity: 1; }
-        .chat-container { height: calc(100vh - 220px); }
-        .chat-message { max-width: 80%; width: fit-content; }
-        .user-message { background-color: #dbeafe; color: #1e40af; align-self: flex-end; }
-        .bot-message { background-color: #e5e7eb; color: #374151; align-self: flex-start; }
-    </style>
-</head>
-<body class="bg-gray-100">
 
-    <div id="notification-box"></div>
-
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-2xl shadow-lg">
-
-        <!-- Header -->
-        <div class="flex items-center justify-center mb-6 pb-4 border-b border-gray-200">
-            <h1 class="text-3xl font-bold ml-4">ISOLDEM SRLS</h1>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="flex border-b border-gray-200 mb-6">
-            <button id="tab-preventivo" class="nav-btn active flex-1 text-center py-3 px-4 text-sm font-medium">Preventivatore</button>
-            <button id="tab-chat" class="nav-btn flex-1 text-center py-3 px-4 text-sm font-medium">Chat IA</button>
-        </div>
-
-        <div id="content">
-            <!-- Preventivo Section (Visible by default) -->
-            <div id="preventivo-section">
-                <div class="space-y-6">
-                    <div>
-                        <label for="cantiere" class="block text-sm font-medium text-gray-700 mb-1">Nome del cantiere</label>
-                        <input type="text" id="cantiere" class="form-input" placeholder="Es. Cantiere Via Roma">
-                    </div>
-                    <!-- Sezione per l'aggiunta di articoli -->
-                    <div class="p-6 border border-gray-200 rounded-lg">
-                        <h2 class="text-xl font-semibold mb-4 text-gray-800">Aggiungi Articolo</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="material-type" class="block text-sm font-medium text-gray-700 mb-1">Tipo di materiale</label>
-                                <select id="material-type" class="form-select">
-                                    <option>Lana di roccia</option>
-                                    <option>Polinor</option>
-                                    <option>Gomma</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="coating-type" class="block text-sm font-medium text-gray-700 mb-1">Tipo di rivestimento</label>
-                                <select id="coating-type" class="form-select">
-                                    <option>Acciaio</option>
-                                    <option>Alluminio</option>
-                                    <option>PVC ALU</option>
-                                    <option>PVC normale</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="diameter" class="block text-sm font-medium text-gray-700 mb-1">Diametro (mm)</label>
-                                <select id="diameter" class="form-select"></select>
-                            </div>
-                            <div>
-                                <label for="thickness" class="block text-sm font-medium text-gray-700 mb-1">Spessore (mm)</label>
-                                <select id="thickness" class="form-select"></select>
-                            </div>
-                            <div>
-                                <label for="length" class="block text-sm font-medium text-gray-700 mb-1">Lunghezza Tubi (ML)</label>
-                                <input type="number" id="length" class="form-input" placeholder="0" min="0">
-                            </div>
-                            <div>
-                                <label for="curves" class="block text-sm font-medium text-gray-700 mb-1">Numero Curve (PZ)</label>
-                                <input type="number" id="curves" class="form-input" placeholder="0" min="0">
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <button id="add-item-btn" class="btn btn-secondary w-full">Aggiungi al Preventivo</button>
-                        </div>
-                    </div>
-
-                    <!-- Riepilogo Preventivo -->
-                    <div>
-                        <h2 class="text-xl font-semibold mb-4 text-gray-800">Riepilogo Preventivo</h2>
-                        <div id="quote-summary" class="space-y-4">
-                            <!-- Items will be added here -->
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-gray-200">
-                            <div class="flex justify-end items-center space-x-4 mb-4">
-                                <label for="discount" class="text-gray-600 font-medium">Sconto (%):</label>
-                                <input type="number" id="discount" class="form-input w-24 text-right" placeholder="0" min="0" max="100">
-                            </div>
-                            <div class="flex justify-end items-center text-2xl font-bold">
-                                <span>Totale:</span>
-                                <span id="total-cost" class="ml-4">€0.00</span>
-                            </div>
-                             <div class="mt-6 text-right">
-                                <button id="download-pdf-btn" class="btn btn-primary">Scarica PDF</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat IA Section (Initially hidden) -->
-            <div id="chat-section" class="hidden">
-                 <div class="flex flex-col h-full bg-white rounded-lg shadow-lg">
-                    <div id="chat-history" class="flex-1 p-4 space-y-4 overflow-y-auto">
-                        <!-- Chat messages will be appended here -->
-                        <div class="flex justify-start">
-                            <div class="chat-message bot p-3 rounded-xl shadow-md">Ciao! Sono un'IA esperta in isolazioni termoidrauliche. Scrivi qui la tua domanda o descrivi un lavoro per una stima dei tempi.</div>
-                        </div>
-                    </div>
-                    <div class="chat-input-container p-4 border-t border-gray-200">
-                        <div class="flex items-center w-full">
-                            <input type="file" id="image-upload" accept="image/*" class="hidden">
-                            <button id="upload-btn" class="mr-2 p-2 rounded-full hover:bg-gray-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                </svg>
-                            </button>
-                            <input type="text" id="chat-input" class="flex-1 form-input" placeholder="Scrivi il tuo messaggio...">
-                            <button id="send-btn" class="ml-2 btn btn-primary">Invia</button>
-                        </div>
-                        <div id="image-preview-container" class="mt-2"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+        return 0.0; // Restituisce 0.0 se il prezzo non viene trovato
+    }
+}
 

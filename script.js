@@ -1,83 +1,61 @@
 window.onload = function () {
     const quoteItems = [];
     let uploadedImage = null;
-    
-    // Oggetto prices aggiornato con i nuovi dati del listino
+   
+    // Oggetto prezzi corretto in base ai listini forniti
     const prices = {
         'Lana di roccia': {
             'Senza Rivestimento': {
-                '18': { 'tubo': 12.60, 'curva': 38.18 }, '22': { 'tubo': 13.20, 'curva': 40.00 },
-                '28': { 'tubo': 14.40, 'curva': 43.64 }, '34': { 'tubo': 15.60, 'curva': 44.57 },
-                '42': { 'tubo': 16.20, 'curva': 45.00 }, '48': { 'tubo': 16.80, 'curva': 42.16 },
-                '60': { 'tubo': 19.80, 'curva': 47.14 }, '76': { 'tubo': 27.36, 'curva': 55.84 },
-                '89': { 'tubo': 29.52, 'curva': 57.88 }, '114': { 'tubo': 37.73, 'curva': 63.95 },
-                '140': { 'tubo': 39.17, 'curva': 60.26 }, '168': { 'tubo': 43.92, 'curva': 53.56 },
-                '219': { 'tubo': 45.00, 'curva': 45.45 }, '273': { 'tubo': 49.56, 'curva': 42.72 },
-                '324': { 'tubo': 57.12, 'curva': 43.27 }
+                '20': { 'tubo': 12.60, 'curva': 38.18 }, '25': { 'tubo': 13.20, 'curva': 40.00 },
+                '30': { 'tubo': 14.40, 'curva': 43.64 }, '40': { 'tubo': 15.00, 'curva': 44.12 },
+                '50': { 'tubo': 15.60, 'curva': 44.57 }, '60': { 'tubo': 16.20, 'curva': 45.00 }
             },
             'PVC normale': {
-                '18': { 'tubo': 16.20, 'curva': 49.09 }, '22': { 'tubo': 16.50, 'curva': 50.00 },
-                '28': { 'tubo': 17.10, 'curva': 51.82 }, '34': { 'tubo': 18.30, 'curva': 52.29 },
-                '42': { 'tubo': 19.50, 'curva': 54.17 }, '48': { 'tubo': 19.98, 'curva': 55.50 },
-                '60': { 'tubo': 25.80, 'curva': 61.43 }, '76': { 'tubo': 29.40, 'curva': 64.00 },
-                '89': { 'tubo': 32.64, 'curva': 64.00 }, '114': { 'tubo': 41.16, 'curva': 69.76 },
-                '140': { 'tubo': 42.24, 'curva': 64.98 }, '168': { 'tubo': 47.52, 'curva': 65.10 },
-                '219': { 'tubo': 53.76, 'curva': 65.56 }, '273': { 'tubo': 56.28, 'curva': 56.85 },
-                '324': { 'tubo': 63.00, 'curva': 53.45 }
+                '20': { 'tubo': 16.20, 'curva': 49.09 }, '25': { 'tubo': 16.50, 'curva': 50.00 },
+                '30': { 'tubo': 17.10, 'curva': 51.82 }, '40': { 'tubo': 17.70, 'curva': 52.06 },
+                '50': { 'tubo': 18.30, 'curva': 52.29 }, '60': { 'tubo': 19.50, 'curva': 54.17 }
+            },
+            'PVC ALU': {
+                '20': { 'tubo': 18.90, 'curva': 54.00 }
             },
             'Alluminio': {
-                '18': { 'tubo': 34.20, 'curva': 103.64 }, '22': { 'tubo': 35.40, 'curva': 107.27 },
-                '28': { 'tubo': 36.00, 'curva': 109.09 }, '34': { 'tubo': 39.00, 'curva': 114.71 },
-                '42': { 'tubo': 41.70, 'curva': 115.83 }, '48': { 'tubo': 43.80, 'curva': 121.67 },
-                '60': { 'tubo': 55.20, 'curva': 131.43 }, '76': { 'tubo': 63.00, 'curva': 128.57 },
-                '89': { 'tubo': 68.16, 'curva': 133.65 }, '114': { 'tubo': 82.56, 'curva': 139.93 },
-                '140': { 'tubo': 84.96, 'curva': 130.71 }, '168': { 'tubo': 96.60, 'curva': 132.33 },
-                '219': { 'tubo': 109.80, 'curva': 133.90 }, '273': { 'tubo': 117.36, 'curva': 118.55 },
-                '324': { 'tubo': 144.96, 'curva': 109.82 }
+                '20': { 'tubo': 34.20, 'curva': 103.64 }, '25': { 'tubo': 35.40, 'curva': 107.27 },
+                '30': { 'tubo': 36.00, 'curva': 109.09 }, '40': { 'tubo': 37.80, 'curva': 111.18 },
+                '50': { 'tubo': 39.00, 'curva': 114.71 }, '60': { 'tubo': 41.70, 'curva': 115.83 }
             },
             'Inox': {
-                '18': { 'tubo': 45.60, 'curva': 138.18 }, '22': { 'tubo': 47.20, 'curva': 143.03 },
-                '28': { 'tubo': 48.00, 'curva': 145.45 }, '34': { 'tubo': 52.00, 'curva': 152.94 },
-                '42': { 'tubo': 55.60, 'curva': 154.44 }, '48': { 'tubo': 58.40, 'curva': 162.22 },
-                '60': { 'tubo': 73.60, 'curva': 175.24 }, '76': { 'tubo': 84.00, 'curva': 171.43 },
-                '89': { 'tubo': 90.88, 'curva': 178.20 }, '114': { 'tubo': 110.08, 'curva': 186.58 },
-                '140': { 'tubo': 113.28, 'curva': 174.28 }, '168': { 'tubo': 128.80, 'curva': 176.44 },
-                '219': { 'tubo': 146.40, 'curva': 178.54 }, '273': { 'tubo': 156.48, 'curva': 158.06 },
-                '324': { 'tubo': 193.28, 'curva': 146.42 }
+                '20': { 'tubo': 45.60, 'curva': 138.18 }, '25': { 'tubo': 47.20, 'curva': 143.03 },
+                '30': { 'tubo': 48.00, 'curva': 145.45 }, '40': { 'tubo': 50.40, 'curva': 148.24 },
+                '50': { 'tubo': 52.00, 'curva': 152.94 }, '60': { 'tubo': 55.60, 'curva': 154.44 }
             }
         },
         'Polinor': {
-             'Senza Rivestimento': {
-                '18': { 'tubo': 12.60, 'curva': 38.18 }, '22': { 'tubo': 13.20, 'curva': 40.00 },
-                '28': { 'tubo': 14.40, 'curva': 43.64 }, '34': { 'tubo': 15.60, 'curva': 44.57 },
-                '42': { 'tubo': 16.20, 'curva': 45.00 }, '48': { 'tubo': 16.80, 'curva': 42.16 },
-                '60': { 'tubo': 19.80, 'curva': 47.14 }, '76': { 'tubo': 27.36, 'curva': 55.84 },
-                '89': { 'tubo': 29.52, 'curva': 57.88 }
+            'Senza Rivestimento': {
+                '20': { 'tubo': 12.60, 'curva': 38.18 }, '25': { 'tubo': 13.20, 'curva': 40.00 },
+                '30': { 'tubo': 14.40, 'curva': 43.64 }, '40': { 'tubo': 15.00, 'curva': 44.12 },
+                '50': { 'tubo': 15.60, 'curva': 44.57 }, '60': { 'tubo': 16.20, 'curva': 45.00 }
             },
             'PVC normale': {
-                '18': { 'tubo': 16.20, 'curva': 49.09 }, '22': { 'tubo': 16.50, 'curva': 50.00 },
-                '28': { 'tubo': 17.10, 'curva': 51.82 }, '34': { 'tubo': 18.30, 'curva': 52.29 },
-                '42': { 'tubo': 19.50, 'curva': 54.17 }, '48': { 'tubo': 19.98, 'curva': 55.50 },
-                '60': { 'tubo': 25.80, 'curva': 61.43 }, '76': { 'tubo': 29.40, 'curva': 64.00 },
-                '89': { 'tubo': 32.64, 'curva': 64.00 }
+                '20': { 'tubo': 16.20, 'curva': 49.09 }, '25': { 'tubo': 16.50, 'curva': 50.00 },
+                '30': { 'tubo': 17.10, 'curva': 51.82 }, '40': { 'tubo': 17.70, 'curva': 52.06 },
+                '50': { 'tubo': 18.30, 'curva': 52.29 }, '60': { 'tubo': 19.50, 'curva': 54.17 }
+            },
+            'PVC ALU': {
+                '20': { 'tubo': 18.90, 'curva': 54.00 }
             },
             'Alluminio': {
-                '18': { 'tubo': 34.20, 'curva': 103.64 }, '22': { 'tubo': 35.40, 'curva': 107.27 },
-                '28': { 'tubo': 36.00, 'curva': 109.09 }, '34': { 'tubo': 39.00, 'curva': 114.71 },
-                '42': { 'tubo': 41.70, 'curva': 115.83 }, '48': { 'tubo': 43.80, 'curva': 121.67 },
-                '60': { 'tubo': 55.20, 'curva': 131.43 }, '76': { 'tubo': 63.00, 'curva': 128.57 },
-                '89': { 'tubo': 68.16, 'curva': 133.65 }
+                '20': { 'tubo': 34.20, 'curva': 103.64 }, '25': { 'tubo': 35.40, 'curva': 107.27 },
+                '30': { 'tubo': 36.00, 'curva': 109.09 }, '40': { 'tubo': 37.80, 'curva': 111.18 },
+                '50': { 'tubo': 39.00, 'curva': 114.71 }, '60': { 'tubo': 41.70, 'curva': 115.83 }
             },
             'Inox': {
-                '18': { 'tubo': 45.60, 'curva': 138.18 }, '22': { 'tubo': 47.20, 'curva': 143.03 },
-                '28': { 'tubo': 48.00, 'curva': 145.45 }, '34': { 'tubo': 52.00, 'curva': 152.94 },
-                '42': { 'tubo': 55.60, 'curva': 154.44 }, '48': { 'tubo': 58.40, 'curva': 162.22 },
-                '60': { 'tubo': 73.60, 'curva': 175.24 }, '76': { 'tubo': 84.00, 'curva': 171.43 },
-                '89': { 'tubo': 90.88, 'curva': 178.20 }
+                '20': { 'tubo': 45.60, 'curva': 138.18 }, '25': { 'tubo': 47.20, 'curva': 143.03 },
+                '30': { 'tubo': 48.00, 'curva': 145.45 }, '40': { 'tubo': 50.40, 'curva': 148.24 },
+                '50': { 'tubo': 52.00, 'curva': 152.94 }, '60': { 'tubo': 55.60, 'curva': 154.44 }
             }
         },
         'Gomma': {
-             'Senza Rivestimento': {
+            'Senza Rivestimento': {
                 '18': { 'tubo': 16.80, 'curva': 50.91 }, '19': { 'tubo': 16.80, 'curva': 50.91 },
                 '22': { 'tubo': 20.40, 'curva': 61.82 }, '25': { 'tubo': 21.60, 'curva': 65.45 },
                 '28': { 'tubo': 19.20, 'curva': 56.47 }, '32': { 'tubo': 21.60, 'curva': 63.53 },
@@ -167,11 +145,13 @@ window.onload = function () {
             notificationBox.classList.remove('show');
         }, 3000);
     }
-    
+   
     // Funzione per aggiornare le opzioni dei menu a tendina
     function updateOptions() {
         const selectedMaterial = materialSelect.value;
-        
+        const selectedCoating = coatingSelect.value;
+
+        // Aggiorna opzioni di diametro
         diameterSelect.innerHTML = '';
         if (diameters[selectedMaterial]) {
             diameters[selectedMaterial].forEach(d => {
@@ -181,10 +161,12 @@ window.onload = function () {
                 diameterSelect.appendChild(option);
             });
         }
-        
+       
+        // Aggiorna opzioni di spessore
         thicknessSelect.innerHTML = '';
-        if (thicknesses[selectedMaterial]) {
-            thicknesses[selectedMaterial].forEach(t => {
+        const relevantThicknesses = Object.keys(prices[selectedMaterial]?.[selectedCoating] || {});
+        if (relevantThicknesses.length > 0) {
+            relevantThicknesses.forEach(t => {
                 const option = document.createElement('option');
                 option.value = t;
                 option.textContent = t;
@@ -210,17 +192,17 @@ window.onload = function () {
         for (const group in groupedItems) {
             const groupContainer = document.createElement('div');
             groupContainer.className = 'line-item p-4 mb-4 border rounded-lg';
-            
+           
             let groupTotal = 0;
             let groupHtml = `<div class="flex justify-between items-center font-bold mb-2">
                                 <span>${group}</span>
                                 <span class="group-total"></span>
                              </div>`;
-            
+           
             groupedItems[group].forEach((item, index) => {
                 const itemTotal = (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve);
                 groupTotal += itemTotal;
-                
+               
                 const itemHtml = `
                     <div class="flex justify-between items-center py-1" data-index="${quoteItems.indexOf(item)}">
                         <div>
@@ -246,7 +228,7 @@ window.onload = function () {
 
             total += groupTotal;
         }
-        
+       
         const discount = parseFloat(discountInput.value) || 0;
         const discountedTotal = total * (1 - discount / 100);
         totalCostEl.textContent = `€${discountedTotal.toFixed(2)}`;
@@ -262,8 +244,9 @@ window.onload = function () {
 
     // Gestione degli eventi
     materialSelect.addEventListener('change', updateOptions);
+    coatingSelect.addEventListener('change', updateOptions);
     discountInput.addEventListener('input', renderQuote);
-    
+   
     addItemBtn.addEventListener('click', () => {
         const material = materialSelect.value;
         const coating = coatingSelect.value;
@@ -282,7 +265,7 @@ window.onload = function () {
             showNotification(`Prezzo non disponibile per ${material} con spessore ${thickness} e rivestimento ${coating}.`, true);
             return;
         }
-        
+       
         const pricePerMeter = priceData.tubo || 0;
         const pricePerCurve = priceData.curva || 0;
 
@@ -325,7 +308,7 @@ window.onload = function () {
         showChatMessage(userMessage, 'user');
         chatInput.value = '';
         imagePreviewContainer.innerHTML = '';
-        
+       
         const apiKey = "";
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
@@ -353,7 +336,7 @@ window.onload = function () {
             });
             uploadedBase64Image = null;
         }
-        
+       
         const loadingMessageEl = document.createElement('div');
         loadingMessageEl.className = 'flex justify-start';
         loadingMessageEl.innerHTML = `<div class="chat-message bot p-3 rounded-xl shadow-md bot-message">...</div>`;
@@ -366,10 +349,10 @@ window.onload = function () {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            
+           
             const result = await response.json();
             const botResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-            
+           
             loadingMessageEl.remove();
             if (botResponseText) {
                 showChatMessage(botResponseText, 'bot');
@@ -392,7 +375,7 @@ window.onload = function () {
 
     // Gestione dell'upload immagine
     uploadBtn.addEventListener('click', () => imageUpload.click());
-    
+   
     imageUpload.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (!file) return;
@@ -401,7 +384,7 @@ window.onload = function () {
         reader.onload = (e) => {
             const base64Image = e.target.result.split(',')[1];
             uploadedBase64Image = base64Image;
-            
+           
             const imgPreview = document.createElement('img');
             imgPreview.src = e.target.result;
             imgPreview.className = 'w-24 h-24 rounded-lg object-cover mr-2';
@@ -420,7 +403,7 @@ window.onload = function () {
         try {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
+           
             const cantiere = cantiereInput.value || 'N/A';
             const date = new Date().toLocaleDateString('it-IT');
             let y = 20;
@@ -428,7 +411,7 @@ window.onload = function () {
             doc.setFontSize(22);
             doc.setFont("helvetica", "bold");
             doc.text("ISOLDEM SRLS", 14, y);
-            
+           
             y += 10;
             doc.setFontSize(12);
             doc.setFont("helvetica", "normal");
@@ -437,7 +420,7 @@ window.onload = function () {
             doc.text(`Data: ${date}`, 14, y);
 
             y += 10;
-            
+           
             const groupedItems = {};
             quoteItems.forEach(item => {
                 const key = `${item.material} + ${item.coating}`;
@@ -458,7 +441,7 @@ window.onload = function () {
                     ]);
                 });
             }
-            
+           
             doc.autoTable({
                 startY: y,
                 head: [['Descrizione', 'Lunghezza', 'Curve', 'Subtotale']],
@@ -468,7 +451,7 @@ window.onload = function () {
             });
 
             y = doc.autoTable.previous.finalY + 10;
-            
+           
             const total = quoteItems.reduce((sum, item) => sum + (item.length * item.pricePerMeter) + (item.curves * item.pricePerCurve), 0);
             const discount = parseFloat(discountInput.value) || 0;
             const discountedTotal = total * (1 - discount / 100);
@@ -477,16 +460,16 @@ window.onload = function () {
             doc.setFont("helvetica", "bold");
             doc.text(`Subtotale:`, 140, y, { align: 'right' });
             doc.text(`€${total.toFixed(2)}`, 200, y, { align: 'right' });
-            
+           
             y += 7;
             doc.text(`Sconto (${discount}%):`, 140, y, { align: 'right' });
             doc.text(`-€${(total - discountedTotal).toFixed(2)}`, 200, y, { align: 'right' });
-            
+           
             y += 10;
             doc.setFontSize(14);
             doc.text(`TOTALE:`, 140, y, { align: 'right' });
             doc.text(`€${discountedTotal.toFixed(2)}`, 200, y, { align: 'right' });
-            
+           
             doc.save(`Preventivo_${cantiere.replace(/\s/g, '_')}.pdf`);
 
         } catch (error) {
@@ -498,4 +481,3 @@ window.onload = function () {
     // Inizializza i menu a tendina con i valori corretti
     updateOptions();
 };
-

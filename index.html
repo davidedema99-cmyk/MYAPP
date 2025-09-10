@@ -64,6 +64,9 @@
             font-weight: 700;
             color: #1a237e;
         }
+        .grid-cols-5 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
 
         /* Nascondi elementi non necessari per la stampa */
         @media print {
@@ -85,7 +88,7 @@
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 md:p-8">
 
-    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-10 w-full max-w-3xl border border-gray-200">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-10 w-full max-w-4xl border border-gray-200">
         <div class="flex flex-col md:flex-row items-center justify-between mb-8">
             <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-800 mb-2 md:mb-0">ISOLDEM SRLS</h1>
             <p class="text-sm text-gray-600">Generatore di Preventivi</p>
@@ -167,16 +170,23 @@
                 
                 <hr class="my-6 border-gray-300">
 
-                <!-- Totale -->
-                <div class="flex justify-end items-center mt-6">
-                    <span class="text-xl font-bold text-gray-700">Totale:</span>
-                    <span id="costoTotale" class="ml-4 text-3xl font-extrabold text-indigo-600">0.00 €</span>
+                <div class="flex flex-col items-end space-y-2">
+                    <!-- Sezione Sconto -->
+                    <div class="flex items-center space-x-2">
+                        <label for="sconto" class="text-sm font-medium text-gray-700">Sconto (%)</label>
+                        <input type="number" id="sconto" value="0" min="0" max="100" class="w-20 px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <!-- Totale -->
+                    <div class="flex items-center">
+                        <span class="text-xl font-bold text-gray-700">Totale:</span>
+                        <span id="costoTotale" class="ml-4 text-3xl font-extrabold text-indigo-600">0.00 €</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Pulsante per scaricare il PDF -->
             <div class="mt-8 text-center">
-                <button id="downloadPdf" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
+                <button id="downloadPdf" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
                     Scarica Preventivo PDF
                 </button>
             </div>
@@ -207,8 +217,9 @@
         </div>
 
         <div class="w-full">
-            <div class="grid grid-cols-4 text-center table-header rounded-t-lg">
+            <div class="grid grid-cols-5 text-center table-header rounded-t-lg">
                 <div>Materiale</div>
+                <div>DN/Spessore</div>
                 <div>Quantità</div>
                 <div>Prezzo Unitario</div>
                 <div>Subtotale</div>
@@ -220,6 +231,9 @@
 
         <div class="flex justify-end">
             <div class="total-box text-right max-w-sm w-full">
+                <p class="text-sm">Subtotale: <span id="pdfSubtotale"></span></p>
+                <p class="text-sm">Sconto (<span id="pdfScontoPercent"></span>%): <span id="pdfScontoValore"></span></p>
+                <hr class="my-2">
                 <p class="total-text">Totale: <span id="pdfCostoTotale"></span></p>
             </div>
         </div>
@@ -247,6 +261,7 @@
         const costoTotaleSpan = document.getElementById('costoTotale');
         const downloadPdfBtn = document.getElementById('downloadPdf');
         const nomeCantiereInput = document.getElementById('nomeCantiere');
+        const scontoInput = document.getElementById('sconto');
         const errorMessageDiv = document.getElementById('errorMessage');
         const errorMessageText = document.getElementById('errorMessageText');
 
@@ -260,7 +275,6 @@
                 option.textContent = key;
                 dnSelect.appendChild(option);
             }
-            // Ricalcola il totale dopo aver aggiornato le opzioni
             calcolaTotale();
         }
 
@@ -315,7 +329,6 @@
             aggiornaRiepilogo();
             calcolaTotale();
 
-            // Resetta i campi di input
             quantitaInput.value = 1;
             curveInput.value = 0;
         }
@@ -359,49 +372,56 @@
         }
 
         function calcolaTotale() {
-            const totale = preventivo.reduce((sum, item) => sum + item.subtotale, 0);
-            costoTotaleSpan.textContent = `€${totale.toFixed(2)}`;
+            const subtotale = preventivo.reduce((sum, item) => sum + item.subtotale, 0);
+            const scontoPercent = parseFloat(scontoInput.value) || 0;
+            const scontoValore = subtotale * (scontoPercent / 100);
+            const totaleFinale = subtotale - scontoValore;
+
+            costoTotaleSpan.textContent = `€${totaleFinale.toFixed(2)}`;
             downloadPdfBtn.disabled = preventivo.length === 0;
-            if (preventivo.length > 0) {
-                 downloadPdfBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                 downloadPdfBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
-            } else {
-                 downloadPdfBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-                 downloadPdfBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-            }
         }
 
         function downloadPdf() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            // Imposta il PDF su formato orizzontale (landscape) A4
+            const doc = new jsPDF('l', 'mm', 'a4');
             const pdfContent = document.getElementById('pdf-content');
             
-            // Aggiorna il contenuto nascosto per la stampa
             document.getElementById('pdfCantiere').textContent = nomeCantiereInput.value || 'Non specificato';
             document.getElementById('pdfData').textContent = new Date().toLocaleDateString('it-IT');
             
+            const subtotale = preventivo.reduce((sum, item) => sum + item.subtotale, 0);
+            const scontoPercent = parseFloat(scontoInput.value) || 0;
+            const scontoValore = subtotale * (scontoPercent / 100);
+            const totaleFinale = subtotale - scontoValore;
+
+            document.getElementById('pdfSubtotale').textContent = `€${subtotale.toFixed(2)}`;
+            document.getElementById('pdfScontoPercent').textContent = scontoPercent;
+            document.getElementById('pdfScontoValore').textContent = `€${scontoValore.toFixed(2)}`;
+            document.getElementById('pdfCostoTotale').textContent = `€${totaleFinale.toFixed(2)}`;
+
             const tableBody = document.getElementById('pdfTableBody');
             tableBody.innerHTML = '';
             preventivo.forEach(item => {
                 const row = document.createElement('div');
-                row.classList.add('grid', 'grid-cols-4', 'text-center', 'table-row');
+                row.classList.add('grid', 'grid-cols-5', 'text-center', 'table-row');
                 row.innerHTML = `
                     <div class="py-3 px-4 text-sm">${item.materiale} - ${item.finitura}</div>
+                    <div class="py-3 px-4 text-sm">${item.dn}</div>
                     <div class="py-3 px-4 text-sm">${item.quantita} m / ${item.curve} curve</div>
-                    <div class="py-3 px-4 text-sm">€${item.prezzoMl.toFixed(2)}/m</div>
+                    <div class="py-3 px-4 text-sm">€${item.prezzoMl.toFixed(2)}</div>
                     <div class="py-3 px-4 font-bold text-sm">€${item.subtotale.toFixed(2)}</div>
                 `;
                 tableBody.appendChild(row);
             });
-            document.getElementById('pdfCostoTotale').textContent = costoTotaleSpan.textContent;
 
-            // Rendi visibile il contenuto del PDF per la cattura
             pdfContent.classList.remove('hidden');
 
             html2canvas(pdfContent, { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210;
-                const pageHeight = 295;
+                const imgWidth = 297; 
+                const pageHeight = 210; 
                 const imgHeight = canvas.height * imgWidth / canvas.width;
                 let heightLeft = imgHeight;
                 let position = 0;
@@ -418,7 +438,6 @@
                 
                 doc.save(`Preventivo_${nomeCantiereInput.value || 'Cantiere'}.pdf`);
                 
-                // Nascondi il contenuto del PDF dopo il download
                 pdfContent.classList.add('hidden');
             }).catch(error => {
                 console.error("Errore durante la generazione del PDF:", error);
@@ -430,6 +449,7 @@
         // Event Listeners
         materialeSelect.addEventListener('change', aggiornaDN);
         addArticleBtn.addEventListener('click', aggiungiArticolo);
+        scontoInput.addEventListener('input', calcolaTotale);
         downloadPdfBtn.addEventListener('click', downloadPdf);
         
         // Inizializza l'app al caricamento della pagina

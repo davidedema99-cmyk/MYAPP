@@ -308,8 +308,7 @@
             }
 
             const prezzoMl = articolo[finitura];
-            const prezzoCurva = articolo['prezzo_curva'];
-
+            
             if (isNaN(prezzoMl)) {
                  mostraErrore('Prezzo non disponibile per questa finitura.');
                 return;
@@ -317,7 +316,12 @@
 
             nascondiErrore();
 
-            const subtotale = (prezzoMl * quantita) + (prezzoCurva * curve);
+            // Calcolo del prezzo per le curve
+            const prezzoCurvaSingola = prezzoMl / 3;
+            const totaleCurve = prezzoCurvaSingola * curve;
+            const totaleMetriLineari = prezzoMl * quantita;
+
+            const subtotale = totaleMetriLineari + totaleCurve;
             
             const nuovoArticolo = {
                 materiale: materialeSelect.options[materialeSelect.selectedIndex].text,
@@ -326,7 +330,7 @@
                 quantita: quantita,
                 curve: curve,
                 prezzoMl: prezzoMl,
-                prezzoCurva: prezzoCurva,
+                prezzoCurva: prezzoCurvaSingola, // Salviamo il prezzo corretto della curva singola
                 subtotale: subtotale
             };
 
@@ -356,7 +360,9 @@
                     const descrizione = `
                         <div>
                             <p class="font-semibold text-gray-800">${articolo.materiale} + ${articolo.finitura}</p>
-                            <p class="text-sm text-gray-600">DN: ${articolo.dn} - ${articolo.quantita} m - ${articolo.curve} curve</p>
+                            <p class="text-sm text-gray-600">DN: ${articolo.dn}</p>
+                            <p class="text-sm text-gray-600">Metri lineari: ${articolo.quantita} (@€${articolo.prezzoMl.toFixed(2)}/ml) = €${(articolo.quantita * articolo.prezzoMl).toFixed(2)}</p>
+                            <p class="text-sm text-gray-600">Curve: ${articolo.curve} (@€${articolo.prezzoCurva.toFixed(2)}/curva) = €${(articolo.curve * articolo.prezzoCurva).toFixed(2)}</p>
                         </div>
                     `;
                     const prezzo = `

@@ -119,37 +119,37 @@ const prezziLanaPolinor = {
         '40': { 'nudo': 19.80, 'pvc': 25.80, 'alluminio': 55.20, 'inox': 73.60 }
     },
     '60': {
-        '20': { 'nudo': 16.80, 'pvc': 21.24, 'alluminio': 48.00, 'inox': 64.00 },
+        '20': { 'nudo': 19.80, 'pvc': 25.80, 'alluminio': 55.20, 'inox': 73.60 },
         '25': { 'nudo': 19.80, 'pvc': 25.80, 'alluminio': 55.20, 'inox': 73.60 },
         '30': { 'nudo': 19.80, 'pvc': 25.80, 'alluminio': 55.20, 'inox': 73.60 },
         '40': { 'nudo': 27.36, 'pvc': 29.40, 'alluminio': 63.00, 'inox': 84.00 }
     },
     '76': {
-        '20': { 'nudo': 19.80, 'pvc': 25.80, 'alluminio': 55.20, 'inox': 73.60 },
+        '20': { 'nudo': 27.36, 'pvc': 29.40, 'alluminio': 63.00, 'inox': 84.00 },
         '25': { 'nudo': 27.36, 'pvc': 29.40, 'alluminio': 63.00, 'inox': 84.00 },
         '30': { 'nudo': 27.36, 'pvc': 29.40, 'alluminio': 63.00, 'inox': 84.00 },
         '40': { 'nudo': 29.52, 'pvc': 32.64, 'alluminio': 68.16, 'inox': 90.88 }
     },
     '89': {
-        '20': { 'nudo': 27.36, 'pvc': 29.40, 'alluminio': 63.00, 'inox': 84.00 },
+        '20': { 'nudo': 29.52, 'pvc': 32.64, 'alluminio': 68.16, 'inox': 90.88 },
         '25': { 'nudo': 29.52, 'pvc': 32.64, 'alluminio': 68.16, 'inox': 90.88 },
         '30': { 'nudo': 29.52, 'pvc': 32.64, 'alluminio': 68.16, 'inox': 90.88 },
         '40': { 'nudo': 37.73, 'pvc': 41.16, 'alluminio': 82.56, 'inox': 110.08 }
     },
     '114': {
-        '20': { 'nudo': 29.52, 'pvc': 32.64, 'alluminio': 68.16, 'inox': 90.88 },
+        '20': { 'nudo': 37.73, 'pvc': 41.16, 'alluminio': 82.56, 'inox': 110.08 },
         '25': { 'nudo': 37.73, 'pvc': 41.16, 'alluminio': 82.56, 'inox': 110.08 },
         '30': { 'nudo': 37.73, 'pvc': 41.16, 'alluminio': 82.56, 'inox': 110.08 },
         '40': { 'nudo': 39.17, 'pvc': 42.24, 'alluminio': 84.96, 'inox': 113.28 }
     },
     '140': {
-        '20': { 'nudo': 37.73, 'pvc': 41.16, 'alluminio': 82.56, 'inox': 110.08 },
+        '20': { 'nudo': 39.17, 'pvc': 42.24, 'alluminio': 84.96, 'inox': 113.28 },
         '25': { 'nudo': 39.17, 'pvc': 42.24, 'alluminio': 84.96, 'inox': 113.28 },
         '30': { 'nudo': 39.17, 'pvc': 42.24, 'alluminio': 84.96, 'inox': 113.28 },
         '40': { 'nudo': 40.80, 'pvc': 47.52, 'alluminio': 96.60, 'inox': 128.80 }
     },
     '168': {
-        '20': { 'nudo': 39.17, 'pvc': 42.24, 'alluminio': 84.96, 'inox': 113.28 },
+        '20': { 'nudo': 40.80, 'pvc': 47.52, 'alluminio': 96.60, 'inox': 128.80 },
         '25': { 'nudo': 40.80, 'pvc': 47.52, 'alluminio': 96.60, 'inox': 128.80 },
         '30': { 'nudo': 40.80, 'pvc': 47.52, 'alluminio': 96.60, 'inox': 128.80 },
         '40': { 'nudo': 43.92, 'pvc': 53.76, 'alluminio': 109.80, 'inox': 146.40 }
@@ -165,7 +165,7 @@ const prezziLanaPolinor = {
     }
 };
 
-const quotes = [];
+const quoteItems = []; // Ho rinominato 'quotes' in 'quoteItems' per maggiore chiarezza
 
 const materialSelect = document.getElementById('material');
 const coatingSelect = document.getElementById('coating');
@@ -181,13 +181,15 @@ const discountAmountSpan = document.getElementById('discount-amount');
 const totalSpan = document.getElementById('total');
 const downloadPdfBtn = document.getElementById('download-pdf-btn');
 
-const prezzoBaseCurva = 20; // Prezzo di esempio per le curve, da personalizzare
+const curveConversionFactors = {
+    '22': 0.29, '28': 0.31, '35': 0.33, '43': 0.35, '48': 0.37, '60': 0.65,
+    '76': 0.69, '89': 0.73, '114': 1.06, '140': 1.13, '168': 1.21, '220': 1.81
+};
 
 function updateOptions() {
     const selectedMaterial = materialSelect.value;
     const currentMaterial = materiali[selectedMaterial];
 
-    // Aggiorna i diametri
     diameterSelect.innerHTML = '';
     currentMaterial.diametri.forEach(d => {
         const option = document.createElement('option');
@@ -196,55 +198,51 @@ function updateOptions() {
         diameterSelect.appendChild(option);
     });
 
-    // Aggiorna gli spessori
     updateThicknessOptions();
 }
 
 function updateThicknessOptions() {
     const selectedMaterial = materialSelect.value;
     const currentMaterial = materiali[selectedMaterial];
-
-    // Per lana e polinor ci sono più spessori per diametro
-    if (selectedMaterial === 'lana' || selectedMaterial === 'polinor') {
-        thicknessSelect.innerHTML = '';
-        currentMaterial.spessori.forEach(s => {
-            const option = document.createElement('option');
-            option.value = s;
-            option.textContent = `${s}mm`;
-            thicknessSelect.appendChild(option);
-        });
-    } else { // Per la gomma, gli spessori sono fissi
-        thicknessSelect.innerHTML = '';
-        currentMaterial.spessori.forEach(s => {
-            const option = document.createElement('option');
-            option.value = s;
-            option.textContent = `${s}mm`;
-            thicknessSelect.appendChild(option);
-        });
-    }
+    
+    thicknessSelect.innerHTML = '';
+    currentMaterial.spessori.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s;
+        option.textContent = `${s}mm`;
+        thicknessSelect.appendChild(option);
+    });
 }
 
 function getPrice(material, diameter, thickness, coating) {
+    let prices;
     if (material === 'gomma') {
-        const diam = diameter.toString();
-        const spess = thickness.toString();
-        return prezziGomma[diam][spess][coating];
-    } else if (material === 'lana' || material === 'polinor') {
-        const diam = diameter.toString();
-        const spess = thickness.toString();
-        // Aggiungo una logica di fallback per gli spessori che non hanno un valore in ogni listino
-        if (prezziLanaPolinor[diam] && prezziLanaPolinor[diam][spess] && prezziLanaPolinor[diam][spess][coating]) {
-            return prezziLanaPolinor[diam][spess][coating];
-        }
+        prices = prezziGomma;
+    } else {
+        prices = prezziLanaPolinor;
     }
-    return 0; // Prezzo di default se non trovato
+
+    const diam = diameter.toString();
+    const spess = thickness.toString();
+
+    // Gestione dei casi non trovati
+    if (prices[diam] && prices[diam][spess] && prices[diam][spess][coating]) {
+        return prices[diam][spess][coating];
+    }
+    return 0;
 }
 
-function calcolaPrezzoCurva(diameter, thickness) {
-    // QUI AGGIUNGERAI LA LOGICA DI CALCOLO DELLE CURVE
-    // Per ora uso un valore fisso, ma potrai modificarlo in base alla tua spiegazione
-    // Ad esempio: return prezzoBaseCurva + (diameter * 0.1) + (thickness * 0.5);
-    return prezzoBaseCurva; 
+function calcolaPrezzoCurva(diameter, thickness, pricePerMeter) {
+    const diametroNorma = {
+        '18': 22, '22': 22, '28': 28, '34': 35, '42': 43, '48': 48,
+        '60': 60, '76': 76, '89': 89, '114': 114, '140': 140, '168': 168,
+        '220': 220, '273': 220, '324': 220
+    };
+
+    const diametroPerTabella = diametroNorma[diameter.toString()] || 0;
+    const fattoreConversione = curveConversionFactors[diametroPerTabella.toString()] || 0;
+
+    return pricePerMeter * fattoreConversione;
 }
 
 function addItem() {
@@ -261,7 +259,7 @@ function addItem() {
     }
 
     const pricePerMeter = getPrice(material, diameter, thickness, coating);
-    const pricePerCurve = calcolaPrezzoCurva(diameter, thickness);
+    const pricePerCurve = calcolaPrezzoCurva(diameter, thickness, pricePerMeter);
 
     const totalPrice = (meters * pricePerMeter) + (curves * pricePerCurve);
 
@@ -277,20 +275,20 @@ function addItem() {
         total: totalPrice
     };
 
-    quotes.push(newItem);
+    quoteItems.push(newItem);
     renderTable();
     updateTotals();
 }
 
 function removeItem(index) {
-    quotes.splice(index, 1);
+    quoteItems.splice(index, 1);
     renderTable();
     updateTotals();
 }
 
 function renderTable() {
     quoteBody.innerHTML = '';
-    quotes.forEach((item, index) => {
+    quoteItems.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${item.material}</td>
@@ -307,7 +305,7 @@ function renderTable() {
 }
 
 function updateTotals() {
-    let subtotal = quotes.reduce((sum, item) => sum + item.total, 0);
+    let subtotal = quoteItems.reduce((sum, item) => sum + item.total, 0);
     const discount = parseFloat(discountInput.value) || 0;
     
     const discountAmount = subtotal * (discount / 100);
@@ -339,7 +337,7 @@ function generatePDF() {
     y = headerY + 10;
     doc.setFont(undefined, 'normal');
 
-    quotes.forEach(item => {
+    quoteItems.forEach(item => {
         const data = [
             item.material,
             item.coating,
@@ -354,7 +352,7 @@ function generatePDF() {
     });
 
     // Totali
-    const subtotal = quotes.reduce((sum, item) => sum + item.total, 0);
+    const subtotal = quoteItems.reduce((sum, item) => sum + item.total, 0);
     const discount = parseFloat(discountInput.value) || 0;
     const discountAmount = subtotal * (discount / 100);
     const total = subtotal - discountAmount;

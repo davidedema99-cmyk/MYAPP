@@ -4,196 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preventivatore ISOLDEM SRLS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            transition: all 0.3s ease-in-out;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .input-field {
-            border: 1px solid #d1d5db;
-            border-radius: 0.75rem;
-            padding: 0.75rem;
-            width: 100%;
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-        .btn-primary {
-            background-image: linear-gradient(to right, #6b46c1, #805ad5);
-            color: #ffffff;
-            border-radius: 9999px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: background-image 0.3s ease-in-out, transform 0.2s ease-in-out;
-        }
-        .btn-primary:hover {
-            background-image: linear-gradient(to right, #805ad5, #a361c9);
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background-color: #e5e7eb;
-            color: #4b5563;
-            border-radius: 9999px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            transition: background-color 0.2s ease-in-out;
-        }
-        .btn-secondary:hover {
-            background-color: #d1d5db;
-        }
-        .alert {
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-top: 1rem;
-            font-weight: 500;
-        }
-        .alert-error {
-            background-color: #fef2f2;
-            color: #ef4444;
-        }
-        .alert-success {
-            background-color: #f0fdf4;
-            color: #22c55e;
-        }
-        .logo-placeholder {
-            width: 150px;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #4f46e5;
-            background-color: #eef2ff;
-            border-radius: 50%;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body>
+    <div class="container">
+        <header>
+            <h1>ISOLDEM SRLS</h1>
+            <h2>Generatore di Preventivi</h2>
+        </header>
 
-<div class="w-full max-w-2xl bg-white rounded-3xl p-6 md:p-10 shadow-xl space-y-8">
+        <section class="quote-form">
+            <h3>Aggiungi voce al preventivo</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="material">Tipo di isolamento:</label>
+                    <select id="material">
+                        <option value="lana">Lana</option>
+                        <option value="polinor">Polinor</option>
+                        <option value="gomma">Gomma</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="coating">Rivestimento:</label>
+                    <select id="coating">
+                        <option value="nudo">NUDO</option>
+                        <option value="pvc">PVC</option>
+                        <option value="alluminio">Alluminio</option>
+                        <option value="inox">Inox</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="diameter">Diametro (mm):</label>
+                    <select id="diameter"></select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="thickness">Spessore (mm):</label>
+                    <select id="thickness"></select>
+                </div>
+                <div class="form-group">
+                    <label for="meters">Metri:</label>
+                    <input type="number" id="meters" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="curves">Curve:</label>
+                    <input type="number" id="curves" min="0" value="0">
+                </div>
+            </div>
+            <button id="add-item-btn">Aggiungi voce</button>
+        </section>
+        
+        <section class="quote-table-section">
+            <h3>Riepilogo Preventivo</h3>
+            <table id="quote-table">
+                <thead>
+                    <tr>
+                        <th>Materiale</th>
+                        <th>Rivestimento</th>
+                        <th>Diametro x Spessore</th>
+                        <th>Metri</th>
+                        <th>Curve</th>
+                        <th>Prezzo Unitario</th>
+                        <th>Prezzo Totale</th>
+                        <th>Azione</th>
+                    </tr>
+                </thead>
+                <tbody id="quote-body">
+                    </tbody>
+            </table>
+        </section>
 
-    <header class="text-center space-y-2">
-        <div class="flex flex-col items-center justify-center space-y-4">
-            <div class="logo-placeholder">ISOLDEM</div>
-            <h1 class="text-4xl font-bold text-gray-800">ISOLDEM SRLS</h1>
-            <p class="text-xl text-gray-500">Preventivatore</p>
+        <section class="quote-summary">
+            <div class="summary-item">
+                <label for="discount">Sconto (%):</label>
+                <input type="number" id="discount" min="0" max="100" value="0">
+            </div>
+            <div class="summary-item">
+                <p>Totale parziale: <span id="subtotal">0.00 €</span></p>
+                <p>Sconto: <span id="discount-amount">0.00 €</span></p>
+                <p class="total-price">TOTALE: <span id="total">0.00 €</span></p>
+            </div>
+        </section>
+
+        <div class="actions">
+            <button id="download-pdf-btn">Scarica PDF</button>
         </div>
-    </header>
-
-    <main class="space-y-6">
-
-        <div class="card p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Dettagli Cantiere</h2>
-            <div class="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.9c-.8.8-2.6 1.4-4.2 1.4-1.6 0-3.4-.6-4.2-1.4a.5.5 0 0 0-.7 0c-.8.8-2.6 1.4-4.2 1.4-1.6 0-3.4-.6-4.2-1.4L3 18.2a1 1 0 0 0-.1 1.4l.7.8c.4.4 1.1.5 1.7.3l.5-.1a15.8 15.8 0 0 0 2.2-.6c.8-.3 1.6-.5 2.5-.5h2c.8 0 1.6.2 2.5.5.8.3 1.5.5 2.2.6l.5.1c.6.2 1.3.1 1.7-.3l.7-.8a1 1 0 0 0-.1-1.4L21 12.9z"/><path d="M12 2v7.5m5-3.5a5 5 0 0 1-10 0"/></svg>
-                <input type="text" id="projectName" placeholder="Inserisci il nome del cantiere" class="input-field">
-            </div>
-        </div>
-
-        <div class="card p-6 space-y-4">
-            <h2 class="text-2xl font-bold text-gray-800">Aggiungi Articolo</h2>
-            <div>
-                <label for="material" class="block text-gray-700 font-medium mb-1">Materiale</label>
-                <select id="material" class="input-field">
-                    <option value="">Seleziona il materiale</option>
-                    <option value="lana">Lana di roccia</option>
-                    <option value="polinor">Polinor</option>
-                    <option value="gomma">Gomma</option>
-                </select>
-            </div>
-            <div>
-                <label for="coating" class="block text-gray-700 font-medium mb-1">Finitura</label>
-                <select id="coating" class="input-field" disabled></select>
-            </div>
-            <div>
-                <label for="diameter" class="block text-gray-700 font-medium mb-1">DN (mm)</label>
-                <select id="diameter" class="input-field" disabled></select>
-            </div>
-            <div>
-                <label for="thickness" class="block text-gray-700 font-medium mb-1">Spessore (mm)</label>
-                <select id="thickness" class="input-field" disabled></select>
-            </div>
-            <div>
-                <label for="length" class="block text-gray-700 font-medium mb-1">Lunghezza Tubi (ML)</label>
-                <input type="number" id="length" min="0" value="0" class="input-field">
-            </div>
-            <div>
-                <label for="curves" class="block text-gray-700 font-medium mb-1">Numero Curve (PZ)</label>
-                <input type="number" id="curves" min="0" value="0" class="input-field">
-            </div>
-            <button id="addItemBtn" class="w-full btn-primary mt-4">Aggiungi al Preventivo</button>
-        </div>
-
-        <div class="card p-6 space-y-4">
-            <h2 class="text-2xl font-bold text-gray-800">Riepilogo Preventivo</h2>
-            <div id="quoteSummary" class="text-gray-600">Nessun articolo aggiunto.</div>
-
-            <div class="flex items-center justify-between">
-                <label for="discount" class="text-gray-700 font-medium">Sconto (%)</label>
-                <input type="number" id="discount" min="0" max="100" value="0" class="input-field w-24 text-right">
-            </div>
-
-            <div class="text-2xl font-bold text-right text-gray-800">
-                Totale: <span id="totalPrice">€0.00</span>
-            </div>
-
-            <button id="downloadPdfBtn" class="w-full btn-secondary mt-4">Scarica Preventivo PDF</button>
-        </div>
-
-        <div id="customModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-            <div class="relative p-8 bg-white w-96 max-w-sm m-auto flex-col flex rounded-lg shadow-lg">
-                <div id="modalContent" class="text-center"></div>
-                <button id="closeModalBtn" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Chiudi</button>
-            </div>
-        </div>
-
-    </main>
-</div>
-<script>
-    // Inserisci qui le tue credenziali di Firebase
-    window.__app_id = "il_tuo_app_id";
-    window.__firebase_config = JSON.stringify({
-        apiKey: "tua_api_key",
-        authDomain: "tuo_dominio.firebaseapp.com",
-        projectId: "tuo_progetto-id",
-        storageBucket: "tuo_progetto-id.appspot.com",
-        messagingSenderId: "tuo_sender_id",
-        appId: "il_tuo_app_id"
-    });
-    window.__initial_auth_token = "il_tuo_token_di_autenticazione";
-</script>
-<script type="module">
-    // Importa le librerie Firebase necessarie
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // Inizializzazione Firebase
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-    let userId = '';
-
-    const app = initializeApp(firebaseConfig);
-    const db = get
+    </div>
+    <script src="

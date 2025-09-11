@@ -13,6 +13,30 @@
             <h2>ISOLDEM SRLS</h2>
         </header>
 
+        <section id="client-section">
+            <h3>Dati Cliente</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-name">Nome:</label>
+                    <input type="text" id="client-name" placeholder="Nome del cliente">
+                </div>
+                <div class="form-group">
+                    <label for="client-company">Azienda:</label>
+                    <input type="text" id="client-company" placeholder="Nome dell'azienda">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-email">Email:</label>
+                    <input type="email" id="client-email" placeholder="email@esempio.com">
+                </div>
+                <div class="form-group">
+                    <label for="client-phone">Telefono:</label>
+                    <input type="tel" id="client-phone" placeholder="+39 123 456 7890">
+                </div>
+            </div>
+        </section>
+
         <section id="input-section">
             <h3>Dati del Prodotto</h3>
             <div class="form-row">
@@ -91,8 +115,26 @@
             </div>
 
             <div class="actions">
+                <button id="save-quote-btn" class="secondary-btn">Salva Preventivo</button>
                 <button id="download-pdf-btn">Scarica PDF</button>
             </div>
+        </section>
+
+        <section id="history-section">
+            <h3>Storico Preventivi</h3>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Totale</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                    </tbody>
+            </table>
         </section>
     </div>
 

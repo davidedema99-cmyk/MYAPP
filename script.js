@@ -166,7 +166,6 @@ const prezziLanaPolinor = {
 };
 
 let quoteItems = [];
-let quoteHistory = JSON.parse(localStorage.getItem('quoteHistory')) || [];
 
 const materialSelect = document.getElementById('material');
 const coatingSelect = document.getElementById('coating');
@@ -475,85 +474,112 @@ function generatePDF() {
     doc.save('preventivo_isoldem.pdf');
 }
 
-function saveQuote() {
+// === NUOVE FUNZIONI PER SUPABASE ===
+
+// Funzione per salvare un preventivo nel database
+async function saveQuote() {
     if (quoteItems.length === 0) {
         alert('Non puoi salvare un preventivo vuoto!');
         return;
     }
 
-    const clientData = {
-        name: clientNameInput.value,
-        company: clientCompanyInput.value,
-        email: clientEmailInput.value,
-        phone: clientPhoneInput.value
-    };
-
     const newQuote = {
-        id: Date.now(),
-        date: new Date().toLocaleDateString('it-IT'),
-        client: clientData.name || clientData.company || 'Cliente Generico',
+        cliente: clientNameInput.value || clientCompanyInput.value || 'Cliente Generico',
         items: quoteItems,
-        subtotal: quoteItems.reduce((sum, item) => sum + item.total, 0),
-        discount: parseFloat(discountInput.value) || 0,
-        total: parseFloat(totalSpan.textContent)
+        sconto: parseFloat(discountInput.value) || 0,
+        totale: parseFloat(totalSpan.textContent.replace(' €', ''))
     };
 
-    quoteHistory.push(newQuote);
-    localStorage.setItem('quoteHistory', JSON.stringify(quoteHistory));
-    renderQuoteHistory();
-    clearQuote();
-    alert('Preventivo salvato con successo!');
+    const { data, error } = await supabase
+        .from('preventivi')
+        .insert([newQuote]);
+
+    if (error) {
+        console.error('Errore nel salvataggio:', error);
+        alert('Si è verificato un errore nel salvataggio. Controlla la console per i dettagli.');
+    } else {
+        alert('Preventivo salvato con successo!');
+        clearQuote();
+    }
 }
 
-function renderQuoteHistory() {
+// Funzione per caricare i preventivi dal database e mostrarli
+async function renderQuoteHistory() {
+    const { data, error } = await supabase
+        .from('preventivi')
+        .select('*')
+        .order('data', { ascending: false }); // Ordina dal più recente al meno recente
+
+    if (error) {
+        console.error('Errore nel caricamento dei preventivi:', error);
+        return;
+    }
+
     historyBody.innerHTML = '';
-    if (quoteHistory.length === 0) {
+    if (data.length === 0) {
         const row = document.createElement('tr');
         row.innerHTML = `<td colspan="5" style="text-align:center;">Nessun preventivo salvato.</td>`;
         historyBody.appendChild(row);
         return;
     }
 
-    quoteHistory.forEach((quote, index) => {
+    data.forEach(quote => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td data-label="ID">${quote.id}</td>
-            <td data-label="Data">${quote.date}</td>
-            <td data-label="Cliente">${quote.client}</td>
-            <td data-label="Totale">${quote.total.toFixed(2)} €</td>
+            <td data-label="ID">${quote.id.substring(0, 8)}...</td>
+            <td data-label="Data">${new Date(quote.data).toLocaleDateString('it-IT')}</td>
+            <td data-label="Cliente">${quote.cliente}</td>
+            <td data-label="Totale">${quote.totale.toFixed(2)} €</td>
             <td data-label="Azioni">
-                <button class="action-btn" onclick="loadQuote(${index})">Carica</button>
-                <button class="delete-btn" onclick="deleteQuote(${index})">Elimina</button>
+                <button class="action-btn" onclick="loadQuote('${quote.id}')">Carica</button>
+                <button class="delete-btn" onclick="deleteQuote('${quote.id}')">Elimina</button>
             </td>
         `;
         historyBody.appendChild(row);
     });
 }
 
-function loadQuote(index) {
-    const quoteToLoad = quoteHistory[index];
-    
-    // Svuota il preventivo corrente e carica i dati
-    quoteItems = [...quoteToLoad.items];
-    clientNameInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.name : '';
-    clientCompanyInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.company : '';
-    clientEmailInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.email : '';
-    clientPhoneInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.phone : '';
-    discountInput.value = quoteToLoad.discount;
+// Funzione per caricare un preventivo specifico
+async function loadQuote(id) {
+    const { data, error } = await supabase
+        .from('preventivi')
+        .select('*')
+        .eq('id', id);
 
-    renderTable();
-    updateTotals();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    if (error) {
+        console.error('Errore nel caricamento del preventivo:', error);
+        return;
+    }
 
-function deleteQuote(index) {
-    if (confirm('Sei sicuro di voler eliminare questo preventivo?')) {
-        quoteHistory.splice(index, 1);
-        localStorage.setItem('quoteHistory', JSON.stringify(quoteHistory));
-        renderQuoteHistory();
+    if (data && data.length > 0) {
+        const quoteToLoad = data[0];
+        quoteItems = quoteToLoad.items;
+        clientNameInput.value = quoteToLoad.cliente;
+        discountInput.value = quoteToLoad.sconto;
+        
+        renderTable();
+        updateTotals();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
+// Funzione per eliminare un preventivo
+async function deleteQuote(id) {
+    if (confirm('Sei sicuro di voler eliminare questo preventivo?')) {
+        const { error } = await supabase
+            .from('preventivi')
+            .delete()
+            .eq('id', id);
+        
+        if (error) {
+            console.error('Errore nell\'eliminazione:', error);
+            alert('Si è verificato un errore nell\'eliminazione. Riprova.');
+        } else {
+            alert('Preventivo eliminato con successo!');
+            renderQuoteHistory(); // Aggiorna la tabella dopo l'eliminazione
+        }
+    }
+}
 
 // Event Listeners
 materialSelect.addEventListener('change', updateOptions);
@@ -562,7 +588,7 @@ discountInput.addEventListener('input', updateTotals);
 downloadPdfBtn.addEventListener('click', generatePDF);
 saveQuoteBtn.addEventListener('click', saveQuote);
 
-// Inizializza le opzioni e lo storico al caricamento della pagina
+// Inizializza le opzioni e carica lo storico dal database
 window.onload = () => {
     updateOptions();
     updateThicknessOptions();

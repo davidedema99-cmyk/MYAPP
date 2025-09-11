@@ -140,6 +140,18 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+      // === INSERISCI QUI LE TUE CHIAVI PERSONALI ===
+      // SOSTITUISCI I VALORI "INSERISCI_QUI..." CON LE TUE CHIAVI REALI CHE TROVI SU SUPABASE
+      const SUPABASE_URL = 'INSERISCI_QUI_LA_TUA_PROJECT_URL';
+      const SUPABASE_ANON_KEY = 'INSERISCI_QUI_LA_TUA_ANON_PUBLIC_KEY';
+      
+      const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -165,7 +165,7 @@ const prezziLanaPolinor = {
     }
 };
 
-const quoteItems = []; // Ho rinominato 'quotes' in 'quoteItems' per maggiore chiarezza
+const quoteItems = [];
 
 const materialSelect = document.getElementById('material');
 const coatingSelect = document.getElementById('coating');
@@ -225,7 +225,6 @@ function getPrice(material, diameter, thickness, coating) {
     const diam = diameter.toString();
     const spess = thickness.toString();
 
-    // Gestione dei casi non trovati
     if (prices[diam] && prices[diam][spess] && prices[diam][spess][coating]) {
         return prices[diam][spess][coating];
     }
@@ -319,53 +318,119 @@ function updateTotals() {
 function generatePDF() {
     const doc = new window.jsPDF();
 
-    doc.setFontSize(22);
-    doc.setTextColor(26, 35, 126);
-    doc.text('Preventivo ISOLDEM SRLS', 105, 20, null, null, 'center');
+    // Colori e stili
+    const primaryColor = '#004d40';
+    const accentColor = '#ffb300';
+    const textColor = '#263238';
+    const lightGrey = '#e0e0e0';
+    const darkGrey = '#555555';
 
-    let y = 40;
-    doc.setFontSize(14);
-    doc.setTextColor(51, 51, 51);
+    // Intestazione
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor(primaryColor);
+    doc.setFontSize(26);
+    doc.text('ISOLDEM SRLS', 105, 25, null, null, 'center');
     
-    // Header tabella
-    const headers = ["Materiale", "Rivestimento", "DxS", "Metri", "Curve", "Prezzo Unitario", "Totale"];
-    const headerY = y + 10;
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text(headers, 15, headerY);
-    doc.line(10, headerY + 2, 200, headerY + 2); // Linea sotto l'header
-    y = headerY + 10;
-    doc.setFont(undefined, 'normal');
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor(darkGrey);
+    doc.setFontSize(14);
+    doc.text('Preventivo Commerciale', 105, 35, null, null, 'center');
 
-    quoteItems.forEach(item => {
-        const data = [
-            item.material,
-            item.coating,
-            `DN ${item.diameter}/${item.thickness}mm`,
-            `${item.meters} mt`,
-            `${item.curves} u.`,
-            `${item.pricePerMeter.toFixed(2)} €/ml`,
-            `${item.total.toFixed(2)} €`
-        ];
-        doc.text(data, 15, y);
-        y += 10;
+    // Linea di separazione
+    doc.setDrawColor(accentColor);
+    doc.line(75, 40, 135, 40);
+
+    // Titolo della tabella
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor(textColor);
+    doc.setFontSize(16);
+    doc.text('Dettagli del Preventivo', 15, 60);
+
+    // Tabella
+    const tableHeaders = [
+        ['Materiale', 'Riv.', 'Diametro', 'Spessore', 'Metri', 'Curve', 'Totale']
+    ];
+    
+    const tableRows = quoteItems.map(item => [
+        item.material,
+        item.coating,
+        `DN ${item.diameter}`,
+        `${item.thickness}mm`,
+        `${item.meters}mt`,
+        `${item.curves} u.`,
+        `${item.total.toFixed(2)} €`
+    ]);
+
+    doc.autoTable({
+        head: tableHeaders,
+        body: tableRows,
+        startY: 65,
+        theme: 'striped',
+        styles: {
+            font: 'Helvetica',
+            fontSize: 10,
+            cellPadding: 3,
+            valign: 'middle',
+            halign: 'left'
+        },
+        headStyles: {
+            fillColor: primaryColor,
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        columnStyles: {
+            0: { cellWidth: 25 },
+            1: { cellWidth: 15 },
+            2: { cellWidth: 20 },
+            3: { cellWidth: 20 },
+            4: { cellWidth: 20 },
+            5: { cellWidth: 20 },
+            6: { cellWidth: 25, halign: 'right' }
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        }
     });
 
-    // Totali
+    // Ottenere la posizione finale della tabella
+    let finalY = doc.autoTable.previous.finalY;
+
+    // Riepilogo Totale
     const subtotal = quoteItems.reduce((sum, item) => sum + item.total, 0);
     const discount = parseFloat(discountInput.value) || 0;
     const discountAmount = subtotal * (discount / 100);
     const total = subtotal - discountAmount;
 
-    y += 20;
+    // Sezione Riepilogo
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor(textColor);
+    doc.setFontSize(14);
+    doc.text('Riepilogo', 15, finalY + 20);
+
+    finalY += 25;
+    doc.setFont('Helvetica', 'normal');
     doc.setFontSize(12);
-    doc.text(`Subtotale: ${subtotal.toFixed(2)} €`, 150, y);
-    y += 10;
-    doc.text(`Sconto (${discount}%): -${discountAmount.toFixed(2)} €`, 150, y);
-    y += 15;
+    doc.setTextColor(darkGrey);
+    
+    doc.text('Subtotale:', 150, finalY);
+    doc.text(`${subtotal.toFixed(2)} €`, 195, finalY, null, null, 'right');
+    finalY += 8;
+
+    if (discount > 0) {
+        doc.text(`Sconto (${discount}%):`, 150, finalY);
+        doc.text(`-${discountAmount.toFixed(2)} €`, 195, finalY, null, null, 'right');
+        finalY += 8;
+    }
+
+    doc.setDrawColor(lightGrey);
+    doc.line(150, finalY + 1, 195, finalY + 1);
+
+    finalY += 12;
     doc.setFontSize(16);
-    doc.setTextColor(26, 35, 126);
-    doc.text(`TOTALE: ${total.toFixed(2)} €`, 150, y);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor(primaryColor);
+    doc.text('TOTALE:', 150, finalY);
+    doc.text(`${total.toFixed(2)} €`, 195, finalY, null, null, 'right');
 
     doc.save('preventivo_isoldem.pdf');
 }

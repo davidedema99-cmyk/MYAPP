@@ -9,89 +9,95 @@
 <body>
     <div class="container">
         <header>
-            <h1>ISOLDEM SRLS</h1>
-            <h2>Generatore di Preventivi</h2>
+            <h1>Preventivatore</h1>
+            <h2>ISOLDEM SRLS</h2>
         </header>
 
-        <section class="quote-form">
-            <h3>Aggiungi voce al preventivo</h3>
+        <section id="input-section">
+            <h3>Dati del Prodotto</h3>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="material">Tipo di isolamento:</label>
-                    <select id="material">
-                        <option value="lana">Lana</option>
-                        <option value="polinor">Polinor</option>
+                    <label for="material">Materiale:</label>
+                    <select id="material" class="form-select">
                         <option value="gomma">Gomma</option>
+                        <option value="lana">Lana</option>
+                        <option value="polinor">Poli-Nor</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="coating">Rivestimento:</label>
-                    <select id="coating">
-                        <option value="nudo">NUDO</option>
+                    <select id="coating" class="form-select">
+                        <option value="nudo">Nudo</option>
                         <option value="pvc">PVC</option>
                         <option value="alluminio">Alluminio</option>
                         <option value="inox">Inox</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="diameter">Diametro (mm):</label>
-                    <select id="diameter"></select>
+                    <label for="diameter">Diametro DN (mm):</label>
+                    <select id="diameter" class="form-select"></select>
+                </div>
+                <div class="form-group">
+                    <label for="thickness">Spessore (mm):</label>
+                    <select id="thickness" class="form-select"></select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="thickness">Spessore (mm):</label>
-                    <select id="thickness"></select>
+                    <label for="meters">Metri Lineari (ml):</label>
+                    <input type="number" id="meters" min="0" step="0.1" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="meters">Metri:</label>
-                    <input type="number" id="meters" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="curves">Curve:</label>
-                    <input type="number" id="curves" min="0" value="0">
+                    <label for="curves">Curve (n. pezzi):</label>
+                    <input type="number" id="curves" min="0" step="1" value="0">
                 </div>
             </div>
-            <button id="add-item-btn">Aggiungi voce</button>
+            <div class="actions">
+                <button id="add-item-btn">Aggiungi Voce</button>
+            </div>
         </section>
-        
-        <section class="quote-table-section">
+
+        <section id="quote-summary-section">
             <h3>Riepilogo Preventivo</h3>
             <table id="quote-table">
                 <thead>
                     <tr>
                         <th>Materiale</th>
                         <th>Rivestimento</th>
-                        <th>Diametro x Spessore</th>
+                        <th>Diametro/Spessore</th>
                         <th>Metri</th>
                         <th>Curve</th>
-                        <th>Prezzo Unitario</th>
-                        <th>Prezzo Totale</th>
+                        <th>Prezzo/ml</th>
+                        <th>Totale</th>
                         <th>Azione</th>
                     </tr>
                 </thead>
                 <tbody id="quote-body">
                     </tbody>
             </table>
-        </section>
-
-        <section class="quote-summary">
-            <div class="summary-item">
-                <label for="discount">Sconto (%):</label>
-                <input type="number" id="discount" min="0" max="100" value="0">
+            
+            <div class="quote-summary">
+                <div class="summary-item">
+                    <span>Subtotale:</span> <span id="subtotal">0.00 €</span>
+                </div>
+                <div class="summary-item">
+                    <label for="discount">Sconto (%):</label>
+                    <input type="number" id="discount" min="0" max="100" value="0">
+                    <span id="discount-amount">-0.00 €</span>
+                </div>
+                <div class="summary-price">
+                    <span class="total-price">TOTALE:</span> <span id="total" class="total-price">0.00 €</span>
+                </div>
             </div>
-            <div class="summary-item">
-                <p>Totale parziale: <span id="subtotal">0.00 €</span></p>
-                <p>Sconto: <span id="discount-amount">0.00 €</span></p>
-                <p class="total-price">TOTALE: <span id="total">0.00 €</span></p>
+
+            <div class="actions">
+                <button id="download-pdf-btn">Scarica PDF</button>
             </div>
         </section>
-
-        <div class="actions">
-            <button id="download-pdf-btn">Scarica PDF</button>
-        </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -139,7 +139,18 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = 'https://jbouxpoqdtfslcztptjh.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impib3V4cG9xZHRmc2xjenRwdGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MDkzNzUsImV4cCI6MjA3MzE4NTM3NX0.ucK_OZJVoMw5u0ryCkaAVdqpdfLaCWe8kgs4RDQVmvU';
+    
+    // Questa è la riga che crea il client e lo rende disponibile globalmente
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+
+<script src="script.js"></script>
 </body>
 </html>

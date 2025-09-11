@@ -2,13 +2,6 @@
 window.jsPDF = window.jspdf.jsPDF;
 window.html2canvas = html2canvas;
 
-// === CREDENZIALI SUPABASE E CREAZIONE DEL CLIENT ===
-const SUPABASE_URL = 'https://jbouxpoqdtfslcztptjh.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impib3V4cG9xZHRmc2xjenRwdGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MDkzNzUsImV4cCI6MjA3MzE4NTM3NX0.ucK_OZJVoMw5u0ryCkaAVdqpdfLaCWe8kgs4RDQVmvU';
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-
 // === DATI PRODOTTO E PREZZI ===
 const materiali = {
     gomma: {

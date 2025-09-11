@@ -1,474 +1,667 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#ffffff">
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolo Preventivo ISOLDEM SRLS</title>
+    <title>Preventivatore ISOLDEM SRLS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f3f4f6;
+            transition: all 0.3s ease-in-out;
         }
-        /* Stile specifico per il PDF */
-        #pdf-content {
-            padding: 40px;
-            font-family: 'Inter', sans-serif;
+        /* Stili aggiuntivi per la grafica più avanzata */
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .pdf-header {
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .input-field {
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            width: 100%;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #6b46c1, #805ad5);
+            color: #ffffff;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-image 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-image: linear-gradient(to right, #805ad5, #a361c9);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #4b5563;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+        .alert-error {
+            background-color: #fef2f2;
+            color: #ef4444;
+        }
+        .alert-success {
+            background-color: #f0fdf4;
+            color: #22c55e;
+        }
+        .logo-placeholder {
+            width: 150px;
+            height: 150px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-        .logo-text {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #1a237e;
-        }
-        .logo-subtitle {
-            font-size: 1rem;
-            color: #4a5568;
-        }
-        .company-info {
-            text-align: right;
-            font-size: 0.9rem;
-            color: #4a5568;
-        }
-        .table-header {
-            background-color: #1a237e;
-            color: white;
-            padding: 12px 16px;
-        }
-        .table-row {
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .table-row:nth-child(even) {
-            background-color: #f8fafc;
-        }
-        .total-box {
-            background-color: #e3f2fd;
-            border-left: 5px solid #1a237e;
-            padding: 20px;
-            margin-top: 30px;
-        }
-        .total-text {
-            font-size: 1.5rem;
+            justify-content: center;
+            font-size: 2rem;
             font-weight: 700;
-            color: #1a237e;
-        }
-        .grid-cols-5 {
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-        }
-
-        /* Nascondi elementi non necessari per la stampa */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #pdf-content, #pdf-content * {
-                visibility: visible;
-            }
-            #pdf-content {
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
+            color: #4f46e5;
+            background-color: #eef2ff;
+            border-radius: 50%;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 md:p-8">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-10 w-full max-w-4xl border border-gray-200">
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-800 mb-2 md:mb-0">ISOLDEM SRLS</h1>
-            <p class="text-sm text-gray-600">Generatore di Preventivi</p>
+<div class="w-full max-w-2xl bg-white rounded-3xl p-6 md:p-10 shadow-xl space-y-8">
+
+    <!-- Header -->
+    <header class="text-center space-y-2">
+        <div class="flex flex-col items-center justify-center space-y-4">
+            <!-- Sostituisci questo placeholder con un SVG del logo o un'URL dell'immagine -->
+            <div class="logo-placeholder">ISOLDEM</div>
+            <h1 class="text-4xl font-bold text-gray-800">ISOLDEM SRLS</h1>
+            <p class="text-xl text-gray-500">Preventivatore</p>
         </div>
-        
-        <!-- Contenuto del preventivatore -->
-        <div class="space-y-6">
-            <!-- Messaggio di errore -->
-            <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
-                <strong class="font-bold">Errore!</strong>
-                <span id="errorMessageText" class="block sm:inline">Prezzo non disponibile per la selezione corrente.</span>
-            </div>
+    </header>
 
-            <!-- Dettagli Cantiere -->
-            <div class="p-6 bg-gray-50 rounded-lg shadow-inner">
-                <h2 class="text-xl font-bold mb-4 text-gray-700">Dettagli Cantiere</h2>
-                <label for="nomeCantiere" class="block text-sm font-medium text-gray-700 mb-1">Nome Cantiere</label>
-                <input type="text" id="nomeCantiere" placeholder="Inserisci il nome del cantiere" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
+    <!-- Main Content -->
+    <main class="space-y-6">
 
-            <!-- Selezione Articolo -->
-            <div class="p-6 bg-gray-50 rounded-lg shadow-inner space-y-4">
-                <h2 class="text-xl font-bold text-gray-700">Aggiungi Articolo</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Materiale -->
-                    <div>
-                        <label for="materiale" class="block text-sm font-medium text-gray-700 mb-1">Materiale</label>
-                        <select id="materiale" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="gomma">Gomma</option>
-                            <option value="lana">Lana di Roccia</option>
-                            <option value="polinor">Polinor</option>
-                        </select>
-                    </div>
-                    <!-- Finitura -->
-                    <div>
-                        <label for="finitura" class="block text-sm font-medium text-gray-700 mb-1">Finitura</label>
-                        <select id="finitura" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="nudo_ml">Nudo (€/ml)</option>
-                            <option value="nudo_mq">Nudo (€/mq)</option>
-                            <option value="pvc_ml">PVC (€/ml)</option>
-                            <option value="pvc_mq">PVC (€/mq)</option>
-                            <option value="alluminio_ml">Alluminio (€/ml)</option>
-                            <option value="alluminio_mq">Alluminio (€/mq)</option>
-                            <option value="inox_ml">Inox (€/ml)</option>
-                            <option value="inox_mq">Inox (€/mq)</option>
-                        </select>
-                    </div>
-                    <!-- DN -->
-                    <div>
-                        <label for="dn" class="block text-sm font-medium text-gray-700 mb-1">DN</label>
-                        <select id="dn" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></select>
-                    </div>
-                    <!-- Quantità -->
-                    <div>
-                        <label for="quantita" class="block text-sm font-medium text-gray-700 mb-1">Metri lineari</label>
-                        <input type="number" id="quantita" value="1" min="0" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <!-- Curve -->
-                    <div>
-                        <label for="curve" class="block text-sm font-medium text-gray-700 mb-1">Numero di Curve</label>
-                        <input type="number" id="curve" value="0" min="0" class="block w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <!-- Pulsante Aggiungi -->
-                    <div class="col-span-1 md:col-span-2 flex justify-center mt-4">
-                        <button id="addArticle" class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 w-full md:w-auto transition-colors">
-                            Aggiungi al Preventivo
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Riepilogo Preventivo -->
-            <div class="p-6 bg-gray-50 rounded-lg shadow-inner">
-                <h2 class="text-xl font-bold mb-4 text-gray-700">Riepilogo Preventivo</h2>
-                <div id="riepilogoPreventivo" class="space-y-4">
-                    <!-- Gli articoli verranno inseriti qui -->
-                    <p id="emptyMessage" class="text-gray-500 text-center">Nessun articolo aggiunto.</p>
-                </div>
-                
-                <hr class="my-6 border-gray-300">
-
-                <div class="flex flex-col items-end space-y-2">
-                    <!-- Sezione Sconto -->
-                    <div class="flex items-center space-x-2">
-                        <label for="sconto" class="text-sm font-medium text-gray-700">Sconto (%)</label>
-                        <input type="number" id="sconto" value="0" min="0" max="100" class="w-20 px-2 py-1 bg-white border border-gray-300 rounded-lg shadow-sm text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <!-- Totale -->
-                    <div class="flex items-center">
-                        <span class="text-xl font-bold text-gray-700">Totale:</span>
-                        <span id="costoTotale" class="ml-4 text-3xl font-extrabold text-indigo-600">0.00 €</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pulsante per scaricare il PDF -->
-            <div class="mt-8 text-center">
-                <button id="downloadPdf" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
-                    Scarica Preventivo PDF
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contenuto nascosto per la stampa del PDF -->
-    <div id="pdf-content" class="hidden bg-white w-full h-full">
-        <div class="pdf-header">
-            <div class="logo-container">
-                <img src="https://i.ibb.co/L50W5hG/Logo.png" alt="ISOLDEM Logo" class="h-16 w-auto mr-4">
-                <div>
-                    <div class="logo-text">ISOLDEM SRLS</div>
-                </div>
-            </div>
-            <div class="company-info">
-                <p>Via Salvo D'Acquisto, 3</p>
-                <p>39100 Bolzano (BZ)</p>
-                <p>P.IVA: IT03204990212</p>
-                <p>Tel: +39 0471 000000</p>
+        <!-- Project Details Card -->
+        <div class="card p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Dettagli Cantiere</h2>
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.9c-.8.8-2.6 1.4-4.2 1.4-1.6 0-3.4-.6-4.2-1.4a.5.5 0 0 0-.7 0c-.8.8-2.6 1.4-4.2 1.4-1.6 0-3.4-.6-4.2-1.4L3 18.2a1 1 0 0 0-.1 1.4l.7.8c.4.4 1.1.5 1.7.3l.5-.1a15.8 15.8 0 0 0 2.2-.6c.8-.3 1.6-.5 2.5-.5h2c.8 0 1.6.2 2.5.5.8.3 1.5.5 2.2.6l.5.1c.6.2 1.3.1 1.7-.3l.7-.8a1 1 0 0 0-.1-1.4L21 12.9z"/><path d="M12 2v7.5m5-3.5a5 5 0 0 1-10 0"/></svg>
+                <input type="text" id="projectName" placeholder="Inserisci il nome del cantiere" class="input-field">
             </div>
         </div>
 
-        <h1 class="text-2xl font-bold mb-4">Preventivo</h1>
-        <div class="mb-6 space-y-1 text-gray-700">
-            <p><strong>Cantiere:</strong> <span id="pdfCantiere"></span></p>
-            <p><strong>Data:</strong> <span id="pdfData"></span></p>
-        </div>
-
-        <div class="w-full">
-            <div class="grid grid-cols-5 text-center table-header rounded-t-lg">
-                <div>Materiale</div>
-                <div>DN/Spessore</div>
-                <div>Quantità</div>
-                <div>Prezzo Unitario</div>
-                <div>Subtotale</div>
+        <!-- Add Item Card -->
+        <div class="card p-6 space-y-4">
+            <h2 class="text-2xl font-bold text-gray-800">Aggiungi Articolo</h2>
+            <div>
+                <label for="material" class="block text-gray-700 font-medium mb-1">Materiale</label>
+                <select id="material" class="input-field">
+                    <option value="">Seleziona il materiale</option>
+                    <option value="lana">Lana di roccia</option>
+                    <option value="polinor">Polinor</option>
+                    <option value="gomma">Gomma</option>
+                </select>
             </div>
-            <div id="pdfTableBody">
-                <!-- Voci del preventivo verranno aggiunte qui -->
+            <div>
+                <label for="coating" class="block text-gray-700 font-medium mb-1">Finitura</label>
+                <select id="coating" class="input-field" disabled>
+                    <option value="">Seleziona la finitura</option>
+                </select>
+            </div>
+            <div>
+                <label for="diameter" class="block text-gray-700 font-medium mb-1">DN (mm)</label>
+                <select id="diameter" class="input-field" disabled></select>
+            </div>
+            <div>
+                <label for="thickness" class="block text-gray-700 font-medium mb-1">Spessore (mm)</label>
+                <select id="thickness" class="input-field" disabled></select>
+            </div>
+            <div>
+                <label for="length" class="block text-gray-700 font-medium mb-1">Lunghezza Tubi (ML)</label>
+                <input type="number" id="length" min="0" value="0" class="input-field">
+            </div>
+            <div>
+                <label for="curves" class="block text-gray-700 font-medium mb-1">Numero Curve (PZ)</label>
+                <input type="number" id="curves" min="0" value="0" class="input-field">
+            </div>
+            <button id="addItemBtn" class="w-full btn-primary mt-4">Aggiungi al Preventivo</button>
+        </div>
+
+        <!-- Quote Summary Card -->
+        <div class="card p-6 space-y-4">
+            <h2 class="text-2xl font-bold text-gray-800">Riepilogo Preventivo</h2>
+            <div id="quoteSummary" class="text-gray-600">Nessun articolo aggiunto.</div>
+
+            <div class="flex items-center justify-between">
+                <label for="discount" class="text-gray-700 font-medium">Sconto (%)</label>
+                <input type="number" id="discount" min="0" max="100" value="0" class="input-field w-24 text-right">
+            </div>
+
+            <div class="text-2xl font-bold text-right text-gray-800">
+                Totale: <span id="totalPrice">€0.00</span>
+            </div>
+
+            <button id="downloadPdfBtn" class="w-full btn-secondary mt-4">Scarica Preventivo PDF</button>
+        </div>
+
+        <!-- Custom Modal for Alerts -->
+        <div id="customModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+            <div class="relative p-8 bg-white w-96 max-w-sm m-auto flex-col flex rounded-lg shadow-lg">
+                <div id="modalContent" class="text-center"></div>
+                <button id="closeModalBtn" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Chiudi</button>
             </div>
         </div>
 
-        <div class="flex justify-end">
-            <div class="total-box text-right max-w-sm w-full">
-                <p class="text-sm">Subtotale: <span id="pdfSubtotale"></span></p>
-                <p class="text-sm">Sconto (<span id="pdfScontoPercent"></span>%): <span id="pdfScontoValore"></span></p>
-                <hr class="my-2">
-                <p class="total-text">Totale: <span id="pdfCostoTotale"></span></p>
-            </div>
-        </div>
+    </main>
+</div>
 
-        <div class="mt-10 text-center text-gray-500 text-sm">
-            <p>Grazie per aver scelto ISOLDEM SRLS. Questo preventivo ha una validità di 30 giorni.</p>
-        </div>
-    </div>
+<script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <script>
-        // Dati dei prezzi (inclusi per semplicità)
-        const datiGomma = { "18/19": { "dn": "10", "nudo_ml": 16.80, "nudo_mq": 50.91, "pvc_ml": 21.00, "pvc_mq": 63.64, "alluminio_ml": 32.40, "alluminio_mq": 98.18, "inox_ml": 43.20, "inox_mq": 130.91, "prezzo_curva": 45 }, "18/25": { "dn": "10", "nudo_ml": 20.40, "nudo_mq": 61.82, "pvc_ml": 24.60, "pvc_mq": 74.55, "alluminio_ml": 37.20, "alluminio_mq": 112.73, "inox_ml": 49.60, "inox_mq": 150.30, "prezzo_curva": 50 }, "18/32": { "dn": "10", "nudo_ml": 21.60, "nudo_mq": 65.45, "pvc_ml": 28.80, "pvc_mq": 87.27, "alluminio_ml": 45.60, "alluminio_mq": 138.18, "inox_ml": 60.80, "inox_mq": 184.24, "prezzo_curva": 55 }, "22/19": { "dn": "15", "nudo_ml": 16.80, "nudo_mq": 50.91, "pvc_ml": 21.00, "pvc_mq": 63.64, "alluminio_ml": 32.40, "alluminio_mq": 98.18, "inox_ml": 43.20, "inox_mq": 130.91, "prezzo_curva": 45 }, "22/25": { "dn": "15", "nudo_ml": 20.40, "nudo_mq": 61.82, "pvc_ml": 25.20, "pvc_mq": 76.36, "alluminio_ml": 37.20, "alluminio_mq": 112.73, "inox_ml": 49.60, "inox_mq": 150.30, "prezzo_curva": 50 }, "22/32": { "dn": "15", "nudo_ml": 24.00, "nudo_mq": 72.73, "pvc_ml": 28.80, "pvc_mq": 87.27, "alluminio_ml": 45.60, "alluminio_mq": 138.18, "inox_ml": 60.80, "inox_mq": 184.24, "prezzo_curva": 55 }, "28/19": { "dn": "20", "nudo_ml": 19.20, "nudo_mq": 56.47, "pvc_ml": 22.80, "pvc_mq": 67.06, "alluminio_ml": 37.80, "alluminio_mq": 111.18, "inox_ml": 50.40, "inox_mq": 148.24, "prezzo_curva": 60 }, "28/25": { "dn": "20", "nudo_ml": 21.60, "nudo_mq": 63.53, "pvc_ml": 25.80, "pvc_mq": 75.88, "alluminio_ml": 41.40, "alluminio_mq": 121.76, "inox_ml": 55.20, "inox_mq": 162.35, "prezzo_curva": 65 }, "28/32": { "dn": "20", "nudo_ml": 25.80, "nudo_mq": 75.88, "pvc_ml": 31.20, "pvc_mq": 91.76, "alluminio_ml": 46.20, "alluminio_mq": 135.88, "inox_ml": 61.60, "inox_mq": 181.18, "prezzo_curva": 70 }, "34/19": { "dn": "25", "nudo_ml": 20.40, "nudo_mq": 58.29, "pvc_ml": 25.20, "pvc_mq": 72.00, "alluminio_ml": 38.40, "alluminio_mq": 109.71, "inox_ml": 51.20, "inox_mq": 146.29, "prezzo_curva": 65 }, "34/25": { "dn": "25", "nudo_ml": 24.60, "nudo_mq": 70.29, "pvc_ml": 29.40, "pvc_mq": 84.00, "alluminio_ml": 43.20, "alluminio_mq": 123.43, "inox_ml": 57.60, "inox_mq": 164.57, "prezzo_curva": 70 }, "34/32": { "dn": "25", "nudo_ml": 28.20, "nudo_mq": 80.57, "pvc_ml": 33.00, "pvc_mq": 94.29, "alluminio_ml": 52.20, "alluminio_mq": 149.14, "inox_ml": 69.60, "inox_mq": 198.86, "prezzo_curva": 75 }, "42/19": { "dn": "32", "nudo_ml": 21.60, "nudo_mq": 60.00, "pvc_ml": 25.80, "pvc_mq": 71.67, "alluminio_ml": 40.80, "alluminio_mq": 113.33, "inox_ml": 54.00, "inox_mq": 150.00, "prezzo_curva": 70 }, "42/25": { "dn": "32", "nudo_ml": 25.20, "nudo_mq": 70.00, "pvc_ml": 30.60, "pvc_mq": 85.00, "alluminio_ml": 44.40, "alluminio_mq": 123.33, "inox_ml": 59.20, "inox_mq": 164.44, "prezzo_curva": 75 }, "42/32": { "dn": "32", "nudo_ml": 29.40, "nudo_mq": 81.67, "pvc_ml": 34.80, "pvc_mq": 96.67, "alluminio_ml": 54.00, "alluminio_mq": 150.00, "inox_ml": 72.00, "inox_mq": 200.00, "prezzo_curva": 80 }, "48/19": { "dn": "40", "nudo_ml": 23.40, "nudo_mq": 63.24, "pvc_ml": 27.60, "pvc_mq": 74.59, "alluminio_ml": 44.40, "alluminio_mq": 120.00, "inox_ml": 59.20, "inox_mq": 160.00, "prezzo_curva": 75 }, "48/25": { "dn": "40", "nudo_ml": 27.00, "nudo_mq": 72.97, "pvc_ml": 31.80, "pvc_mq": 85.95, "alluminio_ml": 50.40, "alluminio_mq": 136.22, "inox_ml": 67.20, "inox_mq": 181.62, "prezzo_curva": 80 }, "48/32": { "dn": "40", "nudo_ml": 30.00, "nudo_mq": 81.08, "pvc_ml": 36.00, "pvc_mq": 97.30, "alluminio_ml": 54.60, "alluminio_mq": 147.57, "inox_ml": 72.80, "inox_mq": 196.76, "prezzo_curva": 85 }, "60/19": { "dn": "50", "nudo_ml": 25.20, "nudo_mq": 60.00, "pvc_ml": 30.60, "pvc_mq": 72.86, "alluminio_ml": 48.00, "alluminio_mq": 114.29, "inox_ml": 64.00, "inox_mq": 152.38, "prezzo_curva": 80 }, "60/25": { "dn": "50", "nudo_ml": 28.80, "nudo_mq": 68.57, "pvc_ml": 33.60, "pvc_mq": 80.00, "alluminio_ml": 50.40, "alluminio_mq": 120.00, "inox_ml": 67.20, "inox_mq": 160.00, "prezzo_curva": 85 }, "60/32": { "dn": "50", "nudo_ml": 31.80, "nudo_mq": 75.71, "pvc_ml": 37.80, "pvc_mq": 90.00, "alluminio_ml": 56.40, "alluminio_mq": 134.29, "inox_ml": 75.20, "inox_mq": 179.05, "prezzo_curva": 90 }, "76/19": { "dn": "65", "nudo_ml": 29.40, "nudo_mq": 66.00, "pvc_ml": 34.80, "pvc_mq": 71.02, "alluminio_ml": 51.60, "alluminio_mq": 105.31, "inox_ml": 68.80, "inox_mq": 140.41, "prezzo_curva": 90 }, "76/25": { "dn": "65", "nudo_ml": 32.40, "nudo_mq": 66.12, "pvc_ml": 39.00, "pvc_mq": 79.59, "alluminio_ml": 58.80, "alluminio_mq": 120.00, "inox_ml": 78.40, "inox_mq": 160.00, "prezzo_curva": 95 }, "76/32": { "dn": "65", "nudo_ml": 35.40, "nudo_mq": 72.24, "pvc_ml": 42.60, "pvc_mq": 86.94, "alluminio_ml": 64.80, "alluminio_mq": 132.24, "inox_ml": 86.40, "inox_mq": 176.33, "prezzo_curva": 100 }, "89/19": { "dn": "80", "nudo_ml": 32.40, "nudo_mq": 63.53, "pvc_ml": 39.00, "pvc_mq": 76.47, "alluminio_ml": 61.20, "alluminio_mq": 120.00, "inox_ml": 81.60, "inox_mq": 160.00, "prezzo_curva": 100 }, "89/25": { "dn": "80", "nudo_ml": 36.00, "nudo_mq": 70.59, "pvc_ml": 42.60, "pvc_mq": 83.53, "alluminio_ml": 64.80, "alluminio_mq": 127.06, "inox_ml": 86.40, "inox_mq": 169.41, "prezzo_curva": 105 }, "89/32": { "dn": "80", "nudo_ml": 39.00, "nudo_mq": 76.47, "pvc_ml": 46.20, "pvc_mq": 90.59, "alluminio_ml": 68.40, "alluminio_mq": 134.12, "inox_ml": 91.20, "inox_mq": 178.82, "prezzo_curva": 110 }, "114/19": { "dn": "100", "nudo_ml": 39.00, "nudo_mq": 76.47, "pvc_ml": 46.80, "pvc_mq": 91.76, "alluminio_ml": 69.60, "alluminio_mq": 135.29, "inox_ml": 92.80, "inox_mq": 181.57, "prezzo_curva": 115 }, "114/25": { "dn": "100", "nudo_ml": 41.40, "nudo_mq": 81.18, "pvc_ml": 50.40, "pvc_mq": 98.82, "alluminio_ml": 72.60, "alluminio_mq": 142.35, "inox_ml": 96.80, "inox_mq": 189.80, "prezzo_curva": 120 }, "114/32": { "dn": "100", "nudo_ml": 45.60, "nudo_mq": 89.41, "pvc_ml": 54.00, "pvc_mq": 105.88, "alluminio_ml": 81.60, "alluminio_mq": 160.00, "inox_ml": 108.80, "inox_mq": 213.33, "prezzo_curva": 125 }, "140/19": { "dn": "125", "nudo_ml": 46.20, "nudo_mq": 63.29, "pvc_ml": 54.00, "pvc_mq": 73.97, "alluminio_ml": 85.80, "alluminio_mq": 117.53, "inox_ml": 114.40, "inox_mq": 156.71, "prezzo_curva": 130 }, "140/25": { "dn": "125", "nudo_ml": 49.20, "nudo_mq": 67.40, "pvc_ml": 58.80, "pvc_mq": 80.55, "alluminio_ml": 88.80, "alluminio_mq": 121.64, "inox_ml": 118.40, "inox_mq": 162.19, "prezzo_curva": 135 }, "140/32": { "dn": "125", "nudo_ml": 52.20, "nudo_mq": 71.51, "pvc_ml": 62.40, "pvc_mq": 85.48, "alluminio_ml": 92.40, "alluminio_mq": 126.58, "inox_ml": 123.20, "inox_mq": 168.77, "prezzo_curva": 140 }, "168/19": { "dn": "150", "nudo_ml": 53.40, "nudo_mq": 65.12, "pvc_ml": 63.00, "pvc_mq": 76.83, "alluminio_ml": 93.00, "alluminio_mq": 113.41, "inox_ml": 124.00, "inox_mq": 151.22, "prezzo_curva": 145 }, "168/25": { "dn": "150", "nudo_ml": 54.60, "nudo_mq": 66.59, "pvc_ml": 66.00, "pvc_mq": 80.49, "alluminio_ml": 96.00, "alluminio_mq": 117.07, "inox_ml": 128.00, "inox_mq": 156.10, "prezzo_curva": 150 }, "168/32": { "dn": "150", "nudo_ml": 60.00, "nudo_mq": 73.17, "pvc_ml": 70.80, "pvc_mq": 86.34, "alluminio_ml": 101.40, "alluminio_mq": 123.66, "inox_ml": 135.20, "inox_mq": 164.88, "prezzo_curva": 155 } };
-        const datiLanaPolinor = { "18/20": { "dn": "10", "nudo_ml": 12.60, "nudo_mq": 38.18, "pvc_ml": 16.20, "pvc_mq": 49.09, "alluminio_ml": 34.20, "alluminio_mq": 103.64, "inox_ml": 45.60, "inox_mq": 138.18, "prezzo_curva": 45 }, "18/30": { "dn": "10", "nudo_ml": 13.80, "nudo_mq": 41.82, "pvc_ml": 16.50, "pvc_mq": 50.00, "alluminio_ml": 35.40, "alluminio_mq": 107.27, "inox_ml": 47.20, "inox_mq": 143.03, "prezzo_curva": 50 }, "22/20": { "dn": "15", "nudo_ml": 13.20, "nudo_mq": 40.00, "pvc_ml": 16.50, "pvc_mq": 50.00, "alluminio_ml": 35.40, "alluminio_mq": 107.27, "inox_ml": 47.20, "inox_mq": 143.03, "prezzo_curva": 50 }, "22/30": { "dn": "15", "nudo_ml": 14.40, "nudo_mq": 43.64, "pvc_ml": 17.10, "pvc_mq": 51.82, "alluminio_ml": 36.00, "alluminio_mq": 109.09, "inox_ml": 48.00, "inox_mq": 145.45, "prezzo_curva": 55 }, "28/20": { "dn": "20", "nudo_ml": 13.80, "nudo_mq": 40.59, "pvc_ml": 17.40, "pvc_mq": 51.18, "alluminio_ml": 37.20, "alluminio_mq": 109.41, "inox_ml": 49.60, "inox_mq": 145.88, "prezzo_curva": 55 }, "28/30": { "dn": "20", "nudo_ml": 15.00, "nudo_mq": 44.12, "pvc_ml": 17.70, "pvc_mq": 52.06, "alluminio_ml": 39.00, "alluminio_mq": 114.71, "inox_ml": 52.00, "inox_mq": 152.94, "prezzo_curva": 60 }, "34/20": { "dn": "25", "nudo_ml": 14.40, "nudo_mq": 41.14, "pvc_ml": 18.30, "pvc_mq": 52.29, "alluminio_ml": 40.20, "alluminio_mq": 114.86, "inox_ml": 53.60, "inox_mq": 153.14, "prezzo_curva": 60 }, "34/30": { "dn": "25", "nudo_ml": 15.60, "nudo_mq": 44.57, "pvc_ml": 18.90, "pvc_mq": 54.00, "alluminio_ml": 41.40, "alluminio_mq": 118.29, "inox_ml": 55.20, "inox_mq": 157.71, "prezzo_curva": 65 }, "42/25": { "dn": "32", "nudo_ml": 15.00, "nudo_mq": 41.67, "pvc_ml": 19.50, "pvc_mq": 54.17, "alluminio_ml": 41.70, "alluminio_mq": 115.83, "inox_ml": 55.60, "inox_mq": 154.44, "prezzo_curva": 65 }, "42/30": { "dn": "32", "nudo_ml": 16.20, "nudo_mq": 45.00, "pvc_ml": 19.98, "pvc_mq": 55.50, "alluminio_ml": 43.80, "alluminio_mq": 121.67, "inox_ml": 58.40, "inox_mq": 162.22, "prezzo_curva": 70 }, "48/25": { "dn": "40", "nudo_ml": 15.60, "nudo_mq": 42.16, "pvc_ml": 20.76, "pvc_mq": 56.11, "alluminio_ml": 45.60, "alluminio_mq": 123.24, "inox_ml": 60.80, "inox_mq": 164.32, "prezzo_curva": 70 }, "48/30": { "dn": "40", "nudo_ml": 16.80, "nudo_mq": 45.41, "pvc_ml": 21.24, "pvc_mq": 57.41, "alluminio_ml": 48.00, "alluminio_mq": 129.73, "inox_ml": 64.00, "inox_mq": 172.97, "prezzo_curva": 75 }, "60/30": { "dn": "50", "nudo_ml": 19.80, "nudo_mq": 47.14, "pvc_ml": 25.80, "pvc_mq": 61.43, "alluminio_ml": 55.20, "alluminio_mq": 131.43, "inox_ml": 73.60, "inox_mq": 175.24, "prezzo_curva": 85 }, "76/30": { "dn": "65", "nudo_ml": 27.36, "nudo_mq": 55.84, "pvc_ml": 29.40, "pvc_mq": 60.00, "alluminio_ml": 63.00, "alluminio_mq": 128.57, "inox_ml": 84.00, "inox_mq": 171.43, "prezzo_curva": 95 }, "89/30": { "dn": "80", "nudo_ml": 29.52, "nudo_mq": 57.88, "pvc_ml": 32.64, "pvc_mq": 64.00, "alluminio_ml": 68.16, "alluminio_mq": 133.65, "inox_ml": 90.88, "inox_mq": 178.24, "prezzo_curva": 105 }, "114/30": { "dn": "100", "nudo_ml": 37.73, "nudo_mq": 63.95, "pvc_ml": 41.16, "pvc_mq": 69.76, "alluminio_ml": 82.56, "alluminio_mq": 139.93, "inox_ml": 110.08, "inox_mq": 186.58, "prezzo_curva": 125 }, "114/40": { "dn": "100", "nudo_ml": 39.17, "nudo_mq": 60.26, "pvc_ml": 42.24, "pvc_mq": 64.98, "alluminio_ml": 84.96, "alluminio_mq": 130.71, "inox_ml": 113.28, "inox_mq": 174.28, "prezzo_curva": 130 }, "140/40": { "dn": "125", "nudo_ml": 40.80, "nudo_mq": 55.89, "pvc_ml": 47.52, "pvc_mq": 65.10, "alluminio_ml": 96.60, "alluminio_mq": 132.33, "inox_ml": 128.80, "inox_mq": 176.44, "prezzo_curva": 140 }, "168/40": { "dn": "150", "nudo_ml": 43.92, "nudo_mq": 53.56, "pvc_ml": 53.76, "pvc_mq": 65.56, "alluminio_ml": 109.80, "alluminio_mq": 133.90, "inox_ml": 146.40, "inox_mq": 178.54, "prezzo_curva": 155 }, "220/40": { "dn": "200", "nudo_ml": 45.00, "nudo_mq": 45.45, "pvc_ml": 56.28, "pvc_mq": 56.85, "alluminio_ml": 117.36, "alluminio_mq": 118.55, "inox_ml": 156.48, "inox_mq": 158.06, "prezzo_curva": 165 }, "273/40": { "dn": "250", "nudo_ml": 49.56, "nudo_mq": 42.72, "pvc_ml": 63.00, "pvc_mq": 54.31, "alluminio_ml": 129.36, "alluminio_mq": 111.52, "inox_ml": 172.48, "inox_mq": 148.64, "prezzo_curva": 175 }, "324/40": { "dn": "300", "nudo_ml": 57.12, "nudo_mq": 43.27, "pvc_ml": 70.56, "pvc_mq": 53.45, "alluminio_ml": 144.96, "alluminio_mq": 109.82, "inox_ml": 193.28, "inox_mq": 146.42, "prezzo_curva": 185 } };
-        const datiMateriali = { "gomma": datiGomma, "lana": datiLanaPolinor, "polinor": datiLanaPolinor };
-        
-        const preventivo = [];
+    // Initialize Firebase
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        const materialeSelect = document.getElementById('materiale');
-        const finituraSelect = document.getElementById('finitura');
-        const dnSelect = document.getElementById('dn');
-        const quantitaInput = document.getElementById('quantita');
-        const curveInput = document.getElementById('curve');
-        const addArticleBtn = document.getElementById('addArticle');
-        const riepilogoDiv = document.getElementById('riepilogoPreventivo');
-        const costoTotaleSpan = document.getElementById('costoTotale');
-        const downloadPdfBtn = document.getElementById('downloadPdf');
-        const nomeCantiereInput = document.getElementById('nomeCantiere');
-        const scontoInput = document.getElementById('sconto');
-        const errorMessageDiv = document.getElementById('errorMessage');
-        const errorMessageText = document.getElementById('errorMessageText');
+    if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
+        console.error("Firebase config is missing. Please provide a valid configuration.");
+    }
 
-        function aggiornaDN() {
-            const materialeSelezionato = materialeSelect.value;
-            const datiCorrenti = datiMateriali[materialeSelezionato];
-            dnSelect.innerHTML = '';
-            for (const key in datiCorrenti) {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = key;
-                dnSelect.appendChild(option);
-            }
-            calcolaTotale();
-        }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-        function mostraErrore(messaggio) {
-            errorMessageText.textContent = messaggio;
-            errorMessageDiv.classList.remove('hidden');
-        }
+    let userId = '';
 
-        function nascondiErrore() {
-            errorMessageDiv.classList.add('hidden');
-        }
-
-        function aggiungiArticolo() {
-            const materiale = materialeSelect.value;
-            const finitura = finituraSelect.value;
-            const dn = dnSelect.value;
-            const quantita = parseFloat(quantitaInput.value);
-            const curve = parseFloat(curveInput.value);
-
-            const datiMateriale = datiMateriali[materiale];
-            const articolo = datiMateriale[dn];
-
-            if (!articolo) {
-                mostraErrore('Prezzo non disponibile per questa selezione di materiale e DN.');
-                return;
-            }
-
-            const prezzoMl = articolo[finitura];
-            
-            if (isNaN(prezzoMl)) {
-                 mostraErrore('Prezzo non disponibile per questa finitura.');
-                return;
-            }
-
-            nascondiErrore();
-
-            // Calcolo del prezzo per le curve
-            const prezzoCurvaSingola = prezzoMl / 3;
-            const totaleCurve = prezzoCurvaSingola * curve;
-            const totaleMetriLineari = prezzoMl * quantita;
-
-            const subtotale = totaleMetriLineari + totaleCurve;
-            
-            const nuovoArticolo = {
-                materiale: materialeSelect.options[materialeSelect.selectedIndex].text,
-                finitura: finituraSelect.options[finituraSelect.selectedIndex].text,
-                dn: dn,
-                quantita: quantita,
-                curve: curve,
-                prezzoMl: prezzoMl,
-                prezzoCurva: prezzoCurvaSingola, // Salviamo il prezzo corretto della curva singola
-                subtotale: subtotale
-            };
-
-            preventivo.push(nuovoArticolo);
-            aggiornaRiepilogo();
-            calcolaTotale();
-
-            quantitaInput.value = 1;
-            curveInput.value = 0;
-        }
-
-        function rimuoviArticolo(index) {
-            preventivo.splice(index, 1);
-            aggiornaRiepilogo();
-            calcolaTotale();
-        }
-
-        function aggiornaRiepilogo() {
-            riepilogoDiv.innerHTML = '';
-            if (preventivo.length === 0) {
-                riepilogoDiv.innerHTML = '<p id="emptyMessage" class="text-gray-500 text-center">Nessun articolo aggiunto.</p>';
+    // Firebase Authentication
+    const signIn = async () => {
+        try {
+            if (initialAuthToken) {
+                await signInWithCustomToken(auth, initialAuthToken);
             } else {
-                preventivo.forEach((articolo, index) => {
-                    const articoloDiv = document.createElement('div');
-                    articoloDiv.classList.add('p-4', 'bg-white', 'rounded-lg', 'shadow-md', 'flex', 'flex-col', 'md:flex-row', 'justify-between', 'items-center', 'space-y-2', 'md:space-y-0');
-                    
-                    const descrizione = `
+                await signInAnonymously(auth);
+            }
+            userId = auth.currentUser.uid;
+            console.log("Authentication successful. User ID:", userId);
+        } catch (error) {
+            console.error("Authentication failed:", error);
+        }
+    };
+
+    signIn();
+
+    // Data for prices and options
+    const prices = {
+        lana: {
+            nudo: {
+                '18/25': { ml: 12.60, mq: 38.18 },
+                '18/30': { ml: 13.80, mq: 41.82 },
+                '22/20': { ml: 16.80, mq: 50.91 },
+                '22/30': { ml: 15.00, mq: 44.12 },
+                '28/20': { ml: 13.80, mq: 40.59 },
+                '28/30': { ml: 15.00, mq: 44.12 },
+                '34/20': { ml: 14.40, mq: 41.14 },
+                '34/30': { ml: 15.60, mq: 44.57 },
+                '42/25': { ml: 15.00, mq: 41.67 },
+                '42/30': { ml: 16.20, mq: 45.00 },
+                '48/25': { ml: 15.60, mq: 42.16 },
+                '48/30': { ml: 16.80, mq: 45.41 },
+                '60/30': { ml: 19.80, mq: 47.14 },
+                '60/32': { ml: 29.40, mq: 66.12 }
+            },
+            pvc: {
+                '18/25': { ml: 16.20, mq: 49.09 },
+                '18/30': { ml: 21.60, mq: 65.45 },
+                '22/20': { ml: 16.50, mq: 50.00 },
+                '22/30': { ml: 20.40, mq: 61.82 },
+                '28/20': { ml: 19.20, mq: 56.47 },
+                '28/30': { ml: 21.60, mq: 63.53 },
+                '34/20': { ml: 20.40, mq: 58.29 },
+                '34/30': { ml: 24.60, mq: 70.29 },
+                '42/25': { ml: 21.60, mq: 60.00 },
+                '42/30': { ml: 25.20, mq: 70.00 },
+                '48/25': { ml: 20.76, mq: 56.11 },
+                '48/30': { ml: 24.00, mq: 65.41 },
+                '60/30': { ml: 25.20, mq: 60.06 },
+                '60/32': { ml: 31.80, mq: 75.71 }
+            },
+            alluminio: {
+                '18/25': { ml: 34.20, mq: 103.64 },
+                '18/30': { ml: 35.40, mq: 107.27 },
+                '22/20': { ml: 35.40, mq: 107.27 },
+                '22/30': { ml: 36.00, mq: 109.09 },
+                '28/20': { ml: 37.20, mq: 109.41 },
+                '28/30': { ml: 39.00, mq: 114.71 },
+                '34/20': { ml: 40.20, mq: 114.86 },
+                '34/30': { ml: 42.00, mq: 118.29 },
+                '42/25': { ml: 41.70, mq: 115.83 },
+                '42/30': { ml: 43.80, mq: 121.67 },
+                '48/25': { ml: 54.60, mq: 147.57 },
+                '48/30': { ml: 58.80, mq: 159.22 },
+                '60/30': { ml: 50.40, mq: 120.00 },
+                '60/32': { ml: 51.60, mq: 105.31 }
+            },
+            inox: {
+                '18/25': { ml: 45.60, mq: 138.18 },
+                '18/30': { ml: 48.00, mq: 145.45 },
+                '22/20': { ml: 47.20, mq: 143.03 },
+                '22/30': { ml: 48.00, mq: 145.45 },
+                '28/20': { ml: 49.60, mq: 145.88 },
+                '28/30': { ml: 51.60, mq: 152.94 },
+                '34/20': { ml: 53.60, mq: 153.71 },
+                '34/30': { ml: 55.20, mq: 157.14 },
+                '42/25': { ml: 55.60, mq: 154.44 },
+                '42/30': { ml: 58.40, mq: 162.22 },
+                '48/25': { ml: 72.80, mq: 196.76 },
+                '48/30': { ml: 73.60, mq: 175.24 },
+                '60/30': { ml: 64.00, mq: 160.00 },
+                '60/32': { ml: 73.60, mq: 175.24 }
+            }
+        },
+        polinor: {
+            nudo: {
+                '18/25': { ml: 16.80, mq: 50.91 },
+                '18/30': { ml: 21.60, mq: 65.45 },
+                '22/20': { ml: 16.50, mq: 50.00 },
+                '22/30': { ml: 20.40, mq: 61.82 },
+                '28/20': { ml: 19.20, mq: 56.47 },
+                '28/30': { ml: 21.60, mq: 63.53 },
+                '34/20': { ml: 20.40, mq: 58.29 },
+                '34/30': { ml: 24.60, mq: 70.29 },
+                '42/25': { ml: 21.60, mq: 60.00 },
+                '42/30': { ml: 25.20, mq: 70.00 },
+                '48/25': { ml: 20.76, mq: 56.11 },
+                '48/30': { ml: 24.00, mq: 65.41 },
+                '60/30': { ml: 25.20, mq: 60.06 },
+                '60/32': { ml: 31.80, mq: 75.71 }
+            },
+            pvc: {
+                '18/25': { ml: 21.00, mq: 63.64 },
+                '18/30': { ml: 24.60, mq: 74.55 },
+                '22/20': { ml: 21.00, mq: 63.64 },
+                '22/30': { ml: 25.80, mq: 78.18 },
+                '28/20': { ml: 25.80, mq: 78.18 },
+                '28/30': { ml: 28.20, mq: 85.45 },
+                '34/20': { ml: 29.40, mq: 84.00 },
+                '34/30': { ml: 33.00, mq: 94.29 },
+                '42/25': { ml: 30.60, mq: 85.00 },
+                '42/30': { ml: 34.80, mq: 96.67 },
+                '48/25': { ml: 27.60, mq: 74.59 },
+                '48/30': { ml: 31.80, mq: 85.95 },
+                '60/30': { ml: 36.00, mq: 97.30 },
+                '60/32': { ml: 42.60, mq: 99.00 }
+            },
+            alluminio: {
+                '18/25': { ml: 37.20, mq: 112.73 },
+                '18/30': { ml: 38.40, mq: 116.36 },
+                '22/20': { ml: 38.40, mq: 116.36 },
+                '22/30': { ml: 39.60, mq: 120.00 },
+                '28/20': { ml: 40.80, mq: 120.00 },
+                '28/30': { ml: 42.00, mq: 123.53 },
+                '34/20': { ml: 44.40, mq: 126.86 },
+                '34/30': { ml: 48.00, mq: 135.29 },
+                '42/25': { ml: 45.60, mq: 126.67 },
+                '42/30': { ml: 48.00, mq: 133.33 },
+                '48/25': { ml: 57.60, mq: 155.67 },
+                '48/30': { ml: 61.80, mq: 167.27 },
+                '60/30': { ml: 53.40, mq: 127.14 },
+                '60/32': { ml: 54.00, mq: 130.91 }
+            },
+            inox: {
+                '18/25': { ml: 49.20, mq: 149.09 },
+                '18/30': { ml: 52.80, mq: 160.00 },
+                '22/20': { ml: 50.40, mq: 152.73 },
+                '22/30': { ml: 52.80, mq: 160.00 },
+                '28/20': { ml: 54.00, mq: 158.82 },
+                '28/30': { ml: 56.40, mq: 165.88 },
+                '34/20': { ml: 58.80, mq: 168.00 },
+                '34/30': { ml: 61.20, mq: 174.86 },
+                '42/25': { ml: 60.00, mq: 166.67 },
+                '42/30': { ml: 62.40, mq: 173.33 },
+                '48/25': { ml: 75.60, mq: 204.32 },
+                '48/30': { ml: 79.80, mq: 215.68 },
+                '60/30': { ml: 67.20, mq: 160.00 },
+                '60/32': { ml: 74.40, mq: 178.09 }
+            }
+        },
+        gomma: {
+            nudo: {
+                '18/25': { ml: 16.80, mq: 50.91 },
+                '18/30': { ml: 21.60, mq: 65.45 },
+                '22/20': { ml: 16.50, mq: 50.00 },
+                '22/30': { ml: 20.40, mq: 61.82 },
+                '28/20': { ml: 19.20, mq: 56.47 },
+                '28/30': { ml: 21.60, mq: 63.53 },
+                '34/20': { ml: 20.40, mq: 58.29 },
+                '34/30': { ml: 24.60, mq: 70.29 },
+                '42/25': { ml: 21.60, mq: 60.00 },
+                '42/30': { ml: 25.20, mq: 70.00 },
+                '48/25': { ml: 20.76, mq: 56.11 },
+                '48/30': { ml: 24.00, mq: 65.41 },
+                '60/30': { ml: 25.20, mq: 60.06 },
+                '60/32': { ml: 31.80, mq: 75.71 }
+            },
+            pvc: {
+                '18/25': { ml: 21.00, mq: 63.64 },
+                '18/30': { ml: 24.60, mq: 74.55 },
+                '22/20': { ml: 21.00, mq: 63.64 },
+                '22/30': { ml: 25.80, mq: 78.18 },
+                '28/20': { ml: 25.80, mq: 78.18 },
+                '28/30': { ml: 28.20, mq: 85.45 },
+                '34/20': { ml: 29.40, mq: 84.00 },
+                '34/30': { ml: 33.00, mq: 94.29 },
+                '42/25': { ml: 30.60, mq: 85.00 },
+                '42/30': { ml: 34.80, mq: 96.67 },
+                '48/25': { ml: 27.60, mq: 74.59 },
+                '48/30': { ml: 31.80, mq: 85.95 },
+                '60/30': { ml: 36.00, mq: 97.30 },
+                '60/32': { ml: 42.60, mq: 99.00 }
+            },
+            alluminio: {
+                '18/25': { ml: 37.20, mq: 112.73 },
+                '18/30': { ml: 38.40, mq: 116.36 },
+                '22/20': { ml: 38.40, mq: 116.36 },
+                '22/30': { ml: 39.60, mq: 120.00 },
+                '28/20': { ml: 40.80, mq: 120.00 },
+                '28/30': { ml: 42.00, mq: 123.53 },
+                '34/20': { ml: 44.40, mq: 126.86 },
+                '34/30': { ml: 48.00, mq: 135.29 },
+                '42/25': { ml: 45.60, mq: 126.67 },
+                '42/30': { ml: 48.00, mq: 133.33 },
+                '48/25': { ml: 57.60, mq: 155.67 },
+                '48/30': { ml: 61.80, mq: 167.27 },
+                '60/30': { ml: 53.40, mq: 127.14 },
+                '60/32': { ml: 54.00, mq: 130.91 }
+            },
+            inox: {
+                '18/25': { ml: 49.20, mq: 149.09 },
+                '18/30': { ml: 52.80, mq: 160.00 },
+                '22/20': { ml: 50.40, mq: 152.73 },
+                '22/30': { ml: 52.80, mq: 160.00 },
+                '28/20': { ml: 54.00, mq: 158.82 },
+                '28/30': { ml: 56.40, mq: 165.88 },
+                '34/20': { ml: 58.80, mq: 168.00 },
+                '34/30': { ml: 61.20, mq: 174.86 },
+                '42/25': { ml: 60.00, mq: 166.67 },
+                '42/30': { ml: 62.40, mq: 173.33 },
+                '48/25': { ml: 75.60, mq: 204.32 },
+                '48/30': { ml: 79.80, mq: 215.68 },
+                '60/30': { ml: 67.20, mq: 160.00 },
+                '60/32': { ml: 74.40, mq: 178.09 }
+            }
+        }
+    };
+
+    const quoteItemsRef = collection(db, `artifacts/${appId}/users/${userId}/quoteItems`);
+
+    // DOM Elements
+    const materialSelect = document.getElementById('material');
+    const coatingSelect = document.getElementById('coating');
+    const diameterSelect = document.getElementById('diameter');
+    const thicknessSelect = document.getElementById('thickness');
+    const lengthInput = document.getElementById('length');
+    const curvesInput = document.getElementById('curves');
+    const addItemBtn = document.getElementById('addItemBtn');
+    const quoteSummaryDiv = document.getElementById('quoteSummary');
+    const discountInput = document.getElementById('discount');
+    const totalPriceSpan = document.getElementById('totalPrice');
+    const projectNameInput = document.getElementById('projectName');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const customModal = document.getElementById('customModal');
+    const modalContent = document.getElementById('modalContent');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // UI functions
+    function showModal(message, type = 'error') {
+        const typeClass = type === 'error' ? 'alert-error' : 'alert-success';
+        modalContent.innerHTML = `<div class="alert ${typeClass}">${message}</div>`;
+        customModal.classList.remove('hidden');
+    }
+
+    function hideModal() {
+        customModal.classList.add('hidden');
+    }
+
+    closeModalBtn.addEventListener('click', hideModal);
+
+    // Event listeners for select fields
+    materialSelect.addEventListener('change', () => {
+        updateCoatingOptions();
+    });
+    coatingSelect.addEventListener('change', updateDiameterOptions);
+    diameterSelect.addEventListener('change', updateThicknessOptions);
+
+    function populateSelect(selectElement, options) {
+        selectElement.innerHTML = '';
+        selectElement.innerHTML += `<option value="">Seleziona...</option>`;
+        options.forEach(option => {
+            const el = document.createElement('option');
+            el.value = option.value;
+            el.textContent = option.text;
+            selectElement.appendChild(el);
+        });
+        selectElement.disabled = false;
+    }
+
+    function updateCoatingOptions() {
+        const material = materialSelect.value;
+        if (material && prices[material]) {
+            const coatings = Object.keys(prices[material]).map(key => ({
+                value: key,
+                text: key.charAt(0).toUpperCase() + key.slice(1)
+            }));
+            populateSelect(coatingSelect, coatings);
+        } else {
+            coatingSelect.innerHTML = '<option value="">Seleziona la finitura</option>';
+            coatingSelect.disabled = true;
+        }
+        // Reset subsequent selects
+        diameterSelect.innerHTML = '<option value="">Seleziona il diametro</option>';
+        diameterSelect.disabled = true;
+        thicknessSelect.innerHTML = '<option value="">Seleziona lo spessore</option>';
+        thicknessSelect.disabled = true;
+    }
+
+    function updateDiameterOptions() {
+        const material = materialSelect.value;
+        const coating = coatingSelect.value;
+        if (material && coating && prices[material][coating]) {
+            const diameters = [...new Set(Object.keys(prices[material][coating]).map(key => key.split('/')[0]))]
+                .map(d => ({ value: d, text: d }));
+            populateSelect(diameterSelect, diameters);
+        } else {
+            diameterSelect.innerHTML = '<option value="">Seleziona il diametro</option>';
+            diameterSelect.disabled = true;
+        }
+        // Reset subsequent select
+        thicknessSelect.innerHTML = '<option value="">Seleziona lo spessore</option>';
+        thicknessSelect.disabled = true;
+    }
+
+    function updateThicknessOptions() {
+        const material = materialSelect.value;
+        const coating = coatingSelect.value;
+        const diameter = diameterSelect.value;
+        if (material && coating && diameter) {
+            const thicknesses = Object.keys(prices[material][coating])
+                .filter(key => key.startsWith(diameter + '/'))
+                .map(key => ({
+                    value: key.split('/')[1],
+                    text: key.split('/')[1]
+                }));
+            populateSelect(thicknessSelect, thicknesses);
+        } else {
+            thicknessSelect.innerHTML = '<option value="">Seleziona lo spessore</option>';
+            thicknessSelect.disabled = true;
+        }
+    }
+
+
+    // Calculation and display functions
+    function calculateSubtotal(item) {
+        const key = `${item.diameter}/${item.thickness}`;
+        const priceData = prices[item.material][item.coating][key];
+        if (!priceData) {
+            return 0;
+        }
+
+        let subtotal = 0;
+        if (priceData.ml) {
+            subtotal += item.length * priceData.ml;
+        }
+        if (priceData.mq) {
+            subtotal += item.curves * priceData.mq;
+        }
+        return subtotal;
+    }
+
+    async function renderQuote() {
+        if (!userId) {
+            quoteSummaryDiv.innerHTML = `<div class="text-center text-gray-500">Autenticazione in corso...</div>`;
+            return;
+        }
+
+        try {
+            const quoteSnapshot = await getDocs(collection(db, `artifacts/${appId}/users/${userId}/quoteItems`));
+            let quoteItems = quoteSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            if (quoteItems.length === 0) {
+                quoteSummaryDiv.innerHTML = `<div class="text-center text-gray-500">Nessun articolo aggiunto.</div>`;
+                totalPriceSpan.textContent = '€0.00';
+                return;
+            }
+
+            let total = 0;
+            let html = '';
+
+            quoteItems.forEach(item => {
+                const subtotal = calculateSubtotal(item);
+                total += subtotal;
+                html += `
+                    <div class="p-4 bg-gray-50 rounded-lg flex items-center justify-between shadow-sm">
                         <div>
-                            <p class="font-semibold text-gray-800">${articolo.materiale} + ${articolo.finitura}</p>
-                            <p class="text-sm text-gray-600">DN: ${articolo.dn}</p>
-                            <p class="text-sm text-gray-600">Metri lineari: ${articolo.quantita} (@€${articolo.prezzoMl.toFixed(2)}/ml) = €${(articolo.quantita * articolo.prezzoMl).toFixed(2)}</p>
-                            <p class="text-sm text-gray-600">Curve: ${articolo.curve} (@€${articolo.prezzoCurva.toFixed(2)}/curva) = €${(articolo.curve * articolo.prezzoCurva).toFixed(2)}</p>
+                            <p class="font-semibold text-gray-800">${item.material.charAt(0).toUpperCase() + item.material.slice(1)} - ${item.coating.toUpperCase()}</p>
+                            <p class="text-sm text-gray-500">DN: ${item.diameter}/${item.thickness} | Lunghezza: ${item.length} m | Curve: ${item.curves} pz</p>
                         </div>
-                    `;
-                    const prezzo = `
-                        <div class="flex items-center space-x-4 mt-2 md:mt-0">
-                            <span class="text-lg font-bold text-indigo-600">€${articolo.subtotale.toFixed(2)}</span>
-                            <button onclick="rimuoviArticolo(${index})" class="text-red-500 hover:text-red-700 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-gray-800">€${subtotal.toFixed(2)}</span>
+                            <button class="delete-item-btn text-red-500 hover:text-red-700" data-id="${item.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
                             </button>
                         </div>
-                    `;
-                    
-                    articoloDiv.innerHTML = descrizione + prezzo;
-                    riepilogoDiv.appendChild(articoloDiv);
-                });
-            }
-        }
-
-        function calcolaTotale() {
-            const subtotale = preventivo.reduce((sum, item) => sum + item.subtotale, 0);
-            const scontoPercent = parseFloat(scontoInput.value) || 0;
-            const scontoValore = subtotale * (scontoPercent / 100);
-            const totaleFinale = subtotale - scontoValore;
-
-            costoTotaleSpan.textContent = `€${totaleFinale.toFixed(2)}`;
-            downloadPdfBtn.disabled = preventivo.length === 0;
-        }
-
-        function downloadPdf() {
-            const { jsPDF } = window.jspdf;
-            
-            // Imposta il PDF su formato orizzontale (landscape) A4
-            const doc = new jsPDF('l', 'mm', 'a4');
-            const pdfContent = document.getElementById('pdf-content');
-            
-            document.getElementById('pdfCantiere').textContent = nomeCantiereInput.value || 'Non specificato';
-            document.getElementById('pdfData').textContent = new Date().toLocaleDateString('it-IT');
-            
-            const subtotale = preventivo.reduce((sum, item) => sum + item.subtotale, 0);
-            const scontoPercent = parseFloat(scontoInput.value) || 0;
-            const scontoValore = subtotale * (scontoPercent / 100);
-            const totaleFinale = subtotale - scontoValore;
-
-            document.getElementById('pdfSubtotale').textContent = `€${subtotale.toFixed(2)}`;
-            document.getElementById('pdfScontoPercent').textContent = scontoPercent;
-            document.getElementById('pdfScontoValore').textContent = `€${scontoValore.toFixed(2)}`;
-            document.getElementById('pdfCostoTotale').textContent = `€${totaleFinale.toFixed(2)}`;
-
-            const tableBody = document.getElementById('pdfTableBody');
-            tableBody.innerHTML = '';
-            preventivo.forEach(item => {
-                const row = document.createElement('div');
-                row.classList.add('grid', 'grid-cols-5', 'text-center', 'table-row');
-                row.innerHTML = `
-                    <div class="py-3 px-4 text-sm">${item.materiale} - ${item.finitura}</div>
-                    <div class="py-3 px-4 text-sm">${item.dn}</div>
-                    <div class="py-3 px-4 text-sm">${item.quantita} m / ${item.curve} curve</div>
-                    <div class="py-3 px-4 text-sm">€${item.prezzoMl.toFixed(2)}</div>
-                    <div class="py-3 px-4 font-bold text-sm">€${item.subtotale.toFixed(2)}</div>
+                    </div>
                 `;
-                tableBody.appendChild(row);
             });
 
-            pdfContent.classList.remove('hidden');
+            const discount = parseFloat(discountInput.value) / 100 || 0;
+            const finalTotal = total * (1 - discount);
+            
+            html += `<hr class="my-4 border-gray-200">`;
+            html += `<div class="flex justify-between font-medium text-gray-700"><p>Subtotale:</p><p>€${total.toFixed(2)}</p></div>`;
+            if (discount > 0) {
+                html += `<div class="flex justify-between font-medium text-gray-700"><p>Sconto (${(discount * 100).toFixed(0)}%):</p><p>-€${(total * discount).toFixed(2)}</p></div>`;
+            }
+            
+            quoteSummaryDiv.innerHTML = html;
+            totalPriceSpan.textContent = `€${finalTotal.toFixed(2)}`;
 
-            html2canvas(pdfContent, { scale: 2 }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 297; 
-                const pageHeight = 210; 
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    doc.addPage();
-                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                
-                doc.save(`Preventivo_${nomeCantiereInput.value || 'Cantiere'}.pdf`);
-                
-                pdfContent.classList.add('hidden');
-            }).catch(error => {
-                console.error("Errore durante la generazione del PDF:", error);
-                mostraErrore("Si è verificato un errore critico durante la generazione del PDF. Controlla la console per i dettagli.");
-                pdfContent.classList.add('hidden');
+            document.querySelectorAll('.delete-item-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const docId = e.currentTarget.getAttribute('data-id');
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/quoteItems`, docId));
+                        showModal("Articolo rimosso con successo.", 'success');
+                        renderQuote();
+                    } catch (error) {
+                        showModal("Errore durante la rimozione dell'articolo: " + error.message);
+                    }
+                });
             });
+
+        } catch (error) {
+            showModal("Errore nel recupero degli articoli: " + error.message);
+        }
+    }
+
+    // Add Item to Firestore
+    addItemBtn.addEventListener('click', async () => {
+        const material = materialSelect.value;
+        const coating = coatingSelect.value;
+        const diameter = diameterSelect.value;
+        const thickness = thicknessSelect.value;
+        const length = parseFloat(lengthInput.value);
+        const curves = parseInt(curvesInput.value);
+
+        if (!material || !coating || !diameter || !thickness || isNaN(length) || isNaN(curves) || length < 0 || curves < 0) {
+            showModal("Per favore, compila tutti i campi correttamente.");
+            return;
         }
 
-        // Event Listeners
-        materialeSelect.addEventListener('change', aggiornaDN);
-        addArticleBtn.addEventListener('click', aggiungiArticolo);
-        scontoInput.addEventListener('input', calcolaTotale);
-        downloadPdfBtn.addEventListener('click', downloadPdf);
-        
-        // Inizializza l'app al caricamento della pagina
-        document.addEventListener('DOMContentLoaded', () => {
-            aggiornaDN();
-            calcolaTotale();
-        });
-    </script>
+        const priceData = prices[material]?.[coating]?.[`${diameter}/${thickness}`];
+        if (!priceData) {
+            showModal("Prezzo non disponibile per la combinazione selezionata.");
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, `artifacts/${appId}/users/${userId}/quoteItems`), {
+                material,
+                coating,
+                diameter,
+                thickness,
+                length,
+                curves,
+                timestamp: new Date()
+            });
+            showModal("Articolo aggiunto con successo!", 'success');
+            renderQuote();
+            lengthInput.value = '0';
+            curvesInput.value = '0';
+        } catch (e) {
+            showModal("Errore nell'aggiungere l'articolo: " + e.message);
+        }
+    });
+
+    discountInput.addEventListener('input', renderQuote);
+    projectNameInput.addEventListener('input', renderQuote);
+
+    // Initial render
+    window.onload = async () => {
+        await signIn();
+        renderQuote();
+        updateCoatingOptions();
+    };
+</script>
+
 </body>
 </html>
 

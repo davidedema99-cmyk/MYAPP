@@ -346,7 +346,6 @@ function generatePDF() {
     const primaryColor = '#004d40';
     const accentColor = '#ffb300';
     const textColor = '#263238';
-    const lightGrey = '#e0e0e0';
     const darkGrey = '#555555';
 
     // Intestazione
@@ -438,42 +437,40 @@ function generatePDF() {
     // Ottenere la posizione finale della tabella
     let finalY = doc.autoTable.previous.finalY;
 
-    // Riepilogo Totale
+    // Riepilogo Totale gestito da autoTable per evitare distorsioni
     const subtotal = quoteItems.reduce((sum, item) => sum + item.total, 0);
     const discount = parseFloat(discountInput.value) || 0;
     const discountAmount = subtotal * (discount / 100);
     const total = subtotal - discountAmount;
-
-    // Sezione Riepilogo
+    
+    doc.setFontSize(14);
     doc.setFont('Helvetica', 'bold');
     doc.setTextColor(textColor);
-    doc.setFontSize(14);
-    doc.text('Riepilogo', 15, finalY + 20);
-
-    finalY += 25;
-    doc.setFont('Helvetica', 'normal');
-    doc.setFontSize(12);
-    doc.setTextColor(darkGrey);
+    doc.text('Riepilogo', 15, finalY + 15);
     
-    doc.text('Subtotale:', 150, finalY);
-    doc.text(`${subtotal.toFixed(2)} €`, 195, finalY, null, null, 'right');
-    finalY += 8;
-
-    if (discount > 0) {
-        doc.text(`Sconto (${discount}%):`, 150, finalY);
-        doc.text(`-${discountAmount.toFixed(2)} €`, 195, finalY, null, null, 'right');
-        finalY += 8;
-    }
-
-    doc.setDrawColor(lightGrey);
-    doc.line(150, finalY + 1, 195, finalY + 1);
-
-    finalY += 12;
-    doc.setFontSize(16);
-    doc.setFont('Helvetica', 'bold');
-    doc.setTextColor(primaryColor);
-    doc.text('TOTALE:', 150, finalY);
-    doc.text(`${total.toFixed(2)} €`, 195, finalY, null, null, 'right');
+    const summaryData = [
+        ['Subtotale:', `${subtotal.toFixed(2)} €`],
+        [`Sconto (${discount}%):`, `-${discountAmount.toFixed(2)} €`],
+        [{ content: 'TOTALE:', styles: { fontStyle: 'bold', fontSize: 16, textColor: primaryColor } }, { content: `${total.toFixed(2)} €`, styles: { fontStyle: 'bold', fontSize: 16, textColor: primaryColor } }]
+    ];
+    
+    doc.autoTable({
+        body: summaryData,
+        startY: finalY + 20,
+        theme: 'plain',
+        styles: {
+            font: 'Helvetica',
+            fontSize: 12,
+            cellPadding: 2,
+            halign: 'right'
+        },
+        columnStyles: {
+            0: { halign: 'left', fontStyle: 'normal' },
+            1: { halign: 'right' }
+        },
+        tableWidth: 80, // Larghezza fissa per la tabella del riepilogo
+        margin: { left: 125 } // Allinea a destra
+    });
 
     doc.save('preventivo_isoldem.pdf');
 }

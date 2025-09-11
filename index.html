@@ -93,7 +93,6 @@
 
 <div class="w-full max-w-2xl bg-white rounded-3xl p-6 md:p-10 shadow-xl space-y-8">
 
-    <!-- Header -->
     <header class="text-center space-y-2">
         <div class="flex flex-col items-center justify-center space-y-4">
             <div class="logo-placeholder">ISOLDEM</div>
@@ -102,10 +101,8 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="space-y-6">
 
-        <!-- Project Details Card -->
         <div class="card p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Dettagli Cantiere</h2>
             <div class="flex items-center space-x-2">
@@ -114,7 +111,6 @@
             </div>
         </div>
 
-        <!-- Add Item Card -->
         <div class="card p-6 space-y-4">
             <h2 class="text-2xl font-bold text-gray-800">Aggiungi Articolo</h2>
             <div>
@@ -149,7 +145,6 @@
             <button id="addItemBtn" class="w-full btn-primary mt-4">Aggiungi al Preventivo</button>
         </div>
 
-        <!-- Quote Summary Card -->
         <div class="card p-6 space-y-4">
             <h2 class="text-2xl font-bold text-gray-800">Riepilogo Preventivo</h2>
             <div id="quoteSummary" class="text-gray-600">Nessun articolo aggiunto.</div>
@@ -166,7 +161,6 @@
             <button id="downloadPdfBtn" class="w-full btn-secondary mt-4">Scarica Preventivo PDF</button>
         </div>
 
-        <!-- Custom Modal for Alerts -->
         <div id="customModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
             <div class="relative p-8 bg-white w-96 max-w-sm m-auto flex-col flex rounded-lg shadow-lg">
                 <div id="modalContent" class="text-center"></div>
@@ -255,86 +249,262 @@
         },
         lana: {
             nudo: {
-                '18/20': { ml: 12.60, mq: 38.18 }, '18/30': { ml: 13.80, mq: 41.82 }, '22/20': { ml: 13.20, mq: 40.00 },
-                '22/30': { ml: 14.40, mq: 43.64 }, '28/20': { ml: 13.80, mq: 40.59 }, '28/30': { ml: 15.00, mq: 44.12 },
-                '34/20': { ml: 14.40, mq: 41.14 }, '34/30': { ml: 15.60, mq: 44.57 }, '42/25': { ml: 15.00, mq: 41.67 },
-                '42/30': { ml: 16.20, mq: 45.00 }, '48/25': { ml: 15.60, mq: 42.16 }, '48/30': { ml: 16.80, mq: 45.41 },
-                '60/30': { ml: 19.80, mq: 47.14 }, '76/30': { ml: 27.36, mq: 55.84 }, '89/30': { ml: 29.52, mq: 57.88 },
-                '114/30': { ml: 37.73, mq: 63.95 }, '114/40': { ml: 39.17, mq: 60.26 }, '140/40': { ml: 40.80, mq: 55.89 },
-                '168/40': { ml: 43.92, mq: 53.56 }, '220/40': { ml: 45.00, mq: 45.45 }, '273/40': { ml: 49.56, mq: 42.72 },
-                '324/40': { ml: 57.12, mq: 43.27 }
+                '18/20': { ml: 12.60, mq: 38.18 }, '18/30': { ml: 13.80, mq: 41.82 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 13.20, mq: 40.00 }, '22/30': { ml: 14.40, mq: 43.64 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 13.80, mq: 40.59 }, '28/30': { ml: 15.00, mq: 44.12 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 14.40, mq: 41.14 }, '34/30': { ml: 15.60, mq: 44.57 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 15.00, mq: 41.67 }, '42/30': { ml: 16.20, mq: 45.00 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 15.60, mq: 42.16 }, '48/30': { ml: 16.80, mq: 45.41 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 19.80, mq: 47.14 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 27.36, mq: 55.84 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 29.52, mq: 57.88 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 37.73, mq: 63.95 }, '114/40': { ml: 39.17, mq: 60.26 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 40.80, mq: 55.89 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 43.92, mq: 53.56 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 45.00, mq: 45.45 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 49.56, mq: 42.72 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 57.12, mq: 43.27 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             },
             pvc: {
-                '18/20': { ml: 16.20, mq: 49.09 }, '18/30': { ml: 16.50, mq: 50.00 }, '22/20': { ml: 16.50, mq: 50.00 },
-                '22/30': { ml: 17.10, mq: 51.82 }, '28/20': { ml: 17.40, mq: 51.18 }, '28/30': { ml: 17.70, mq: 52.06 },
-                '34/20': { ml: 18.30, mq: 52.29 }, '34/30': { ml: 18.90, mq: 54.00 }, '42/25': { ml: 19.50, mq: 54.17 },
-                '42/30': { ml: 19.98, mq: 55.50 }, '48/25': { ml: 20.76, mq: 56.11 }, '48/30': { ml: 21.24, mq: 57.41 },
-                '60/30': { ml: 25.80, mq: 61.43 }, '76/30': { ml: 29.40, mq: 60.00 }, '89/30': { ml: 32.64, mq: 64.00 },
-                '114/30': { ml: 41.16, mq: 69.76 }, '114/40': { ml: 42.24, mq: 64.98 }, '140/40': { ml: 47.52, mq: 65.10 },
-                '168/40': { ml: 53.76, mq: 65.56 }, '220/40': { ml: 56.28, mq: 56.85 }, '273/40': { ml: 63.00, mq: 54.31 },
-                '324/40': { ml: 70.56, mq: 53.45 }
+                '18/20': { ml: 16.20, mq: 49.09 }, '18/30': { ml: 16.50, mq: 50.00 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 16.50, mq: 50.00 }, '22/30': { ml: 17.10, mq: 51.82 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 17.40, mq: 51.18 }, '28/30': { ml: 17.70, mq: 52.06 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 18.30, mq: 52.29 }, '34/30': { ml: 18.90, mq: 54.00 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 19.50, mq: 54.17 }, '42/30': { ml: 19.98, mq: 55.50 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 20.76, mq: 56.11 }, '48/30': { ml: 21.24, mq: 57.41 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 25.80, mq: 61.43 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 29.40, mq: 60.00 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 32.64, mq: 64.00 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 41.16, mq: 69.76 }, '114/40': { ml: 42.24, mq: 64.98 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 47.52, mq: 65.10 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 53.76, mq: 65.56 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 56.28, mq: 56.85 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 63.00, mq: 54.31 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 70.56, mq: 53.45 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             },
             alluminio: {
-                '18/20': { ml: 34.20, mq: 103.64 }, '18/30': { ml: 35.40, mq: 107.27 }, '22/20': { ml: 35.40, mq: 107.27 },
-                '22/30': { ml: 36.00, mq: 109.09 }, '28/20': { ml: 37.20, mq: 109.41 }, '28/30': { ml: 39.00, mq: 114.71 },
-                '34/20': { ml: 40.20, mq: 114.86 }, '34/30': { ml: 41.40, mq: 118.29 }, '42/25': { ml: 41.70, mq: 115.83 },
-                '42/30': { ml: 43.80, mq: 121.67 }, '48/25': { ml: 45.60, mq: 123.24 }, '48/30': { ml: 48.00, mq: 129.73 },
-                '60/30': { ml: 55.20, mq: 131.43 }, '76/30': { ml: 63.00, mq: 128.57 }, '89/30': { ml: 68.16, mq: 133.65 },
-                '114/30': { ml: 82.56, mq: 139.93 }, '114/40': { ml: 84.96, mq: 130.71 }, '140/40': { ml: 96.60, mq: 132.33 },
-                '168/40': { ml: 109.80, mq: 133.90 }, '220/40': { ml: 117.36, mq: 118.55 }, '273/40': { ml: 129.36, mq: 111.52 },
-                '324/40': { ml: 144.96, mq: 109.82 }
+                '18/20': { ml: 34.20, mq: 103.64 }, '18/30': { ml: 35.40, mq: 107.27 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 35.40, mq: 107.27 }, '22/30': { ml: 36.00, mq: 109.09 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 37.20, mq: 109.41 }, '28/30': { ml: 39.00, mq: 114.71 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 40.20, mq: 114.86 }, '34/30': { ml: 41.40, mq: 118.29 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 41.70, mq: 115.83 }, '42/30': { ml: 43.80, mq: 121.67 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 45.60, mq: 123.24 }, '48/30': { ml: 48.00, mq: 129.73 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 55.20, mq: 131.43 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 63.00, mq: 128.57 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 68.16, mq: 133.65 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 82.56, mq: 139.93 }, '114/40': { ml: 84.96, mq: 130.71 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 96.60, mq: 132.33 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 109.80, mq: 133.90 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 117.36, mq: 118.55 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 129.36, mq: 111.52 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 144.96, mq: 109.82 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             },
             inox: {
-                '18/20': { ml: 45.60, mq: 138.18 }, '18/30': { ml: 47.20, mq: 143.03 }, '22/20': { ml: 47.20, mq: 143.03 },
-                '22/30': { ml: 48.00, mq: 145.45 }, '28/20': { ml: 49.60, mq: 145.88 }, '28/30': { ml: 52.00, mq: 152.94 },
-                '34/20': { ml: 53.60, mq: 153.71 }, '34/30': { ml: 55.20, mq: 157.14 }, '42/25': { ml: 55.60, mq: 154.44 },
-                '42/30': { ml: 58.40, mq: 162.22 }, '48/25': { ml: 60.80, mq: 164.32 }, '48/30': { ml: 64.00, mq: 172.97 },
-                '60/30': { ml: 73.60, mq: 175.24 }, '76/30': { ml: 84.00, mq: 171.43 }, '89/30': { ml: 90.88, mq: 178.20 },
-                '114/30': { ml: 110.08, mq: 186.58 }, '114/40': { ml: 113.28, mq: 174.28 }, '140/40': { ml: 128.80, mq: 176.44 },
-                '168/40': { ml: 146.40, mq: 178.54 }, '220/40': { ml: 156.48, mq: 158.06 }, '273/40': { ml: 172.48, mq: 148.69 },
-                '324/40': { ml: 193.28, mq: 146.42 }
+                '18/20': { ml: 45.60, mq: 138.18 }, '18/30': { ml: 47.20, mq: 143.03 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 47.20, mq: 143.03 }, '22/30': { ml: 48.00, mq: 145.45 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 49.60, mq: 145.88 }, '28/30': { ml: 52.00, mq: 152.94 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 53.60, mq: 153.71 }, '34/30': { ml: 55.20, mq: 157.14 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 55.60, mq: 154.44 }, '42/30': { ml: 58.40, mq: 162.22 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 60.80, mq: 164.32 }, '48/30': { ml: 64.00, mq: 172.97 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 73.60, mq: 175.24 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 84.00, mq: 171.43 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 90.88, mq: 178.20 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 110.08, mq: 186.58 }, '114/40': { ml: 113.28, mq: 174.28 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 128.80, mq: 176.44 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 146.40, mq: 178.54 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 156.48, mq: 158.06 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 172.48, mq: 148.69 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 193.28, mq: 146.42 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             }
         },
         polinor: {
             nudo: {
-                '18/20': { ml: 12.60, mq: 38.18 }, '18/30': { ml: 13.80, mq: 41.82 }, '22/20': { ml: 13.20, mq: 40.00 },
-                '22/30': { ml: 14.40, mq: 43.64 }, '28/20': { ml: 13.80, mq: 40.59 }, '28/30': { ml: 15.00, mq: 44.12 },
-                '34/20': { ml: 14.40, mq: 41.14 }, '34/30': { ml: 15.60, mq: 44.57 }, '42/25': { ml: 15.00, mq: 41.67 },
-                '42/30': { ml: 16.20, mq: 45.00 }, '48/25': { ml: 15.60, mq: 42.16 }, '48/30': { ml: 16.80, mq: 45.41 },
-                '60/30': { ml: 19.80, mq: 47.14 }, '76/30': { ml: 27.36, mq: 55.84 }, '89/30': { ml: 29.52, mq: 57.88 },
-                '114/30': { ml: 37.73, mq: 63.95 }, '114/40': { ml: 39.17, mq: 60.26 }, '140/40': { ml: 40.80, mq: 55.89 },
-                '168/40': { ml: 43.92, mq: 53.56 }, '220/40': { ml: 45.00, mq: 45.45 }, '273/40': { ml: 49.56, mq: 42.72 },
-                '324/40': { ml: 57.12, mq: 43.27 }
+                '18/20': { ml: 12.60, mq: 38.18 }, '18/30': { ml: 13.80, mq: 41.82 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 13.20, mq: 40.00 }, '22/30': { ml: 14.40, mq: 43.64 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 13.80, mq: 40.59 }, '28/30': { ml: 15.00, mq: 44.12 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 14.40, mq: 41.14 }, '34/30': { ml: 15.60, mq: 44.57 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 15.00, mq: 41.67 }, '42/30': { ml: 16.20, mq: 45.00 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 15.60, mq: 42.16 }, '48/30': { ml: 16.80, mq: 45.41 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 19.80, mq: 47.14 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 27.36, mq: 55.84 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 29.52, mq: 57.88 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 37.73, mq: 63.95 }, '114/40': { ml: 39.17, mq: 60.26 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 40.80, mq: 55.89 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 43.92, mq: 53.56 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 45.00, mq: 45.45 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 49.56, mq: 42.72 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 57.12, mq: 43.27 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             },
             pvc: {
-                '18/20': { ml: 16.20, mq: 49.09 }, '18/30': { ml: 16.50, mq: 50.00 }, '22/20': { ml: 16.50, mq: 50.00 },
-                '22/30': { ml: 17.10, mq: 51.82 }, '28/20': { ml: 17.40, mq: 51.18 }, '28/30': { ml: 17.70, mq: 52.06 },
-                '34/20': { ml: 18.30, mq: 52.29 }, '34/30': { ml: 18.90, mq: 54.00 }, '42/25': { ml: 19.50, mq: 54.17 },
-                '42/30': { ml: 19.98, mq: 55.50 }, '48/25': { ml: 20.76, mq: 56.11 }, '48/30': { ml: 21.24, mq: 57.41 },
-                '60/30': { ml: 25.80, mq: 61.43 }, '76/30': { ml: 29.40, mq: 60.00 }, '89/30': { ml: 32.64, mq: 64.00 },
-                '114/30': { ml: 41.16, mq: 69.76 }, '114/40': { ml: 42.24, mq: 64.98 }, '140/40': { ml: 47.52, mq: 65.10 },
-                '168/40': { ml: 53.76, mq: 65.56 }, '220/40': { ml: 56.28, mq: 56.85 }, '273/40': { ml: 63.00, mq: 54.31 },
-                '324/40': { ml: 70.56, mq: 53.45 }
+                '18/20': { ml: 16.20, mq: 49.09 }, '18/30': { ml: 16.50, mq: 50.00 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 16.50, mq: 50.00 }, '22/30': { ml: 17.10, mq: 51.82 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 17.40, mq: 51.18 }, '28/30': { ml: 17.70, mq: 52.06 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 18.30, mq: 52.29 }, '34/30': { ml: 18.90, mq: 54.00 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 19.50, mq: 54.17 }, '42/30': { ml: 19.98, mq: 55.50 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 20.76, mq: 56.11 }, '48/30': { ml: 21.24, mq: 57.41 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 25.80, mq: 61.43 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 29.40, mq: 60.00 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 32.64, mq: 64.00 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 41.16, mq: 69.76 }, '114/40': { ml: 42.24, mq: 64.98 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 47.52, mq: 65.10 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 53.76, mq: 65.56 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 56.28, mq: 56.85 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 63.00, mq: 54.31 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 70.56, mq: 53.45 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             },
             alluminio: {
-                '18/20': { ml: 34.20, mq: 103.64 }, '18/30': { ml: 35.40, mq: 107.27 }, '22/20': { ml: 35.40, mq: 107.27 },
-                '22/30': { ml: 36.00, mq: 109.09 }, '28/20': { ml: 37.20, mq: 109.41 }, '28/30': { ml: 39.00, mq: 114.71 },
-                '34/20': { ml: 40.20, mq: 114.86 }, '34/30': { ml: 41.40, mq: 118.29 }, '42/25': { ml: 41.70, mq: 115.83 },
-                '42/30': { ml: 43.80, mq: 121.67 }, '48/25': { ml: 45.60, mq: 123.24 }, '48/30': { ml: 48.00, mq: 129.73 },
-                '60/30': { ml: 55.20, mq: 131.43 }, '76/30': { ml: 63.00, mq: 128.57 }, '89/30': { ml: 68.16, mq: 133.65 },
-                '114/30': { ml: 82.56, mq: 139.93 }, '114/40': { ml: 84.96, mq: 130.71 }, '140/40': { ml: 96.60, mq: 132.33 },
-                '168/40': { ml: 109.80, mq: 133.90 }, '220/40': { ml: 117.36, mq: 118.55 }, '273/40': { ml: 129.36, mq: 111.52 },
-                '324/40': { ml: 144.96, mq: 109.82 }
+                '18/20': { ml: 34.20, mq: 103.64 }, '18/30': { ml: 35.40, mq: 107.27 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 35.40, mq: 107.27 }, '22/30': { ml: 36.00, mq: 109.09 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 37.20, mq: 109.41 }, '28/30': { ml: 39.00, mq: 114.71 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 40.20, mq: 114.86 }, '34/30': { ml: 41.40, mq: 118.29 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 41.70, mq: 115.83 }, '42/30': { ml: 43.80, mq: 121.67 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 45.60, mq: 123.24 }, '48/30': { ml: 48.00, mq: 129.73 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 55.20, mq: 131.43 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 63.00, mq: 128.57 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 68.16, mq: 133.65 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 82.56, mq: 139.93 }, '114/40': { ml: 84.96, mq: 130.71 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 96.60, mq: 132.33 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 109.80, mq: 133.90 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 117.36, mq: 118.55 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 129.36, mq: 111.52 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 144.96, mq: 109.82 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             },
             inox: {
-                '18/20': { ml: 45.60, mq: 138.18 }, '18/30': { ml: 47.20, mq: 143.03 }, '22/20': { ml: 47.20, mq: 143.03 },
-                '22/30': { ml: 48.00, mq: 145.45 }, '28/20': { ml: 49.60, mq: 145.88 }, '28/30': { ml: 52.00, mq: 152.94 },
-                '34/20': { ml: 53.60, mq: 153.71 }, '34/30': { ml: 55.20, mq: 157.14 }, '42/25': { ml: 55.60, mq: 154.44 },
-                '42/30': { ml: 58.40, mq: 162.22 }, '48/25': { ml: 60.80, mq: 164.32 }, '48/30': { ml: 64.00, mq: 172.97 },
-                '60/30': { ml: 73.60, mq: 175.24 }, '76/30': { ml: 84.00, mq: 171.43 }, '89/30': { ml: 90.88, mq: 178.20 },
-                '114/30': { ml: 110.08, mq: 186.58 }, '114/40': { ml: 113.28, mq: 174.28 }, '140/40': { ml: 128.80, mq: 176.44 },
-                '168/40': { ml: 146.40, mq: 178.54 }, '220/40': { ml: 156.48, mq: 158.06 }, '273/40': { ml: 172.48, mq: 148.69 },
-                '324/40': { ml: 193.28, mq: 146.42 }
+                '18/20': { ml: 45.60, mq: 138.18 }, '18/30': { ml: 47.20, mq: 143.03 },
+                '18/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '22/20': { ml: 47.20, mq: 143.03 }, '22/30': { ml: 48.00, mq: 145.45 },
+                '22/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '28/20': { ml: 49.60, mq: 145.88 }, '28/30': { ml: 52.00, mq: 152.94 },
+                '28/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '34/20': { ml: 53.60, mq: 153.71 }, '34/30': { ml: 55.20, mq: 157.14 },
+                '34/25': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '42/25': { ml: 55.60, mq: 154.44 }, '42/30': { ml: 58.40, mq: 162.22 },
+                '42/40': { ml: 0.00, mq: 0.00 }, '42/50': { ml: 0.00, mq: 0.00 }, '42/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '48/25': { ml: 60.80, mq: 164.32 }, '48/30': { ml: 64.00, mq: 172.97 },
+                '48/40': { ml: 0.00, mq: 0.00 }, '48/50': { ml: 0.00, mq: 0.00 }, '48/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '60/30': { ml: 73.60, mq: 175.24 },
+                '60/40': { ml: 0.00, mq: 0.00 }, '60/50': { ml: 0.00, mq: 0.00 }, '60/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '76/30': { ml: 84.00, mq: 171.43 },
+                '76/40': { ml: 0.00, mq: 0.00 }, '76/50': { ml: 0.00, mq: 0.00 }, '76/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '89/30': { ml: 90.88, mq: 178.20 },
+                '89/40': { ml: 0.00, mq: 0.00 }, '89/50': { ml: 0.00, mq: 0.00 }, '89/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '114/30': { ml: 110.08, mq: 186.58 }, '114/40': { ml: 113.28, mq: 174.28 },
+                '114/50': { ml: 0.00, mq: 0.00 }, '114/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '140/40': { ml: 128.80, mq: 176.44 },
+                '140/50': { ml: 0.00, mq: 0.00 }, '140/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '168/40': { ml: 146.40, mq: 178.54 },
+                '168/50': { ml: 0.00, mq: 0.00 }, '168/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '220/40': { ml: 156.48, mq: 158.06 },
+                '220/50': { ml: 0.00, mq: 0.00 }, '220/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '273/40': { ml: 172.48, mq: 148.69 },
+                '273/50': { ml: 0.00, mq: 0.00 }, '273/60': { ml: 0.00, mq: 0.00 }, // Valori placeholder da aggiornare
+                '324/40': { ml: 193.28, mq: 146.42 },
+                '324/50': { ml: 0.00, mq: 0.00 }, '324/60': { ml: 0.00, mq: 0.00 } // Valori placeholder da aggiornare
             }
         }
     };
@@ -585,9 +755,9 @@
         }
     }
 
-    window.onload = initApp;
+    // Chiama subito la funzione di inizializzazione
+    initApp();
 </script>
 
 </body>
 </html>
-

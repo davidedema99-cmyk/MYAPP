@@ -165,7 +165,8 @@ const prezziLanaPolinor = {
     }
 };
 
-const quoteItems = [];
+let quoteItems = [];
+let quoteHistory = JSON.parse(localStorage.getItem('quoteHistory')) || [];
 
 const materialSelect = document.getElementById('material');
 const coatingSelect = document.getElementById('coating');
@@ -180,6 +181,13 @@ const discountInput = document.getElementById('discount');
 const discountAmountSpan = document.getElementById('discount-amount');
 const totalSpan = document.getElementById('total');
 const downloadPdfBtn = document.getElementById('download-pdf-btn');
+const saveQuoteBtn = document.getElementById('save-quote-btn');
+const historyBody = document.getElementById('history-body');
+
+const clientNameInput = document.getElementById('client-name');
+const clientCompanyInput = document.getElementById('client-company');
+const clientEmailInput = document.getElementById('client-email');
+const clientPhoneInput = document.getElementById('client-phone');
 
 const curveConversionFactors = {
     '22': 0.29, '28': 0.31, '35': 0.33, '43': 0.35, '48': 0.37, '60': 0.65,
@@ -277,6 +285,7 @@ function addItem() {
     quoteItems.push(newItem);
     renderTable();
     updateTotals();
+    clearInputs();
 }
 
 function removeItem(index) {
@@ -290,14 +299,14 @@ function renderTable() {
     quoteItems.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${item.material}</td>
-            <td>${item.coating}</td>
-            <td>DN ${item.diameter} / ${item.thickness}mm</td>
-            <td>${item.meters} mt</td>
-            <td>${item.curves} u.</td>
-            <td>${item.pricePerMeter.toFixed(2)} €/ml</td>
-            <td>${item.total.toFixed(2)} €</td>
-            <td><button class="delete-btn" onclick="removeItem(${index})">Elimina</button></td>
+            <td data-label="Materiale">${item.material}</td>
+            <td data-label="Rivestimento">${item.coating}</td>
+            <td data-label="DxS">DN ${item.diameter} / ${item.thickness}mm</td>
+            <td data-label="Metri">${item.meters} mt</td>
+            <td data-label="Curve">${item.curves} u.</td>
+            <td data-label="Prezzo/ml">${item.pricePerMeter.toFixed(2)} €/ml</td>
+            <td data-label="Totale">${item.total.toFixed(2)} €</td>
+            <td data-label="Azione"><button class="delete-btn" onclick="removeItem(${index})">Elimina</button></td>
         `;
         quoteBody.appendChild(row);
     });
@@ -313,6 +322,21 @@ function updateTotals() {
     subtotalSpan.textContent = subtotal.toFixed(2) + ' €';
     discountAmountSpan.textContent = '-' + discountAmount.toFixed(2) + ' €';
     totalSpan.textContent = total.toFixed(2) + ' €';
+}
+
+function clearInputs() {
+    metersInput.value = 0;
+    curvesInput.value = 0;
+}
+
+function clearQuote() {
+    quoteItems = [];
+    renderTable();
+    updateTotals();
+    clientNameInput.value = '';
+    clientCompanyInput.value = '';
+    clientEmailInput.value = '';
+    clientPhoneInput.value = '';
 }
 
 function generatePDF() {
@@ -336,15 +360,34 @@ function generatePDF() {
     doc.setFontSize(14);
     doc.text('Preventivo Commerciale', 105, 35, null, null, 'center');
 
-    // Linea di separazione
-    doc.setDrawColor(accentColor);
-    doc.line(75, 40, 135, 40);
+    // Dati Cliente
+    const clientName = clientNameInput.value.trim();
+    const clientCompany = clientCompanyInput.value.trim();
+    const clientEmail = clientEmailInput.value.trim();
 
-    // Titolo della tabella
-    doc.setFont('Helvetica', 'bold');
-    doc.setTextColor(textColor);
-    doc.setFontSize(16);
-    doc.text('Dettagli del Preventivo', 15, 60);
+    let y = 50;
+    if (clientName || clientCompany) {
+        doc.setFontSize(12);
+        doc.setFont('Helvetica', 'bold');
+        doc.setTextColor(primaryColor);
+        doc.text('Dati Cliente:', 15, y);
+        y += 7;
+        doc.setFont('Helvetica', 'normal');
+        doc.setTextColor(textColor);
+        if (clientName) {
+            doc.text(`Nome: ${clientName}`, 15, y);
+            y += 6;
+        }
+        if (clientCompany) {
+            doc.text(`Azienda: ${clientCompany}`, 15, y);
+            y += 6;
+        }
+        if (clientEmail) {
+            doc.text(`Email: ${clientEmail}`, 15, y);
+            y += 6;
+        }
+        y += 5;
+    }
 
     // Tabella
     const tableHeaders = [
@@ -364,7 +407,7 @@ function generatePDF() {
     doc.autoTable({
         head: tableHeaders,
         body: tableRows,
-        startY: 65,
+        startY: y,
         theme: 'striped',
         styles: {
             font: 'Helvetica',
@@ -435,15 +478,97 @@ function generatePDF() {
     doc.save('preventivo_isoldem.pdf');
 }
 
+function saveQuote() {
+    if (quoteItems.length === 0) {
+        alert('Non puoi salvare un preventivo vuoto!');
+        return;
+    }
+
+    const clientData = {
+        name: clientNameInput.value,
+        company: clientCompanyInput.value,
+        email: clientEmailInput.value,
+        phone: clientPhoneInput.value
+    };
+
+    const newQuote = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('it-IT'),
+        client: clientData.name || clientData.company || 'Cliente Generico',
+        items: quoteItems,
+        subtotal: quoteItems.reduce((sum, item) => sum + item.total, 0),
+        discount: parseFloat(discountInput.value) || 0,
+        total: parseFloat(totalSpan.textContent)
+    };
+
+    quoteHistory.push(newQuote);
+    localStorage.setItem('quoteHistory', JSON.stringify(quoteHistory));
+    renderQuoteHistory();
+    clearQuote();
+    alert('Preventivo salvato con successo!');
+}
+
+function renderQuoteHistory() {
+    historyBody.innerHTML = '';
+    if (quoteHistory.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="5" style="text-align:center;">Nessun preventivo salvato.</td>`;
+        historyBody.appendChild(row);
+        return;
+    }
+
+    quoteHistory.forEach((quote, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td data-label="ID">${quote.id}</td>
+            <td data-label="Data">${quote.date}</td>
+            <td data-label="Cliente">${quote.client}</td>
+            <td data-label="Totale">${quote.total.toFixed(2)} €</td>
+            <td data-label="Azioni">
+                <button class="action-btn" onclick="loadQuote(${index})">Carica</button>
+                <button class="delete-btn" onclick="deleteQuote(${index})">Elimina</button>
+            </td>
+        `;
+        historyBody.appendChild(row);
+    });
+}
+
+function loadQuote(index) {
+    const quoteToLoad = quoteHistory[index];
+    
+    // Svuota il preventivo corrente e carica i dati
+    quoteItems = [...quoteToLoad.items];
+    clientNameInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.name : '';
+    clientCompanyInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.company : '';
+    clientEmailInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.email : '';
+    clientPhoneInput.value = quoteToLoad.clientData ? quoteToLoad.clientData.phone : '';
+    discountInput.value = quoteToLoad.discount;
+
+    renderTable();
+    updateTotals();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function deleteQuote(index) {
+    if (confirm('Sei sicuro di voler eliminare questo preventivo?')) {
+        quoteHistory.splice(index, 1);
+        localStorage.setItem('quoteHistory', JSON.stringify(quoteHistory));
+        renderQuoteHistory();
+    }
+}
+
+
 // Event Listeners
 materialSelect.addEventListener('change', updateOptions);
 addItemBtn.addEventListener('click', addItem);
 discountInput.addEventListener('input', updateTotals);
 downloadPdfBtn.addEventListener('click', generatePDF);
+saveQuoteBtn.addEventListener('click', saveQuote);
 
-// Inizializza le opzioni al caricamento della pagina
+// Inizializza le opzioni e lo storico al caricamento della pagina
 window.onload = () => {
     updateOptions();
     updateThicknessOptions();
     updateTotals();
+    renderQuoteHistory();
 };

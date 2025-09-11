@@ -693,26 +693,24 @@ const historyBody = document.getElementById('history-body');
 
 // === EVENT LISTENERS E FUNZIONI ===
 document.addEventListener('DOMContentLoaded', () => {
-    updateDiameterOptions();
-    updateThicknessOptions();
+    // Chiamata iniziale per popolare tutti i menu a tendina
+    updateSelectOptions();
     loadQuoteHistory();
 });
 
-materialSelect.addEventListener('change', () => {
-    updateDiameterOptions();
-    updateThicknessOptions();
-    updateCoatingOptions();
-});
-
-diameterSelect.addEventListener('change', () => {
-    updateThicknessOptions();
-});
-
+materialSelect.addEventListener('change', updateSelectOptions);
+diameterSelect.addEventListener('change', updateThicknessOptions);
 addItemBtn.addEventListener('click', addItem);
 discountInput.addEventListener('input', updateTotals);
 saveQuoteBtn.addEventListener('click', saveQuote);
 downloadPdfBtn.addEventListener('click', generatePDF);
 
+
+function updateSelectOptions() {
+    updateDiameterOptions();
+    updateThicknessOptions();
+    updateCoatingOptions();
+}
 
 function updateDiameterOptions() {
     const selectedMaterial = materialSelect.value;
@@ -724,7 +722,6 @@ function updateDiameterOptions() {
         option.textContent = diameter;
         diameterSelect.appendChild(option);
     });
-    updateThicknessOptions();
 }
 
 function updateThicknessOptions() {

@@ -731,15 +731,18 @@ function updateThicknessOptions() {
     const selectedMaterial = materialSelect.value;
     const selectedDiameter = diameterSelect.value;
     thicknessSelect.innerHTML = '';
-    const spessori = materiali[selectedMaterial].spessori;
-    spessori.forEach(spessore => {
-        if (prezzi[selectedDiameter] && prezzi[selectedDiameter][spessore]) {
-            const option = document.createElement('option');
-            option.value = spessore;
-            option.textContent = spessore;
-            thicknessSelect.appendChild(option);
-        }
-    });
+
+    if (selectedDiameter) {
+        const spessori = materiali[selectedMaterial].spessori;
+        spessori.forEach(spessore => {
+            if (prezzi[selectedDiameter] && prezzi[selectedDiameter][spessore]) {
+                const option = document.createElement('option');
+                option.value = spessore;
+                option.textContent = spessore;
+                thicknessSelect.appendChild(option);
+            }
+        });
+    }
 }
 
 function updateCoatingOptions() {

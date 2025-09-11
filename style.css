@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 :root {
-    --primary-color: #004d40; /* Verde scuro, professionale e legato alla natura (isolamento) */
-    --secondary-color: #e0f2f1; /* Verde chiaro, per sfondi e dettagli */
-    --accent-color: #ffb300; /* Giallo-arancione, per i pulsanti e gli elementi chiave */
-    --text-color: #263238; /* Grigio scuro, leggibile */
-    --light-text-color: #607d8b; /* Grigio più chiaro */
+    --primary-color: #004d40;
+    --secondary-color: #e0f2f1;
+    --accent-color: #ffb300;
+    --text-color: #263238;
+    --light-text-color: #607d8b;
     --background-color: #f5f8f8;
     --card-background: #ffffff;
 }
@@ -18,7 +18,7 @@ body {
     color: var(--text-color);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
 }
 
@@ -85,7 +85,7 @@ label {
     color: var(--primary-color);
 }
 
-select, input[type="number"] {
+select, input[type="number"], input[type="text"], input[type="email"], input[type="tel"] {
     width: 100%;
     padding: 12px;
     border: 1px solid #e0e0e0;
@@ -95,7 +95,7 @@ select, input[type="number"] {
     background-color: var(--secondary-color);
 }
 
-select:focus, input[type="number"]:focus {
+select:focus, input:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.2);
@@ -118,7 +118,17 @@ button:hover {
     box-shadow: 0 4px 10px rgba(255, 179, 0, 0.3);
 }
 
-#quote-table {
+.secondary-btn {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    margin-right: 15px;
+}
+
+.secondary-btn:hover {
+    box-shadow: 0 4px 10px rgba(0, 77, 64, 0.3);
+}
+
+#quote-table, #history-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
@@ -128,13 +138,13 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-#quote-table th, #quote-table td {
+#quote-table th, #quote-table td, #history-table th, #history-table td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid #f0f0f0;
 }
 
-#quote-table th {
+#quote-table th, #history-table th {
     background-color: var(--primary-color);
     color: #ffffff;
     font-weight: 600;
@@ -153,6 +163,21 @@ button:hover {
 
 .delete-btn:hover {
     background-color: #b71c1c;
+}
+
+.action-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-right: 5px;
+}
+
+.action-btn:hover {
+    background-color: #45a049;
 }
 
 .quote-summary {
@@ -189,24 +214,25 @@ button:hover {
         flex-direction: column;
         gap: 15px;
     }
-    #quote-table thead {
+    #quote-table thead, #history-table thead {
         display: none;
     }
-    #quote-table, #quote-table tbody, #quote-table tr, #quote-table td {
+    #quote-table, #quote-table tbody, #quote-table tr, #quote-table td,
+    #history-table, #history-table tbody, #history-table tr, #history-table td {
         display: block;
         width: 100%;
     }
-    #quote-table tr {
+    #quote-table tr, #history-table tr {
         margin-bottom: 15px;
         border: 1px solid #ddd;
         border-radius: 8px;
     }
-    #quote-table td {
+    #quote-table td, #history-table td {
         text-align: right;
         padding-left: 50%;
         position: relative;
     }
-    #quote-table td::before {
+    #quote-table td::before, #history-table td::before {
         content: attr(data-label);
         position: absolute;
         left: 0;

@@ -2,9 +2,6 @@ window.jsPDF = window.jspdf.jsPDF;
 // === CREDENZIALI SUPABASE ===
 const SUPABASE_URL = 'https://jbouxpoqdtfslcztptjh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impib3V4cG9xZHRmc2xjenRwdGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MDkzNzUsImV4cCI6MjA3MzE4NTM3NX0.ucK_OZJVoMw5u0ryCkaAVdqpdfLaCWe8kgs4RDQVmvU';
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 const materiali = {
     gomma: {
         diametri: [18, 22, 28, 34, 42, 48, 60, 76, 89, 114, 140, 168],
